@@ -45,7 +45,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
 - After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix — see `.cursor/rules/dependency-pinning.mdc`
   - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite
-  - Long coverage runs: background and poll with ≤2 minute waits — see `.cursor/rules/shell-wait-limits.mdc`
+  - Long coverage runs: background and poll with ≤1 minute waits — see `.cursor/rules/shell-wait-limits.mdc`
 - **`cookie@2` resolution:** forced via Yarn resolutions + `.yarn/patches/cookie-npm-2.0.1-*.patch`. Upstream Express / `cookie-parser` / `express-session` / csurf still call removed `parse` / `serialize`; the patch restores those as aliases over `parseCookie` / `stringifySetCookie`. Remove the patch once those packages support cookie v2 natively.
 
 ## Package-only updates (auto origin sync)
@@ -138,7 +138,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 |------|---------|
 | `.cursor/rules/project-standards.mdc` | Node/Yarn, hmcts/origin sync, tests after deps, summary risks |
 | `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity, full `yarn test:coverage` after bumps |
-| `.cursor/rules/shell-wait-limits.mdc` | Cap Shell/AwaitShell blocking waits at 2 minutes; background long jobs and poll |
+| `.cursor/rules/shell-wait-limits.mdc` | Cap Shell/AwaitShell blocking waits at 1 minute; background long jobs and poll |
 | `.cursor/rules/prefer-express-typescript-stack.mdc` | Prefer Express/TS/CUI patterns over ad-hoc stacks |
 | `.cursor/rules/govuk-frontend-ui.mdc` | GOV.UK Frontend macros as UI source of truth |
 | `.cursor/rules/govuk-frontend-upgrade-tests.mdc` | After GOV.UK bumps: rebuild + regression tests |

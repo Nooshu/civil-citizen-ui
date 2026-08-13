@@ -1,0 +1,2 @@
+# Optional NODE_ENV=production overrides. Empty object required for js-yaml@5.
+{}
