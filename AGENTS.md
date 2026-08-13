@@ -45,7 +45,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
 - After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix — see `.cursor/rules/dependency-pinning.mdc`
   - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite
-
+- **`cookie@2` resolution:** forced via Yarn resolutions + `.yarn/patches/cookie-npm-2.0.1-*.patch`. Upstream Express / `cookie-parser` / `express-session` / csurf still call removed `parse` / `serialize`; the patch restores those as aliases over `parseCookie` / `stringifySetCookie`. Remove the patch once those packages support cookie v2 natively.
 ## Package-only updates (auto origin sync)
 
 If the change is **only** version bumps in `package.json` / `yarn.lock` (no other code changes), once checks pass:

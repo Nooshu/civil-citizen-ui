@@ -1,0 +1,36 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 01f309e6d232abd7bd5383335ea457c202f889a1..3d5fa79d9be6337db9f6c42bc5eb49885a1bc718 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -141,3 +141,8 @@ export declare function stringifySetCookie(cookie: SetCookie, options?: Stringif
+  *   => { name: 'foo', value: 'bar', httpOnly: true }
+  */
+ export declare function parseSetCookie(str: string, options?: ParseOptions): SetCookie;
++
++/** @deprecated Use {@link parseCookie}. Compatibility alias for cookie@<2. */
++export declare function parse(str: string, options?: ParseOptions): Cookies;
++/** @deprecated Use {@link stringifySetCookie}. Compatibility alias for cookie@<2 serialize(name, value, options). */
++export declare function serialize(name: string, value: string, options?: SerializeOptions): string;
+diff --git a/dist/index.js b/dist/index.js
+index 7b90774046872c44a31d892eeb52dbd58e9389b3..1792a4b3dda9ea7d48e75272116d2d2d39e0cc5b 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -352,4 +352,17 @@ function decode(str) {
+ function defaultEncode(str) {
+     return cookieOctetRegExp.test(str) ? str : encodeURIComponent(str);
+ }
++
++/**
++ * Compatibility aliases for cookie@<2 consumers (express, cookie-parser, express-session, csurf).
++ * cookie@2 renamed parse -> parseCookie and serialize -> stringifySetCookie (object form only).
++ */
++export function parse(str, options) {
++    return parseCookie(str, options);
++}
++export function serialize(name, value, options) {
++    const opts = options || {};
++    const { encode, ...attrs } = opts;
++    return stringifySetCookie({ name, value, ...attrs }, encode ? { encode } : undefined);
++}
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
