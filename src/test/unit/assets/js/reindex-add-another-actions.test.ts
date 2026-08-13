@@ -1,6 +1,6 @@
 /**
  * Uses manual JSDOM setup instead of @jest-environment jsdom to avoid
- * virtualConsole.sendTo incompatibility with jsdom 28.
+ * virtualConsole.sendTo incompatibility with jsdom 28+ (jest-environment-jsdom).
  */
 const {JSDOM} = require('jsdom');
 

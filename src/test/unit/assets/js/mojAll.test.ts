@@ -1,6 +1,6 @@
 /**
  * Uses manual JSDOM setup instead of @jest-environment jsdom to avoid
- * virtualConsole.sendTo incompatibility with jsdom 28.
+ * virtualConsole.sendTo incompatibility with jsdom 28+ (jest-environment-jsdom).
  *
  * mojAll.js is a bundled MOJ frontend build; this is a light smoke test.
  */
