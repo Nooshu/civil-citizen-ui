@@ -137,7 +137,7 @@
     "@babel/core": "8.0.1",
     "@babel/eslint-parser": "8.0.1",
     "@babel/preset-env": "8.0.2",
-    "@pact-foundation/pact": "^15.0.1",
+    "@pact-foundation/pact": "17.0.1",
     "@pact-foundation/pact-node": "^10.18.0",
     "@playwright/test": "1.62.1",
     "@types/chai": "^4",

@@ -1,4 +1,4 @@
-import { Pact, Matchers } from '@pact-foundation/pact';
+import { MatchersV2 as Matchers, PactV2 as Pact } from '@pact-foundation/pact';
 import config from 'config';
 import { PACT_DIRECTORY_PATH, PACT_LOG_PATH } from '../utils';
 import { getOidcResponse, OidcResponse } from '../../../main/app/auth/user/oidc';
