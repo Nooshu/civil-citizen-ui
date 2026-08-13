@@ -109,9 +109,10 @@ const setupConfig = {
       ],
       delayAfter: 5000,
     },
-    screenshotOnFail: {
+    screenshot: {
       enabled: true,
-      fullPageScreenshots: 'true',
+      on: 'fail',
+      fullPageScreenshots: true,
     },
   },
   include: {

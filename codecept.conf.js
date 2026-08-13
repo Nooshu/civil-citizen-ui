@@ -88,8 +88,9 @@ exports.config = {
     retryFailedStep: {
       enabled: true,
     },
-    screenshotOnFail: {
+    screenshot: {
       enabled: true,
+      on: 'fail',
       fullPageScreenshots: true,
     },
     failedAndNotExecutedTestFilesPlugin: {
