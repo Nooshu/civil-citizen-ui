@@ -24,9 +24,10 @@ module "citizen-ui-draft-store" {
 }
 
 # Azure Managed Redis (DTSCCI-5712)
-
+# Temporary fork ref until https://github.com/hmcts/terraform-module-azure-managed-redis/pull/9 merges
+# (azurerm 5 removed diagnostic setting `metric` in favour of `enabled_metric`).
 module "managed_redis" {
-  source = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
+  source = "git@github.com:Nooshu/terraform-module-azure-managed-redis?ref=fix/azurerm-5-enabled-metric"
 
   product     = var.product
   component   = var.component

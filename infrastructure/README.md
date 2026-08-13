@@ -6,22 +6,23 @@ These are the Terraform resources specifically for the Civil Citizen UI Applicat
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 2.95 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 5.0.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 2.33.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.99.0 |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.9.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 5.0.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_citizen-ui-draft-store"></a> [citizen-ui-draft-store](#module\_citizen-ui-draft-store) | git@github.com:hmcts/cnp-module-redis | master |
-| <a name="module_key-vault"></a> [key-vault](#module\_key-vault) | git@github.com:hmcts/cnp-module-key-vault | master |
-| <a name="module_application-insights"></a> [application-insights](#module\_application-insights) | git@github.com:hmcts/terraform-module-application-insights | main |
+| <a name="module_managed-redis"></a> [managed-redis](#module\_managed-redis) | git@github.com:Nooshu/terraform-module-azure-managed-redis | fix/azurerm-5-enabled-metric (temp; flip to hmcts main after [PR #9](https://github.com/hmcts/terraform-module-azure-managed-redis/pull/9)) |
+| <a name="module_key-vault"></a> [key-vault](#module\_key-vault) | git@github.com:hmcts/cnp-module-key-vault | DTSPO-31965/remove-jenkins-ptl-access |
+| <a name="module_application-insights"></a> [application-insights](#module\_application-insights) | git@github.com:hmcts/terraform-module-application-insights | 5.x |
 
 ## Resources
 

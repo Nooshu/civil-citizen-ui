@@ -1,5 +1,7 @@
 provider "azurerm" {
   features {}
+  # v5 defaults to none; set explicitly so behaviour matches HMCTS / private_endpoint alias
+  resource_provider_registrations = "none"
 }
 
 provider "azurerm" {
@@ -26,7 +28,7 @@ terraform {
 
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.80.0"
+      version = "5.0.1"
     }
   }
 }
