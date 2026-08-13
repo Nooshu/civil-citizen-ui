@@ -57,6 +57,28 @@ $ yarn start
 
 The application's home page will be available at https://localhost:3001
 
+### UI Preview (no IDAM)
+
+To browse live Nunjucks pages **without login or the full CCD stack**, use the UI Preview Docker stack.
+
+One command (stops anything on ports `3001`/`1111`, rebuilds webpack assets in Docker, starts WireMock + CUI, then prints the URL):
+
+```bash
+yarn preview
+```
+
+Same as `yarn start:ui-preview`. When ready, open **http://localhost:3001/ui-preview**.
+
+| Mode | Command | Auth | Backends |
+|------|---------|------|----------|
+| **UI Preview** | `yarn preview` | None (`e2eTest`) | WireMock + in-memory Redis fixtures |
+| Local full | `yarn start:dev` | IDAM | Redis + real services on localhost |
+| Mocked functional | `yarn test:mocked-functional` | None | WireMock (automated browser tests) |
+
+Stop preview with `yarn start:ui-preview:down`.
+
+Compose file: [`compose/ui-preview.yml`](compose/ui-preview.yml). WireMock stubs for fixture claims live in [`charts/civil-citizen-ui/wiremock/mappings/ui-preview-claims.json`](charts/civil-citizen-ui/wiremock/mappings/ui-preview-claims.json).
+
 ### Running with Docker
 
 Create docker image:

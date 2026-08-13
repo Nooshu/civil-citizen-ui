@@ -128,8 +128,13 @@ export const getRedisStoreForSession = () => {
   const connectionString = key
     ? `${protocol}:${key}@${host}:${port}`
     : `${protocol}${host}:${port}`;
+  const client = new Redis(connectionString);
+  // Without an error listener, connection failures become "[ioredis] Unhandled error event".
+  client.on('error', (err: Error) => {
+    logger.error(`Redis session store connection error (${host}:${port})`, err);
+  });
   return new RedisStore({
-    client: new Redis(connectionString),
+    client,
     prefix: 'citizen-ui-session:',
     ttl: 86400, //prune expired entries every 24h
   });

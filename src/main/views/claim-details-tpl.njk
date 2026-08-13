@@ -63,7 +63,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% block footer %}
 <div role="contentinfo">
-{% if developmentMode %}
+{% if developmentMode or e2eTestMode %}
 {{ govukFooter({
     contentLicence: {
       html: t('FOOTER.ALL_CONTENT', { link: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/' })
@@ -98,6 +98,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         {
           href: TestingSupportUrl,
           text: t("FOOTER.TESTING_SUPPORT")
+        },
+        {
+          href: UiPreviewUrl,
+          text: "UI Preview"
         }
       ]
     }

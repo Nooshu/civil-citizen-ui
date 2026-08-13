@@ -1,0 +1,200 @@
+{
+  "mappings": [
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449409"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "1645882162449409",
+          "state": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
+          "last_modified": "2022-03-01T13:29:24.971Z",
+          "case_data": {
+            "legacyCaseReference": "000MC009",
+            "totalClaimAmount": 1000,
+            "claimFee": {
+              "code": "FEE0204",
+              "version": "4",
+              "calculatedAmountInPence": "7000"
+            },
+            "applicant1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Jane Claimant",
+              "individualTitle": "Ms",
+              "individualFirstName": "Jane",
+              "individualLastName": "Claimant",
+              "partyEmail": "claimant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "1 Claimant Road",
+                "PostTown": "London",
+                "PostCode": "SW1A 1AA"
+              }
+            },
+            "respondent1": {
+              "type": "INDIVIDUAL",
+              "partyName": "John Defendant",
+              "individualTitle": "Mr",
+              "individualFirstName": "John",
+              "individualLastName": "Defendant",
+              "partyEmail": "defendant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "Defendant House",
+                "AddressLine2": "21",
+                "AddressLine3": "Church Road",
+                "PostTown": "Berkshire",
+                "PostCode": "RG4 7AD"
+              }
+            },
+            "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
+            "submittedDate": "2022-03-01T13:29:24.971Z",
+            "claimIssuedDate": "2022-03-01T13:29:24.971Z",
+            "responseClaimTrack": "SMALL_CLAIM"
+          }
+        }
+      }
+    },
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/0000000000000001"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "0000000000000001",
+          "state": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
+          "last_modified": "2022-03-01T13:29:24.971Z",
+          "case_data": {
+            "legacyCaseReference": "000MC001",
+            "totalClaimAmount": 500,
+            "claimFee": {
+              "code": "FEE0204",
+              "version": "4",
+              "calculatedAmountInPence": "7000"
+            },
+            "applicant1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Jane Claimant",
+              "individualFirstName": "Jane",
+              "individualLastName": "Claimant"
+            },
+            "respondent1": {
+              "type": "INDIVIDUAL",
+              "partyName": "John Defendant",
+              "individualFirstName": "John",
+              "individualLastName": "Defendant"
+            },
+            "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
+            "submittedDate": "2022-03-01T13:29:24.971Z"
+          }
+        }
+      }
+    },
+    {
+      "priority": 5,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/cases/[0-9]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "{{request.pathSegments.[1]}}",
+          "state": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
+          "last_modified": "2022-03-01T13:29:24.971Z",
+          "case_data": {
+            "legacyCaseReference": "000MC000",
+            "totalClaimAmount": 100,
+            "applicant1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Preview Claimant",
+              "individualFirstName": "Preview",
+              "individualLastName": "Claimant"
+            },
+            "respondent1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Preview Defendant",
+              "individualFirstName": "Preview",
+              "individualLastName": "Defendant"
+            },
+            "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
+            "submittedDate": "2022-03-01T13:29:24.971Z"
+          }
+        }
+      }
+    },
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/cases/(claimant|defendant)/.*"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "claims": [
+            {
+              "claimId": "1645882162449409",
+              "claimNumber": "000MC009",
+              "claimantName": "Jane Claimant",
+              "defendantName": "John Defendant",
+              "claimAmount": "1000",
+              "responseDeadline": "2026-12-31T16:00:00.000Z",
+              "status": "NO_RESPONSE",
+              "ocmc": false,
+              "numberOfDays": 10,
+              "numberOfDaysOverdue": 0
+            }
+          ],
+          "totalPages": 1
+        }
+      }
+    },
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/dashboard/.*/notifications"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": []
+      }
+    },
+    {
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/dashboard/.*/tasks"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "items": []
+        }
+      }
+    },
+    {
+      "priority": 10,
+      "request": {
+        "method": "ANY",
+        "urlPathPattern": "/.*"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {}
+      }
+    }
+  ]
+}

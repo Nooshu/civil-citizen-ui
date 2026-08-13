@@ -44,6 +44,7 @@ describe('Draft Store Client', () => {
     draftStoreClient.enableFor(app);
     await new Promise(process.nextTick);
     expect(mockLogger.info).toHaveBeenCalledWith(DraftStoreClient.REDIS_CONNECTION_SUCCESS);
+    expect(app.locals.draftStoreClient.on).toHaveBeenCalledWith('error', expect.any(Function));
   });
 
   it('should register the "connect" listener and seed data if NODE_ENV is NOT production', async () => {

@@ -23,6 +23,10 @@ export class DraftStoreClient {
       ? `${protocol}:${key}@${host}:${port}`
       : `${protocol}${host}:${port}`;
     const client = new Redis(connectionString);
+    // Without an error listener, connection failures become "[ioredis] Unhandled error event".
+    client.on('error', (err: Error) => {
+      this.logger.error(`Redis draft store connection error (${host}:${port})`, err);
+    });
 
     app.locals.draftStoreClient = client;
     this.logger.info(DraftStoreClient.REDIS_CONNECTION_SUCCESS);

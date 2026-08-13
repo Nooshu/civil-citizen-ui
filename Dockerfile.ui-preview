@@ -1,0 +1,33 @@
+# Local UI Preview image — public Node base (no HMCTS ACR required).
+# Builds production webpack assets and runs the app in NODE_ENV=e2eTest (no IDAM).
+
+FROM node:24.18.0-alpine AS build
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
+
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
+COPY . .
+
+RUN corepack enable \
+  && yarn install --immutable \
+  && yarn build:prod
+
+FROM node:24.18.0-alpine AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=e2eTest \
+    PORT=3001 \
+    LOG_LEVEL=INFO
+
+COPY --from=build /app/package.json /app/yarn.lock /app/.yarnrc.yml ./
+COPY --from=build /app/.yarn ./.yarn
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/src ./src
+COPY --from=build /app/config ./config
+COPY --from=build /app/tsconfig.json ./
+
+EXPOSE 3001
+
+CMD ["./node_modules/.bin/ts-node", "-r", "tsconfig-paths/register", "src/main/server.ts"]
