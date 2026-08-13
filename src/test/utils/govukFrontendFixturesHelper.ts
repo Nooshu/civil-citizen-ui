@@ -5,11 +5,11 @@ import * as nunjucks from 'nunjucks';
 /**
  * Paths and helpers for comparing GOV.UK Frontend Nunjucks macros to shipped fixtures.json.
  * @see https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files
+ * @remarks Lives under `src/test/utils` so Jest (`roots: src/test/unit`) does not treat it as a suite.
  */
 
 export const GOVUK_FRONTEND_DIST = path.join(
   __dirname,
-  '..',
   '..',
   '..',
   '..',

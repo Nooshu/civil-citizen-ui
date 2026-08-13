@@ -53,14 +53,18 @@ done
 
 echo ""
 if [[ "${ready}" -eq 1 ]]; then
-  cat <<EOF
-╔══════════════════════════════════════════╗
-║  UI Preview ready                        ║
-║  ${PREVIEW_URL}
-║                                          ║
-║  Stop: yarn start:ui-preview:down        ║
-╚══════════════════════════════════════════╝
-EOF
+  # Fixed-width box: every content line must be padded so the right border aligns.
+  width=42
+  print_row() {
+    local text="$1"
+    printf '║  %-*s║\n' "$((width - 2))" "${text}"
+  }
+  printf '╔%s╗\n' "$(printf '═%.0s' $(seq 1 "${width}"))"
+  print_row "UI Preview ready"
+  print_row "${PREVIEW_URL}"
+  print_row ""
+  print_row "Stop: yarn start:ui-preview:down"
+  printf '╚%s╝\n' "$(printf '═%.0s' $(seq 1 "${width}"))"
 else
   echo "UI Preview did not become ready in time." >&2
   echo "Check: docker compose -f compose/ui-preview.yml logs" >&2

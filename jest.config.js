@@ -3,7 +3,7 @@ module.exports = {
   testRegex: '(/src/test/.*|\\.(test|spec))\\.(ts|js)$',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': ['ts-jest', {"isolatedModules": true}],
+    '^.+\\.ts$': ['ts-jest', {tsconfig: 'tsconfig.jest.json'}],
     // Client asset modules use ESM import/export; transform for Jest
     '^.+/src/main/assets/js/.+\\.js$': 'babel-jest',
     // ESM-only deps: transform so Jest can load them

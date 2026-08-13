@@ -1,7 +1,7 @@
 import {
   normalizeGovukHtml,
   toGovukMacroName,
-} from './govukFrontendFixturesHelper';
+} from '../../utils/govukFrontendFixturesHelper';
 
 describe('govukFrontendFixturesHelper', () => {
   it('maps hyphenated component folders to camelCase macro names', () => {

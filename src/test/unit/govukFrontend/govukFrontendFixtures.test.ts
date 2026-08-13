@@ -13,7 +13,8 @@ import {
   normalizeGovukHtml,
   renderGovukFixture,
   toGovukMacroName,
-} from './govukFrontendFixturesHelper';
+} from '../../utils/govukFrontendFixturesHelper';
+
 
 describe('GOV.UK Frontend fixtures (macro HTML accuracy)', () => {
   const env = createGovukNunjucksEnvironment();
