@@ -7,8 +7,8 @@ import {
   getClaimById,
   getRedisStoreForSession,
 } from 'modules/utilityService';
-import RedisStore from 'connect-redis';
-import Redis from 'ioredis';
+import {RedisStore} from 'connect-redis';
+import {createClient} from 'redis';
 import noRespondentTelephoneClaimantIntentionMock from '../../../../../test/utils/mocks/noRespondentTelephoneClaimantIntentionMock.json';
 import {Claim} from 'common/models/claim';
 import {CivilServiceClient} from 'client/civilServiceClient';
@@ -63,7 +63,7 @@ describe('Claimant Response - Check answers', () => {
       .post('/o/token')
       .reply(200, {id_token: citizenRoleToken});
     (getRedisStoreForSession as jest.Mock).mockReturnValueOnce(new RedisStore({
-      client: new Redis(),
+      client: createClient(),
     }));
     (getClaimById as jest.Mock).mockResolvedValueOnce(Object.assign(new Claim(), noRespondentTelephoneClaimantIntentionMock.case_data));
     (CivilServiceClient.prototype.getClaimAmountFee as jest.Mock).mockResolvedValueOnce(mockClaimFee);

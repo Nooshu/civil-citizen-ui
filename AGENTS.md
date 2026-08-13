@@ -9,7 +9,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - HMCTS **Civil Citizen UI (CUI)** — citizen-facing civil money claims web app
 - **Express 5** + **TypeScript** + **Nunjucks** + **GOV.UK Frontend** (not NestJS / not a SPA)
 - Server-side HTTP clients to civil-service, GA service, IDAM, DM store, etc.
-- Redis draft store / session; LaunchDarkly feature flags; i18next (EN/CY)
+- Redis draft store (ioredis) / session (`connect-redis` + official `redis` client); LaunchDarkly feature flags; i18next (EN/CY)
 - Default branch: `master`
 - Upstream remote: `hmcts` (`hmcts/civil-citizen-ui`) — add if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
 - Push/pull default: `origin` (fork), unless doing an upstream sync

@@ -11,8 +11,9 @@ import {TTLCategory} from 'modules/draft-store/ttlConfig';
 import {CivilServiceClient} from '../app/client/civilServiceClient';
 import {Claim} from 'common/models/claim';
 import {Request} from 'express';
-import RedisStore from 'connect-redis';
-import Redis from 'ioredis';
+import {RedisStore} from 'connect-redis';
+import {createClient} from 'redis';
+import {MemoryStore} from 'express-session';
 import {BusinessProcess} from 'models/businessProcess';
 import {syncCaseReferenceCookie} from './cookie/caseReferenceCookie';
 import {getRouteParam, normalizeRouteParam, RouteParam} from 'common/utils/routeParamUtils';
@@ -120,7 +121,22 @@ export const getClaimBusinessProcess = async (claimId: string, req: Request): Pr
   }
 };
 
+/**
+ * Builds an express-session store backed by Redis via connect-redis.
+ *
+ * @remarks
+ * connect-redis v10+ requires the official `redis` client (not ioredis). The draft
+ * store continues to use ioredis separately. `createClient` must be connected
+ * before session reads/writes; connect is started here and errors are logged.
+ *
+ * Under Jest (`NODE_ENV=test`), returns {@link MemoryStore} so importing `app`
+ * does not hang on a Redis `connect()` when no server is available.
+ */
 export const getRedisStoreForSession = () => {
+  if (process.env.NODE_ENV === 'test') {
+    return new MemoryStore();
+  }
+
   const protocol = config.get('services.draftStore.redis.tls') ? 'rediss://' : 'redis://';
   const host = config.get<string>('services.session.redis.host');
   const port = config.get<string | number>('services.session.redis.port');
@@ -128,14 +144,17 @@ export const getRedisStoreForSession = () => {
   const connectionString = key
     ? `${protocol}:${key}@${host}:${port}`
     : `${protocol}${host}:${port}`;
-  const client = new Redis(connectionString);
-  // Without an error listener, connection failures become "[ioredis] Unhandled error event".
+  const client = createClient({url: connectionString});
   client.on('error', (err: Error) => {
     logger.error(`Redis session store connection error (${host}:${port})`, err);
+  });
+  // node-redis requires an explicit connect(); sessions will queue until ready.
+  void client.connect().catch((err: Error) => {
+    logger.error(`Redis session store failed to connect (${host}:${port})`, err);
   });
   return new RedisStore({
     client,
     prefix: 'citizen-ui-session:',
-    ttl: 86400, //prune expired entries every 24h
+    ttl: 86400, // prune expired entries every 24h
   });
 };

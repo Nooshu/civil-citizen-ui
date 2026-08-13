@@ -1,6 +1,6 @@
 import {Application} from 'express';
+import session from 'express-session';
 import {LoggerInstance} from 'winston';
-import RedisStore from 'connect-redis';
 
 const Redis = require('ioredis-mock');
 
@@ -38,10 +38,13 @@ export class DraftStoreCliente2e {
   }
 }
 
+/**
+ * In-process session store for `NODE_ENV=e2eTest`.
+ *
+ * @remarks
+ * connect-redis v10 no longer supports ioredis/ioredis-mock. E2E does not need a
+ * real Redis session backend, so MemoryStore keeps tests hermetic.
+ */
 export const getRedisStoreForSessione2e = () => {
-  return new RedisStore({
-    client: new Redis(),
-    prefix: 'citizen-ui-session:',
-    ttl: ONE_DAY_IN_SECONDS, //prune expired entries every 24h
-  });
+  return new session.MemoryStore();
 };

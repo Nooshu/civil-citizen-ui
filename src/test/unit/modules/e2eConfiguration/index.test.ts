@@ -1,10 +1,7 @@
 import {Application} from 'express';
+import session from 'express-session';
 import {LoggerInstance} from 'winston';
 import {DraftStoreCliente2e, getRedisStoreForSessione2e} from 'modules/e2eConfiguration';
-
-jest.mock('connect-redis', () => {
-  return jest.fn().mockImplementation((options) => ({options, type: 'redis-store'}));
-});
 
 describe('e2eConfiguration', () => {
   const logger = {
@@ -43,12 +40,10 @@ describe('e2eConfiguration', () => {
   });
 
   describe('getRedisStoreForSessione2e', () => {
-    it('returns a RedisStore configured for citizen UI sessions', () => {
-      const store = getRedisStoreForSessione2e() as {options: {prefix: string; ttl: number}; type: string};
+    it('returns an in-memory session store for e2e', () => {
+      const store = getRedisStoreForSessione2e();
 
-      expect(store.type).toBe('redis-store');
-      expect(store.options.prefix).toBe('citizen-ui-session:');
-      expect(store.options.ttl).toBe(86400);
+      expect(store).toBeInstanceOf(session.MemoryStore);
     });
   });
 });

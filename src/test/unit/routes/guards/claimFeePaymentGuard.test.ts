@@ -3,8 +3,8 @@ import {Claim} from 'models/claim';
 import {getClaimById, getRedisStoreForSession} from 'modules/utilityService';
 import config from 'config';
 import nock from 'nock';
-import RedisStore from 'connect-redis';
-import Redis from 'ioredis';
+import {RedisStore} from 'connect-redis';
+import {createClient} from 'redis';
 import {claimFeePaymentGuard} from 'routes/guards/claimFeePaymentGuard';
 import {AppRequest} from 'models/AppRequest';
 import {checkIfClaimFeeHasChanged} from 'services/features/claim/amount/checkClaimFee';
@@ -32,7 +32,7 @@ describe('Claim Fee Payment Guard', () => {
       .post('/o/token')
       .reply(200, {id_token: citizenRoleToken});
     (getRedisStoreForSession as jest.Mock).mockReturnValueOnce(new RedisStore({
-      client: new Redis(),
+      client: createClient(),
     }));
   });
   it('should access claim fee payment page', async () => {
