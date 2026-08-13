@@ -78,7 +78,8 @@ describe('Draft Store Client', () => {
 
   it('builds a rediss URL with credentials when tls and key are configured', () => {
     process.env.NODE_ENV = 'test';
-    jest.spyOn(config, 'get').mockImplementation(((path: string) => {
+    // config@5 seals the instance after the first get(); spy the prototype instead.
+    jest.spyOn(Object.getPrototypeOf(config), 'get').mockImplementation(((path: string) => {
       switch (path) {
         case 'services.draftStore.redis.tls':
           return true;

@@ -60,7 +60,8 @@ describe('generatePcqToken', () => {
   });
 
   it('should return empty string and log when token key is missing', () => {
-    jest.spyOn(config, 'get').mockReturnValueOnce('' as unknown as string);
+    // config@5 seals the instance after the first get(); spy the prototype instead.
+    jest.spyOn(Object.getPrototypeOf(config), 'get').mockReturnValueOnce('' as unknown as string);
 
     const token = createToken(params);
 
