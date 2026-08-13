@@ -122,6 +122,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - Never update git config; avoid destructive git commands unless explicitly requested
 - Never use interactive git flags (`-i`)
 - Never attach Cursor agent / `cursoragent` identity to commits or pushes (including `Co-Authored-By`, author/committer spoofing, or hook-injected agent trailers) — see `.cursor/rules/no-cursor-agent-commits.mdc`
+- **Never invent JIRA / ticket IDs** (e.g. `DTSCCI-1234`, `CIV-999`) in commit messages, PR titles, branch names, or docs. Only include a ticket key when the user explicitly provides it. If none is given, write a normal message without a ticket prefix
 
 ## Communication
 
@@ -145,5 +146,6 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | `.cursor/rules/verify-ts-build-after-server-changes.mdc` | After server TS changes, verify build/tests; fix compile errors |
 | `.cursor/rules/docs-and-comments.mdc` | Keep docs current; TSDoc-compatible comments (no typed `{Type}` braces) |
 | `.cursor/rules/no-cursor-agent-commits.mdc` | Never attribute Cursor agent on commits/pushes |
+| `.cursor/rules/no-invented-jira-ids.mdc` | Never invent JIRA/ticket IDs in commits, PRs, or docs |
 
 Older tooling may look for `AGENT.md`; that path is a symlink to this file.
