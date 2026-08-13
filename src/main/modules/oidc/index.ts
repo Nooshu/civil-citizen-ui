@@ -85,6 +85,24 @@ const isPrivacyPolicyPage = (requestUrl: string): boolean => {
   return requestUrl.startsWith(PRIVACY_POLICY_URL);
 };
 
+const isStaticAssetRequest = (requestUrl: string): boolean => {
+  const path = requestUrl.split('?')[0];
+  return (
+    path.startsWith('/assets/') ||
+    path.startsWith('/main') ||
+    path.startsWith('/cookies') ||
+    path.endsWith('.js') ||
+    path.endsWith('.css') ||
+    path.endsWith('.map') ||
+    path.endsWith('.woff') ||
+    path.endsWith('.woff2') ||
+    path.endsWith('.ico') ||
+    path.endsWith('.svg') ||
+    path.endsWith('.png') ||
+    path.endsWith('.json')
+  );
+};
+
 const isMakeClaimPage = (requestUrl: string): boolean => {
   return requestUrl.startsWith(MAKE_CLAIM);
 };
@@ -238,7 +256,8 @@ export class OidcMiddleware {
           isContactUsPage(req.originalUrl) ||
           isTermAndConditionsPage(req.originalUrl) ||
           isPrivacyPolicyPage(req.originalUrl) ||
-          isWebchatPage(req.originalUrl)
+          isWebchatPage(req.originalUrl) ||
+          isStaticAssetRequest(req.originalUrl)
         ) {
           return next();
         }

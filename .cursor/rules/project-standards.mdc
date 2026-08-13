@@ -1,0 +1,24 @@
+---
+description: Node, Yarn, dependencies, testing and summary standards
+alwaysApply: true
+---
+
+# Project standards
+
+- Keep Node.js versions current and reflected in the `engines` field and `.nvmrc`.
+- Prefer **Yarn 4** (`yarn.lock`, `.yarnrc.yml`) for installs; do not switch to npm unless explicitly asked.
+- Prefer patch and minor dependency updates unless explicitly instructed otherwise.
+- Wait **7 days** after a version is published before suggesting or applying routine dependency updates (security fixes may skip the wait); see `.cursor/rules/dependency-pinning.mdc`.
+- Prefer pinning versions you change; preserve `yarn.lock` integrity.
+- Verify installs and avoid introducing breaking changes.
+- Always run tests after dependency changes.
+- Before making any code changes after opening the project, sync with upstream `hmcts` (add the remote if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`):
+  - If the working tree is not clean, ask for confirmation (or create a branch) before syncing.
+  - Run: `git fetch hmcts`
+  - Then run: `git pull --rebase hmcts master`
+- If the change is a simple package update only (for example version bumps in `package.json`/`yarn.lock` with no code changes), once checks pass:
+  - Sync with `origin` automatically.
+  - Run: `git fetch origin`
+  - Then run: `git pull --rebase origin master`
+  - Then push: `git push origin master` (or `git push --force-with-lease origin master` only when history was rebased).
+- Summaries must include risks and unresolved issues.

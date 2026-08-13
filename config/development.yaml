@@ -1,0 +1,2 @@
+# Local development overrides (node-config loads this when NODE_ENV=development).
+# Keep empty unless you need to override default.yaml values locally.

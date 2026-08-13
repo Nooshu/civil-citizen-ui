@@ -1,0 +1,15 @@
+---
+description: GOV.UK Frontend macros are the single source of truth for all UI HTML
+alwaysApply: true
+---
+
+# GOV.UK Frontend as UI source of truth
+
+- **GOV.UK Frontend is the single source of truth** for the user interface.
+- All HTML for GOV.UK Design System components **must** come from official Nunjucks macros (for example `govukButton`, `govukInput`, `govukHeader`, `govukFooter`, `govukSkipLink`, `govukErrorSummary`).
+- Do **not** hand-write GOV.UK component markup (classes like `govuk-button`, `govuk-error-summary`, `govuk-breadcrumbs`, etc.) in templates or inject it as raw HTML strings when a macro exists.
+- Prefer `{% from "govuk/components/.../macro.njk" import ... %}` and macro calls over duplicated HTML.
+- Layout chrome (skip link, header, footer, breadcrumbs, pagination wrappers) must use macros, not custom reimplementations.
+- Typography and layout utility classes (`govuk-heading-*`, `govuk-body`, `govuk-grid-*`, `govuk-!-*-*`) are allowed for page composition; component structure must still come from macros.
+- After GOV.UK Frontend upgrades, rely on macros for HTML updates; do not patch markup by hand to match a new release.
+- Client-side UI that mirrors GOV.UK components should show/hide or populate **macro-rendered** markup rather than building component HTML in JavaScript when possible.

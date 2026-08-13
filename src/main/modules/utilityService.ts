@@ -122,7 +122,12 @@ export const getClaimBusinessProcess = async (claimId: string, req: Request): Pr
 
 export const getRedisStoreForSession = () => {
   const protocol = config.get('services.draftStore.redis.tls') ? 'rediss://' : 'redis://';
-  const connectionString = `${protocol}:${config.get('services.draftStore.redis.key')}@${config.get('services.session.redis.host')}:${config.get('services.session.redis.port')}`;
+  const host = config.get<string>('services.session.redis.host');
+  const port = config.get<string | number>('services.session.redis.port');
+  const key = config.get<string>('services.draftStore.redis.key');
+  const connectionString = key
+    ? `${protocol}:${key}@${host}:${port}`
+    : `${protocol}${host}:${port}`;
   return new RedisStore({
     client: new Redis(connectionString),
     prefix: 'citizen-ui-session:',

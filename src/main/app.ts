@@ -145,6 +145,8 @@ app.use(cookieParser());
 app.use(setLanguage);
 app.use(favicon(path.join(__dirname, 'public', 'assets', 'images', 'favicon.ico')) as any);
 app.use(express.static(path.join(__dirname, 'public')));
+// Serve webpack assets before auth so /main-dev.js and /main-dev.css are not redirected to /login.
+setupDev(app, developmentMode);
 
 app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ limit: '500mb', extended: true }));
@@ -368,5 +370,3 @@ if (env !== 'test') {
 }
 app.use(routes);
 new ErrorHandler().enableFor(app);
-
-setupDev(app, developmentMode);

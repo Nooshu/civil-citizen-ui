@@ -1,0 +1,49 @@
+---
+description: Keep repository docs current and require comprehensive TypeScript documentation comments
+alwaysApply: true
+---
+
+# Documentation and code comments
+
+## Documentation
+
+- Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change.
+- Update the README, `AGENTS.md`, changelogs, and any feature-specific markdown in the same change set when those topics are affected — do not leave stale version numbers, Node ranges, or outdated guidance.
+- Prefer linking to canonical docs (`AGENTS.md`, `.cursor/rules/*.mdc`) rather than duplicating conflicting instructions.
+- Document **why** a decision was made when it is non-obvious (for example Redis TTL choices, GOV.UK macro usage, civil-service mapping quirks).
+- After dependency or GOV.UK Frontend upgrades, sync version notes in README and docs.
+
+## TypeScript documentation comments (TSDoc-compatible JSDoc)
+
+Use `/** ... */` blocks that follow [TSDoc](https://tsdoc.org/) conventions and [TypeScript’s documentation tags](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) (`@deprecated`, `@see`, `{@link}`).
+
+### Required style
+
+- **Summary first** (one short paragraph). Put longer constraints under `@remarks`.
+- **Do not restate types** in comments — the TypeScript signature is the source of truth.
+  - Good: `@param claimId - CCD case reference used as Redis key fragment`
+  - Bad: `@param {string} claimId - ...` or `@returns {Promise<void>}`
+- Use a hyphen after names: `@param name - Description`, `@throws Error - When …`.
+- Omit `@returns` when it only repeats the return type with no useful description.
+- Prefer `{@link Symbol}` / `@see` for cross-references; mark retired APIs with `@deprecated`.
+- Call out security-sensitive behaviour (CSRF, headers, sanitisation), performance traps, and GOV.UK Frontend macro/template requirements in the summary or `@remarks`.
+
+### Do not use
+
+- `@module`, `@requires`, `@class`, `@interface`, `@function`, `@async` — redundant with imports and TypeScript syntax.
+- JSDoc `{Type}` braces on `@param`, `@returns`, `@throws`, `@template`, or `@property` in `.ts` files.
+
+### Coverage
+
+- Every public module, class, and non-trivial function should have a clear documentation block (purpose, important inputs/outputs behaviour, side effects, constraints).
+- Explain **why** and **constraints**, not a line-by-line restatement of obvious code.
+- Keep Nunjucks templates annotated where macros are composed or where client scripts depend on macro-rendered markup.
+- When changing code, update nearby comments and any related documentation in the same change — never leave comments that contradict the code.
+
+## Agent checklist
+
+When finishing a change:
+
+1. Docs touched or confirmed still accurate for that change
+2. Public/complex APIs have up-to-date TSDoc-compatible comments (no typed `{Type}` braces)
+3. `AGENTS.md` / `.cursor/rules` updated if a standing convention changed

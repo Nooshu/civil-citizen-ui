@@ -1,0 +1,17 @@
+---
+description: Pin dependency updates, yarn.lock integrity, and 7-day release cooldown
+alwaysApply: true
+---
+
+# Dependency pinning and lockfile integrity
+
+- When updating or adding dependencies, prefer **exact versions** (no `^`, `~`, or ranges) for packages you touch.
+- Refresh and preserve `yarn.lock` integrity for all packages (`yarn install`).
+- **7-day release cooldown:** do not suggest or apply routine dependency updates until the target version has been published for at least **7 days**.
+  - Check npm publish time (or wait) before proposing bumps; skip “just released” versions unless the user asks to override.
+  - **Security / vulnerability fixes** may proceed without waiting when clearly required; document the exception.
+- When updating multiple packages in one task:
+  - Update all target packages first and refresh `yarn.lock`.
+  - Run install + tests **once** after every package update is complete — do not re-run the full suite after each individual package unless diagnosing a failure.
+- Do not switch the package manager to npm or delete `yarn.lock` without explicit agreement.
+- If install or lockfile verification fails, fix pinning/lockfile issues before finishing the task.

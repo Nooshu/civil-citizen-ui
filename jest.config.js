@@ -3,7 +3,9 @@ module.exports = {
   testRegex: '(/src/test/.*|\\.(test|spec))\\.(ts|js)$',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts?$': ['ts-jest', {"isolatedModules": true}],
+    '^.+\\.ts$': ['ts-jest', {"isolatedModules": true}],
+    // Client asset modules use ESM import/export; transform for Jest
+    '^.+/src/main/assets/js/.+\\.js$': 'babel-jest',
     // ESM-only deps: transform so Jest can load them
     '.*/node_modules/(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|cssstyle|@csstools|parse5|jsdom|@tootallnate/once)/.+\\.(js|mjs|cjs)$': 'babel-jest',
   },
@@ -23,4 +25,12 @@ module.exports = {
     '^app/auth/(.*)$': '<rootDir>/src/main/app/auth/$1'
   },
   setupFilesAfterEnv: ['./jest.setup.redis-mock.js', './jest.setup.js'],
+  collectCoverageFrom: [
+    'src/main/**/*.{ts,js}',
+    '!src/main/**/*.d.ts',
+    '!src/main/views/**',
+    '!src/main/assets/scss/**',
+    '!src/main/server.ts',
+    '!src/main/routes/routes.ts',
+  ],
 };

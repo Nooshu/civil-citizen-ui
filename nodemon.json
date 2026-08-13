@@ -2,7 +2,8 @@
   "watch": ["src/main"],
   "ext": "ts,js,njk,css",
   "ignore": ["src/**/*.spec.ts"],
-  "execMap": {
-    "ts": "./bin/generate-ssl-options.sh && ts-node ./src/main/server.ts"
+  "exec": "./bin/generate-ssl-options.sh && ./node_modules/.bin/ts-node -r tsconfig-paths/register ./src/main/server.ts",
+  "env": {
+    "NODE_ENV": "development"
   }
 }
