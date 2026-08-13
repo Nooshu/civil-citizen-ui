@@ -7,14 +7,21 @@ import {CIVIL_SERVICE_CASES_URL} from 'client/civilServiceUrls';
 import {app} from '../../../../../main/app';
 import {CaseRole} from 'form/models/caseRoles';
 import {TestMessages} from '../../../../utils/errorMessageTestConstants';
+import {ResponseType} from 'form/models/responseType';
 
 jest.mock('../../../../../main/modules/oidc');
 
 const civilServiceUrl = config.get<string>('services.civilService.url');
 const claimId = '123';
-const claim = require('../../../../utils/mocks/civilClaimResponseMock.json');
+const baseClaim = require('../../../../utils/mocks/civilClaimResponseMock.json');
 
-describe('view mediation settlement agreement document controller', () => {
+function claimWithResponseType(responseType: ResponseType | undefined) {
+  const claim = JSON.parse(JSON.stringify(baseClaim));
+  claim.case_data.respondent1ClaimResponseTypeForSpec = responseType;
+  return claim;
+}
+
+describe('view response to claim controller', () => {
   const citizenRoleToken: string = config.get('citizenRoleToken');
   const idamUrl: string = config.get('idamUrl');
 
@@ -25,18 +32,40 @@ describe('view mediation settlement agreement document controller', () => {
   });
 
   beforeEach(() => {
+    nock.cleanAll();
+    nock(idamUrl)
+      .post('/o/token')
+      .reply(200, {id_token: citizenRoleToken});
     nock(civilServiceUrl)
       .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
       .reply(200, [CaseRole.DEFENDANT]);
   });
 
   describe('on Get', () => {
-    it('should view the response to the claim', async () => {
-      //Given
+    it.each([
+      [ResponseType.PART_ADMISSION, 'Admit part of the claim'],
+      [ResponseType.FULL_ADMISSION, 'Admit all of the claim'],
+      [ResponseType.FULL_DEFENCE, 'Reject all of the claim'],
+      [ResponseType.COUNTER_CLAIM, 'Reject all of the claim and counterclaim'],
+    ])('should render response type %s', async (responseType, expectedLabel) => {
       nock(civilServiceUrl)
         .get(CIVIL_SERVICE_CASES_URL + claimId)
-        .reply(200, claim);
-      //then
+        .reply(200, claimWithResponseType(responseType));
+
+      await request(app)
+        .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('View the response to the claim');
+          expect(res.text).toContain(expectedLabel);
+        });
+    });
+
+    it('should view the response to the claim without a response type', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithResponseType(undefined));
+
       await request(app)
         .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
         .expect((res) => {
@@ -46,12 +75,10 @@ describe('view mediation settlement agreement document controller', () => {
     });
 
     it('should return http 500 when has error', async () => {
-      //given
       nock(civilServiceUrl)
         .get(CIVIL_SERVICE_CASES_URL + claimId)
         .reply(500);
 
-      //then
       await request(app)
         .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
         .expect((res) => {

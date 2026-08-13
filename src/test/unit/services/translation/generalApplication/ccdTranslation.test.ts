@@ -60,6 +60,10 @@ describe('translate draft application to ccd', () => {
     expect(fromCcdHearingType(CcdHearingType.VIDEO)).toEqual(HearingTypeOptions.VIDEO_CONFERENCE);
   });
 
+  it('should throw for unknown ccd hearing type', () => {
+    expect(() => fromCcdHearingType('UNKNOWN' as CcdHearingType)).toThrow();
+  });
+
   it('should translate application types to ccd', () => {
     //Given
     const application = new GeneralApplication();
@@ -171,6 +175,41 @@ describe('translate draft application to ccd', () => {
       ],
       unavailableTrialRequiredYesOrNo: 'Yes',
     });
+  });
+
+  it.each([
+    [HearingTypeOptions.PERSON_AT_COURT, 'IN_PERSON'],
+    [HearingTypeOptions.TELEPHONE, 'TELEPHONE'],
+    [HearingTypeOptions.WITHOUT_HEARING, 'WITHOUT_HEARING'],
+  ])('should translate hearing type %s to ccd', (hearingType, expectedCcdType) => {
+    const application = buildApplication();
+    application.hearingArrangement = new HearingArrangement(hearingType, 'reason', 'location');
+    application.hearingContactDetails = new HearingContactDetails('1', 'a@b.com');
+    application.unavailableDatesHearing = new UnavailableDatesGaHearing([]);
+    application.hearingSupport = new HearingSupport([
+      SupportType.HEARING_LOOP,
+      SupportType.STEP_FREE_ACCESS,
+    ]);
+
+    const ccdGeneralApplication = translateDraftApplicationToCCD(application);
+
+    expect(ccdGeneralApplication.generalAppHearingDetails.HearingPreferencesPreferredType).toBe(expectedCcdType);
+    expect(ccdGeneralApplication.generalAppHearingDetails.SupportRequirement).toEqual([
+      CcdSupportRequirement.HEARING_LOOPS,
+      CcdSupportRequirement.DISABLED_ACCESS,
+    ]);
+    expect(ccdGeneralApplication.generalAppHearingDetails.unavailableTrialRequiredYesOrNo).toBe(YesNoUpperCamelCase.NO);
+  });
+
+  it('should omit preferred hearing type for unknown hearing option', () => {
+    const application = buildApplication();
+    application.hearingArrangement = new HearingArrangement('UNKNOWN' as HearingTypeOptions, 'reason', 'location');
+    application.hearingContactDetails = new HearingContactDetails('1', 'a@b.com');
+    application.unavailableDatesHearing = new UnavailableDatesGaHearing([]);
+    application.hearingSupport = new HearingSupport([]);
+
+    const ccdGeneralApplication = translateDraftApplicationToCCD(application);
+    expect(ccdGeneralApplication.generalAppHearingDetails.HearingPreferencesPreferredType).toBeUndefined();
   });
 
   it('should translate evidence documents to ccd', () => {
@@ -325,6 +364,65 @@ describe('translate draft application to ccd', () => {
         generalAppResponseStatementOfTruth: {name: 'test', role: 'director'},
       });
     });
+
+    it('should map accepted defendant offer and pay-in-full plan', () => {
+      const gaResponse = {
+        acceptDefendantOffer: {
+          option: YesNo.YES,
+          type: ProposedPaymentPlanOption.PROPOSE_BY_SET_DATE,
+          reasonProposedSetDate: 'cannot pay instalments',
+          proposedSetDate: '2024-12-01',
+        },
+        statementOfTruth: {name: 'test'},
+        agreeToOrder: YesNo.YES,
+        respondentAgreement: new RespondentAgreement(YesNo.YES),
+      };
+
+      expect(toCcdGeneralApplicationWithResponse(gaResponse)).toMatchObject({
+        gaRespondentDebtorOffer: {
+          respondentDebtorOffer: 'ACCEPT',
+          paymentPlan: CcdGADebtorPaymentPlanGAspec.PAYFULL,
+          debtorObjections: 'cannot pay instalments',
+          paymentSetDate: '2024-12-01',
+        },
+      });
+    });
+
+    it('should map declined defendant offer', () => {
+      const gaResponse = {
+        acceptDefendantOffer: {
+          option: YesNo.NO,
+          type: ProposedPaymentPlanOption.ACCEPT_INSTALMENTS,
+          reasonProposedInstalment: 'too high',
+          amountPerMonth: '10',
+        },
+        statementOfTruth: {name: 'test'},
+        agreeToOrder: YesNo.NO,
+        respondentAgreement: new RespondentAgreement(YesNo.NO, 'no'),
+      };
+
+      expect(toCcdGeneralApplicationWithResponse(gaResponse)).toMatchObject({
+        gaRespondentDebtorOffer: {
+          respondentDebtorOffer: 'DECLINE',
+          paymentPlan: CcdGADebtorPaymentPlanGAspec.INSTALMENT,
+          debtorObjections: 'too high',
+        },
+      });
+    });
+
+    it('should throw for unknown payment plan option', () => {
+      const gaResponse = {
+        acceptDefendantOffer: {
+          option: YesNo.NO,
+          type: 'UNKNOWN_PLAN' as ProposedPaymentPlanOption,
+        },
+        statementOfTruth: {name: 'test'},
+        agreeToOrder: YesNo.NO,
+        respondentAgreement: new RespondentAgreement(YesNo.NO, 'no'),
+      };
+
+      expect(() => toCcdGeneralApplicationWithResponse(gaResponse)).toThrow();
+    });
   });
 
   describe('translateCoScApplicationToCCD', () => {
@@ -371,6 +469,47 @@ describe('translate draft application to ccd', () => {
       //Then
       expect(ccdGeneralApplication.certOfSC).not.toBeNull();
       expect(ccdGeneralApplication.generalAppEvidenceDocument).not.toBeNull();
+    });
+
+    it('should treat full payment to court as proof of debt payment', () => {
+      const application = new GeneralApplication();
+      application.applicationTypes = [
+        new ApplicationType(ApplicationTypeOption.CONFIRM_CCJ_DEBT_PAID),
+      ];
+      application.certificateOfSatisfactionOrCancellation = new CertificateOfSatisfactionOrCancellation();
+      application.certificateOfSatisfactionOrCancellation.defendantFinalPaymentDate = new DefendantFinalPaymentDate('2024', '06', '12');
+      application.certificateOfSatisfactionOrCancellation.debtPaymentEvidence = new DebtPaymentEvidence(
+        debtPaymentOptions.MADE_FULL_PAYMENT_TO_COURT,
+      );
+      application.uploadEvidenceForApplication = [new UploadGAFiles()];
+      application.uploadEvidenceForApplication[0].caseDocument = {
+        createdBy: '',
+        createdDatetime: undefined,
+        documentLink: {document_url: 'u', document_filename: 'f', document_binary_url: 'b'},
+        documentName: 'court.pdf',
+        documentSize: 1,
+        documentType: undefined,
+      };
+
+      const ccdGeneralApplication = translateCoScApplicationToCCD(application);
+      expect(ccdGeneralApplication.generalAppEvidenceDocument).toBeDefined();
+      expect(ccdGeneralApplication.generalAppEvidenceDocument.length).toBeGreaterThan(0);
+    });
+
+    it('should not include evidence when unable to provide proof of payment', () => {
+      const application = new GeneralApplication();
+      application.applicationTypes = [
+        new ApplicationType(ApplicationTypeOption.CONFIRM_CCJ_DEBT_PAID),
+      ];
+      application.certificateOfSatisfactionOrCancellation = new CertificateOfSatisfactionOrCancellation();
+      application.certificateOfSatisfactionOrCancellation.defendantFinalPaymentDate = new DefendantFinalPaymentDate('2024', '06', '12');
+      application.certificateOfSatisfactionOrCancellation.debtPaymentEvidence = new DebtPaymentEvidence(
+        debtPaymentOptions.UNABLE_TO_PROVIDE_EVIDENCE_OF_FULL_PAYMENT,
+      );
+      application.uploadEvidenceForApplication = [new UploadGAFiles()];
+
+      const ccdGeneralApplication = translateCoScApplicationToCCD(application);
+      expect(ccdGeneralApplication.generalAppEvidenceDocument).toBeUndefined();
     });
   });
 

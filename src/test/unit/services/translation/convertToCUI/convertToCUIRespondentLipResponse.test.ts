@@ -29,6 +29,11 @@ describe('translate respondentLipResponse to CUI model', () => {
 
   });
 
+  it('should translate response lang = WELSH correctly', () => {
+    const responseLang = toCUIClaimBilingualLangPreference(CCDRespondentResponseLanguage.WELSH);
+    expect(responseLang).toBe(ClaimBilingualLanguagePreference.WELSH);
+  });
+
   it('when response language is undefined', () => {
     //Given
     const ccdRespondLipResponse : CCDRespondentLiPResponse = {

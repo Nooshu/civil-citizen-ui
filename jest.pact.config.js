@@ -1,3 +1,4 @@
+require('./jest.setup.silence-deprecations.js');
 module.exports = {
   roots: ['<rootDir>/src/test/contract/consumers'],
   testRegex: '(/src/test/.*|\\.(test|spec))\\.(ts|js)$',
@@ -16,4 +17,5 @@ module.exports = {
     '^modules/(.*)$': '<rootDir>/src/main/modules/$1',
     '^routes/(.*)$': '<rootDir>/src/main/routes/$1',
   },
+  setupFiles: ['./jest.setup.silence-deprecations.js'],
 };

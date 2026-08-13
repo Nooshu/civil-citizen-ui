@@ -28,6 +28,36 @@ describe('translate minti disclosure of documents to CCD model', () => {
     expect(ccdClaim).toBe(undefined);
   });
 
+  it('should translate electronic documents to CCD when agreement reached', () => {
+    claim.directionQuestionnaire.hearing.disclosureOfDocuments = new DisclosureOfDocuments();
+    claim.directionQuestionnaire.hearing.disclosureOfDocuments.documentsTypeChosen = [TypeOfDisclosureDocument.ELECTRONIC];
+    claim.directionQuestionnaire.hearing.hasAnAgreementBeenReached = HasAnAgreementBeenReachedOptions.YES;
+    claim.directionQuestionnaire.hearing.disclosureOfElectronicDocumentsIssues = undefined;
+    const ccdClaim = toCCDDisclosureOfElectronicDocuments(claim.directionQuestionnaire?.hearing);
+
+    const expected: CCDDisclosureOfElectronicDocuments = {
+      reachedAgreement: YesNoUpperCamelCase.YES,
+      agreementLikely: undefined,
+      reasonForNoAgreement: undefined,
+    };
+    expect(ccdClaim).toMatchObject(expected);
+  });
+
+  it('should translate electronic documents to CCD when no agreement', () => {
+    claim.directionQuestionnaire.hearing.disclosureOfDocuments = new DisclosureOfDocuments();
+    claim.directionQuestionnaire.hearing.disclosureOfDocuments.documentsTypeChosen = [TypeOfDisclosureDocument.ELECTRONIC];
+    claim.directionQuestionnaire.hearing.hasAnAgreementBeenReached = HasAnAgreementBeenReachedOptions.NO;
+    claim.directionQuestionnaire.hearing.disclosureOfElectronicDocumentsIssues = 'no agreement reasons';
+    const ccdClaim = toCCDDisclosureOfElectronicDocuments(claim.directionQuestionnaire?.hearing);
+
+    const expected: CCDDisclosureOfElectronicDocuments = {
+      reachedAgreement: YesNoUpperCamelCase.NO,
+      agreementLikely: YesNoUpperCamelCase.NO,
+      reasonForNoAgreement: 'no agreement reasons',
+    };
+    expect(ccdClaim).toMatchObject(expected);
+  });
+
   it('should translate electronic documents to CCD', () => {
     claim.directionQuestionnaire.hearing.disclosureOfDocuments = new DisclosureOfDocuments();
     claim.directionQuestionnaire.hearing.disclosureOfDocuments.documentsTypeChosen = [TypeOfDisclosureDocument.ELECTRONIC];

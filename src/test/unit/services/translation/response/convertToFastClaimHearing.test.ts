@@ -9,7 +9,8 @@ import {
   UnavailableDateType,
 } from 'models/directionsQuestionnaire/hearing/unavailableDates';
 import {CCDFastClaimHearing} from 'models/ccdResponse/ccdFastClaimHearing';
-import {toCCDFastClaimHearing} from 'services/translation/response/convertToCCDFastClaimHearing';
+import {toCCDFastClaimHearing, toCCDHearingLength} from 'services/translation/response/convertToCCDFastClaimHearing';
+import {CCDHearingLength} from 'models/ccdResponse/ccdFastClaimHearing';
 
 const singleDateMock: UnavailableDatePeriod = {
   from: new Date('2023-03-11T00:00:00.000Z'),
@@ -127,5 +128,26 @@ describe('translate Fast claim hearing details to CCD model', () => {
     const FastClaimHearing = toCCDFastClaimHearing(claim.directionQuestionnaire.hearing);
     //then
     expect(FastClaimHearing).toEqual(expected);
+  });
+
+  it('should map unknown unavailable date type to undefined', () => {
+    claim.directionQuestionnaire.hearing.cantAttendHearingInNext12Months = {option: YesNo.YES};
+    claim.directionQuestionnaire.hearing.unavailableDatesForHearing = new UnavailableDates();
+    claim.directionQuestionnaire.hearing.unavailableDatesForHearing.items = [{
+      ...singleDateMock,
+      type: 'UNKNOWN' as UnavailableDateType,
+    }];
+
+    const FastClaimHearing = toCCDFastClaimHearing(claim.directionQuestionnaire.hearing);
+    expect(FastClaimHearing.unavailableDates[0].value.unavailableDateType).toBeUndefined();
+  });
+
+  it.each([
+    ['LESS_THAN_DAY', CCDHearingLength.LESS_THAN_DAY],
+    ['ONE_DAY', CCDHearingLength.ONE_DAY],
+    ['MORE_THAN_DAY', CCDHearingLength.MORE_THAN_DAY],
+    [undefined, undefined],
+  ])('should map hearing length %s', (input, expected) => {
+    expect(toCCDHearingLength(input as CCDHearingLength)).toBe(expected);
   });
 });

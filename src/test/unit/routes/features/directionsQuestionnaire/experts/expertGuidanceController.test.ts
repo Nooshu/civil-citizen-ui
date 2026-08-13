@@ -4,6 +4,7 @@ import nock from 'nock';
 import config from 'config';
 import {EXPERT_GUIDANCE_URL, PERMISSION_FOR_EXPERT_URL} from 'routes/urls';
 import {TestMessages} from '../../../../../utils/errorMessageTestConstants';
+import {mockCivilClaim} from '../../../../../utils/mockDraftStore';
 import * as draftStoreService from 'modules/draft-store/draftStoreService';
 
 jest.mock('../../../../../../main/modules/oidc');
@@ -21,6 +22,7 @@ describe('Using an expert in small claims', () => {
 
   describe('on GET', () => {
     it('should return Using an expert in small claims page', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
       await request(app)
         .get(EXPERT_GUIDANCE_URL)
         .expect((res) => {

@@ -27,6 +27,7 @@ describe('Using an expert', () => {
 
   describe('on GET', () => {
     it('should return Using and expert page', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
       await request(app)
         .get(DQ_EXPERT_SMALL_CLAIMS_URL)
         .expect((res) => {

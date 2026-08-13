@@ -1,3 +1,4 @@
+require('./jest.setup.silence-deprecations.js');
 module.exports = {
   roots: ['<rootDir>/src/integration-test'],
   testRegex: '(/src/integration-test/.*\\.(test|spec))\\.(ts|js)$',
@@ -21,6 +22,7 @@ module.exports = {
     '^services/(.*)$': '<rootDir>/src/main/services/$1',
     '^app/auth/(.*)$': '<rootDir>/src/main/app/auth/$1',
   },
+  setupFiles: ['./jest.setup.silence-deprecations.js'],
   setupFilesAfterEnv: [
     './jest.setup.redis-mock.js',
     './jest.setup.js',

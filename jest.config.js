@@ -1,3 +1,4 @@
+require('./jest.setup.silence-deprecations.js');
 module.exports = {
   roots: ['<rootDir>/src/test/unit'],
   testRegex: '(/src/test/.*|\\.(test|spec))\\.(ts|js)$',
@@ -25,11 +26,20 @@ module.exports = {
     '^app/auth/(.*)$': '<rootDir>/src/main/app/auth/$1'
   },
   setupFilesAfterEnv: ['./jest.setup.redis-mock.js', './jest.setup.js'],
+  // Executed client scripts still appear in reports unless ignored here (collectCoverageFrom
+  // alone does not drop coverage for files loaded by tests).
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '<rootDir>/src/main/assets/js/',
+  ],
   collectCoverageFrom: [
     'src/main/**/*.{ts,js}',
     '!src/main/**/*.d.ts',
     '!src/main/views/**',
     '!src/main/assets/scss/**',
+    // Browser/client scripts (incl. vendored mojAll.js): unit-tested under src/test/unit/assets/js
+    // but omitted from the server coverage report.
+    '!src/main/assets/js/**',
     '!src/main/server.ts',
     '!src/main/routes/routes.ts',
   ],

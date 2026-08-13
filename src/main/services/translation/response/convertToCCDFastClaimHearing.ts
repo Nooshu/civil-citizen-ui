@@ -15,7 +15,8 @@ function toCCDUnavailableDateType(type: UnavailableDateType) {
   }
 }
 
-function toCCDHearingLength(type: CCDHearingLength) {
+/** Exported for unit tests covering hearing-length CCD mapping (placeholder in {@link toCCDFastClaimHearing}). */
+export function toCCDHearingLength(type: CCDHearingLength | string | undefined) {
   switch (type) {
     case 'LESS_THAN_DAY':
       return CCDHearingLength.LESS_THAN_DAY;

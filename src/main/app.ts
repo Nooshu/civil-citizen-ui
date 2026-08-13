@@ -159,6 +159,7 @@ const logger = Logger.getLogger('app');
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 
+/* istanbul ignore if -- e2e bootstrap only when NODE_ENV=e2eTest */
 if(e2eTestMode){
   logger.info('Creating new draftStoreClient e2e');
   new DraftStoreCliente2e(Logger.getLogger('draftStoreClient')).enableFor(app);
@@ -197,6 +198,7 @@ if(!e2eTestMode){
   new OidcMiddleware().enableFor(app);
 }
 
+/* istanbul ignore if -- e2e session/flag routes only when NODE_ENV=e2eTest */
 if(e2eTestMode){
   app.get(TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT, async (req, res) => {
     try {
@@ -328,6 +330,7 @@ app.use([
 ], GaTrackHistory);
 
 const uploadRateLimitEnabled = config.get<boolean>('uploadRateLimit.enabled');
+/* istanbul ignore if -- upload rate limit is off in unit-test config */
 if (uploadRateLimitEnabled) {
   const maxRequests = config.get<number>('uploadRateLimit.maxRequests');
   const windowMs = config.get<number>('uploadRateLimit.windowSeconds') * 1000;
@@ -347,12 +350,14 @@ if (uploadRateLimitEnabled) {
   ], createUploadRateLimitGuard(maxRequests, windowMs, app.locals.draftStoreClient));
 }
 
+/* istanbul ignore if -- contact-us / mediation guards are skipped when NODE_ENV=test */
 if(env !== 'test') {
   app.use(contactUsGuard);
   app.use(MEDIATION_PHONE_CONFIRMATION_URL, mediationClaimantPhoneRedirectionGuard);
 }
 app.use(setDefaultHeaders);
 
+/* istanbul ignore next -- shutter check only registered outside NODE_ENV=test */
 const checkServiceAvailability = async (_req: express.Request, res: express.Response, next: express.NextFunction) => {
   const serviceShuttered = await isServiceShuttered();
   if (serviceShuttered) {
@@ -363,6 +368,7 @@ const checkServiceAvailability = async (_req: express.Request, res: express.Resp
   }
 };
 
+/* istanbul ignore if -- CSRF / shutter / content-type guards skipped when NODE_ENV=test */
 if (env !== 'test') {
   new CSRFToken().enableFor(app);
   app.use(checkServiceAvailability);

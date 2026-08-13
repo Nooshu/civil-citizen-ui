@@ -2,6 +2,7 @@ import {
   caseNumberPrettify,
   convertToArrayOfStrings,
   documentIdExtractor,
+  generalApplicationDocumentIdExtractor,
   removeWhiteSpacesIfNoText,
 } from 'common/utils/stringUtils';
 
@@ -58,5 +59,24 @@ describe('removeWhiteSpacesIfNoText', () => {
       //Then
       expect(result).toEqual(strings);
     });
+
+    it('should return undefined for unsupported types', () => {
+      expect(convertToArrayOfStrings(undefined as unknown as string)).toBeUndefined();
+    });
+  });
+});
+
+describe('generalApplicationDocumentIdExtractor', () => {
+  it('should return the last path segment for a valid URL', () => {
+    expect(generalApplicationDocumentIdExtractor('https://dm-store/documents/abc-123'))
+      .toBe('abc-123');
+  });
+
+  it('should return null for an invalid URL', () => {
+    expect(generalApplicationDocumentIdExtractor('not-a-url')).toBeNull();
+  });
+
+  it('should return null when the URL path has no document id segment', () => {
+    expect(generalApplicationDocumentIdExtractor('https://dm-store/')).toBeNull();
   });
 });

@@ -66,17 +66,68 @@ describe('toCUITrialArrangements', () => {
     expect(actualOutput).toEqual(expectedOutput);
   });
 
-  it ('should convert CCDClaim to TrialArrangements without trialArrangementsDocument if CCDClaim does not have trial ready document for defendant', () => {
-    //Given
-    const isClaimant = false;
+  it ('should convert claimant revised hearing requirements and other comments', () => {
+    const isClaimant = true;
     const ccdClaim: CCDClaim = {
-      trialReadyDocuments: [getTrialReadyDocument(true)],
+      trialReadyApplicant: YesNoUpperCamelCase.YES,
+      applicantRevisedHearingRequirements: {
+        revisedHearingRequirements: YesNoUpperCamelCase.YES,
+        revisedHearingComments: 'claimant changes',
+      },
+      applicantHearingOtherComments: {hearingOtherComments: 'claimant other'},
     };
-    const expectedOutput: TrialArrangements = undefined;
-    //When
-    const actualOutput = toCUITrialArrangements(ccdClaim, isClaimant);
-    //Then
-    expect(actualOutput).toEqual(expectedOutput);
+    const expectedOutput: TrialArrangements = new TrialArrangements();
+    expectedOutput.isCaseReady = YesNo.YES;
+    expectedOutput.hasAnythingChanged = new HasAnythingChangedForm(YesNo.YES, 'claimant changes');
+    expectedOutput.otherTrialInformation = 'claimant other';
+
+    expect(toCUITrialArrangements(ccdClaim, isClaimant)).toEqual(expectedOutput);
+  });
+
+  it ('should convert claimant when only revised hearing comments are present', () => {
+    const ccdClaim: CCDClaim = {
+      applicantRevisedHearingRequirements: {
+        revisedHearingComments: 'comments only',
+      },
+    };
+    const actual = toCUITrialArrangements(ccdClaim, true);
+    expect(actual?.hasAnythingChanged).toEqual(new HasAnythingChangedForm(undefined, 'comments only'));
+  });
+
+  it ('should convert defendant when only revised hearing requirements flag is present', () => {
+    const ccdClaim: CCDClaim = {
+      respondent1RevisedHearingRequirements: {
+        revisedHearingRequirements: YesNoUpperCamelCase.YES,
+      },
+    };
+    const actual = toCUITrialArrangements(ccdClaim, false);
+    expect(actual?.hasAnythingChanged).toEqual(new HasAnythingChangedForm(YesNo.YES, undefined));
+  });
+
+  it ('should convert claimant documents owned by applicant solicitor', () => {
+    const solicitorDoc = getTrialReadyDocument(true);
+    solicitorDoc.value.ownedBy = CaseRole.APPLICANTSOLICITORONE;
+    const ccdClaim: CCDClaim = {
+      trialReadyDocuments: [solicitorDoc],
+    };
+    const actual = toCUITrialArrangements(ccdClaim, true);
+    expect(actual?.trialArrangementsDocument).toEqual(solicitorDoc);
+  });
+
+  it ('should wrap unbracketed ownedBy values when matching case role', () => {
+    const defendantDoc = getTrialReadyDocument(false);
+    defendantDoc.value.ownedBy = 'DEFENDANT' as CaseRole;
+    const ccdClaim: CCDClaim = {
+      trialReadyDocuments: [defendantDoc],
+      trialReadyRespondent1: YesNoUpperCamelCase.NO,
+    };
+    const actual = toCUITrialArrangements(ccdClaim, false);
+    expect(actual?.trialArrangementsDocument).toEqual(defendantDoc);
+    expect(actual?.isCaseReady).toBe(YesNo.NO);
+  });
+
+  it ('should return undefined when ccdClaim is missing', () => {
+    expect(toCUITrialArrangements(undefined, true)).toBeUndefined();
   });
 });
 

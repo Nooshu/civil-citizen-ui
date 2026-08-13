@@ -108,4 +108,118 @@ describe('append-row', () => {
     expect(conditional.classList.contains('govuk-checkboxes__conditional--hidden')).toBe(false);
     expect(newCheckbox.ariaExpanded).toBe('true');
   });
+
+  it('updates legends and aria attributes when cloning rows', () => {
+    document.body.innerHTML = `
+      <div class="rows">
+        <div class="row-container">
+          <div class="fields">
+            <legend class="table-row-legend-new">Item 1</legend>
+            <input id="items[0][name]" name="items[0][name]" value="Alice"
+              aria-describedby="hint-0" aria-label="Name [0]" aria-controls="panel-0" />
+            <label for="items[0][name]">Name 1</label>
+          </div>
+          <button type="button" class="govuk-button govuk-button--secondary remove-row govuk-!-display-none">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="append-row">Add another</button>
+    `;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require(scriptPath);
+    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+    document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
+
+    const rows = document.getElementsByClassName('row-container');
+    expect(rows).toHaveLength(2);
+    const legend = rows[1].querySelector('legend')!;
+    expect(legend.textContent).toContain('2');
+    expect(legend.getAttribute('id')).toBe('table-row-legend-2');
+  });
+
+  it('toggles unavailable-date radio conditionals on newly added radios', () => {
+    document.body.innerHTML = `
+      <div class="rows">
+        <div class="row-container">
+          <div class="fields">
+            <input type="radio" class="govuk-radios__input" id="items-0-single" name="items[0][type]" value="single" checked />
+            <input type="radio" class="govuk-radios__input" id="items-0-longer" name="items[0][type]" value="longer" />
+            <div id="conditional-items-0-single-date" class="govuk-radios__conditional"></div>
+            <div id="conditional-items-0-longer-period" class="govuk-radios__conditional govuk-radios__conditional--hidden"></div>
+          </div>
+          <button type="button" class="govuk-button govuk-button--secondary remove-row govuk-!-display-none">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="append-row">Add another</button>
+    `;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require(scriptPath);
+    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+    document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
+
+    const longerRadio = document.getElementById('items-1-longer') as HTMLInputElement;
+    expect(longerRadio).not.toBeNull();
+    longerRadio.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
+
+    const longerConditional = document.getElementById('conditional-items-1-longer-period')!;
+    const singleConditional = document.getElementById('conditional-items-1-single-date')!;
+    expect(longerConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(false);
+    expect(singleConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+  });
+
+  it('removes a civil-amountRow without throwing', () => {
+    document.body.innerHTML = `
+      <input type="hidden" name="_csrf" value="token" />
+      <span class="total-monthly-income-expense"></span>
+      <div class="rows">
+        <div class="row-container civil-amountRow">
+          <div class="fields">
+            <input id="items[0][amount]" name="items[0][amount]" value="10" />
+          </div>
+          <button type="button" class="govuk-button govuk-button--secondary remove-row">Remove</button>
+        </div>
+        <div class="row-container civil-amountRow">
+          <div class="fields">
+            <input id="items[1][amount]" name="items[1][amount]" value="20" />
+          </div>
+          <button type="button" class="govuk-button govuk-button--secondary remove-row">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="append-row">Add another</button>
+    `;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require(scriptPath);
+    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+    const removeButtons = document.querySelectorAll('.remove-row');
+    expect(() => {
+      removeButtons[1].dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
+    }).not.toThrow();
+    expect(document.getElementsByClassName('row-container')).toHaveLength(1);
+  });
+
+  it('clones civil-amount-breakdown-row and civil-amountRow rows', () => {
+    document.body.innerHTML = `
+      <input type="hidden" name="_csrf" value="token" />
+      <span class="total-monthly-income-expense"></span>
+      <div class="rows">
+        <div class="row-container civil-amountRow civil-amount-breakdown-row">
+          <div class="fields">
+            <input id="items[0][amount]" name="items[0][amount]" value="10" />
+          </div>
+          <button type="button" class="govuk-button govuk-button--secondary remove-row govuk-!-display-none">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="append-row">Add another</button>
+    `;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require(scriptPath);
+    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+    expect(() => {
+      document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
+    }).not.toThrow();
+    expect(document.getElementsByClassName('row-container')).toHaveLength(2);
+  });
 });

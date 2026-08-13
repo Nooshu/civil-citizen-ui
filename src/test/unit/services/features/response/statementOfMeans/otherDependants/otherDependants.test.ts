@@ -7,13 +7,38 @@ import {OtherDependants} from '../../../../../../../main/common/form/models/stat
 import {GenericForm} from '../../../../../../../main/common/form/models/genericForm';
 import {StatementOfMeans} from '../../../../../../../main/common/models/statementOfMeans';
 import {YesNo} from '../../../../../../../main/common/form/models/yesNo';
+import {TestMessages} from '../../../../../../utils/errorMessageTestConstants';
 
 jest.mock('../../../../../../../main/modules/draft-store');
 jest.mock('../../../../../../../main/modules/draft-store/draftStoreService');
 const mockGetCaseData = draftStoreService.getCaseDataFromStore as jest.Mock;
+const mockGetDraftClaim = draftStoreService.getDraftClaimFromStore as jest.Mock;
 const otherDependantsService = new OtherDependantsService();
 
 describe('Other dependants service', () => {
+  describe('getOtherDependants', () => {
+    it('should return stored other dependants when present', async () => {
+      const stored = new OtherDependants(YesNo.YES, 2, 'details');
+      mockGetDraftClaim.mockResolvedValue({
+        case_data: {statementOfMeans: {otherDependants: stored}},
+      });
+
+      await expect(otherDependantsService.getOtherDependants('claim-1')).resolves.toEqual(stored);
+    });
+
+    it('should return a new OtherDependants when missing', async () => {
+      mockGetDraftClaim.mockResolvedValue({case_data: {}});
+
+      const result = await otherDependantsService.getOtherDependants('claim-1');
+      expect(result).toEqual(new OtherDependants());
+    });
+
+    it('should rethrow draft store errors', async () => {
+      mockGetDraftClaim.mockRejectedValue(new Error(TestMessages.REDIS_FAILURE));
+      await expect(otherDependantsService.getOtherDependants('claim-1')).rejects.toThrow(TestMessages.REDIS_FAILURE);
+    });
+  });
+
   describe('saveOtherDependants', () => {
     it('should save other dependants if object is not set', async () => {
       mockGetCaseData.mockImplementation(async () => {
@@ -64,6 +89,13 @@ describe('Other dependants service', () => {
       const spySave = jest.spyOn(draftStoreService, 'saveDraftClaim');
       await otherDependantsService.saveOtherDependants('validClaimId', dependants);
       expect(spySave).toBeCalledWith('validClaimId', updatedClaim);
+    });
+
+    it('should rethrow save errors', async () => {
+      mockGetCaseData.mockRejectedValue(new Error(TestMessages.REDIS_FAILURE));
+      const dependants = new GenericForm<OtherDependants>({option: YesNo.NO});
+      await expect(otherDependantsService.saveOtherDependants('claim-1', dependants))
+        .rejects.toThrow(TestMessages.REDIS_FAILURE);
     });
   });
 });

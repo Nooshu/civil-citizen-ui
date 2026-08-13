@@ -58,4 +58,29 @@ describe('translate fixed recoverable costs to CCD model', () => {
     expect(ccdClaim).toMatchObject(expected);
   });
 
+  it.each([
+    [ComplexityBandOptions.BAND_1, CCDComplexityBand.BAND_1],
+    [ComplexityBandOptions.BAND_2, CCDComplexityBand.BAND_2],
+    [ComplexityBandOptions.BAND_4, CCDComplexityBand.BAND_4],
+  ])('should translate complexity band %s to CCD', (band, expectedBand) => {
+    claim.directionQuestionnaire.fixedRecoverableCosts = {
+      subjectToFrc: {option: YesNo.YES},
+      frcBandAgreed: {option: YesNo.NO},
+      complexityBand: band,
+      reasonsForBandSelection: 'band reasons',
+    };
+    const ccdClaim = toCCDFixedRecoverableCostsIntermediate(claim.directionQuestionnaire?.fixedRecoverableCosts);
+    expect(ccdClaim.band).toBe(expectedBand);
+    expect(ccdClaim.reasons).toBe('band reasons');
+  });
+
+  it('should return undefined band for unknown complexity band', () => {
+    claim.directionQuestionnaire.fixedRecoverableCosts = {
+      subjectToFrc: {option: YesNo.YES},
+      complexityBand: 'UNKNOWN_BAND' as ComplexityBandOptions,
+    };
+    const ccdClaim = toCCDFixedRecoverableCostsIntermediate(claim.directionQuestionnaire?.fixedRecoverableCosts);
+    expect(ccdClaim.band).toBeUndefined();
+  });
+
 });
