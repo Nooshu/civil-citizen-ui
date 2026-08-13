@@ -62,6 +62,8 @@ If the change is **only** version bumps in `package.json` / `yarn.lock` (no othe
 
 ## GOV.UK Frontend
 
+Pinned dependency: **`govuk-frontend@6.4.0`** (exact).
+
 - **GOV.UK Frontend is the single source of truth** for the user interface — see `.cursor/rules/govuk-frontend-ui.mdc`
 - All GOV.UK Design System component HTML must come from official Nunjucks macros — do not hand-write component markup when a macro exists
 - Prefer `{% from "govuk/components/.../macro.njk" import ... %}`; layout chrome (skip link, header, footer, breadcrumbs, pagination) must use macros
@@ -71,6 +73,7 @@ If the change is **only** version bumps in `package.json` / `yarn.lock` (no othe
 - Interactivity via **app JS overrides only** (`src/main/assets/js/`); keep GOV.UK Frontend init; do not edit `node_modules/govuk-frontend` — see `.cursor/rules/govuk-frontend-js-overrides.mdc`
 - Theming via **app SCSS/CSS overrides only** (`src/main/assets/scss/`); do not fork vendor CSS — see `.cursor/rules/govuk-frontend-theming-overrides.mdc`
 - Reuse Nunjucks partials and GOV.UK macros under `src/main/views/`; **do not duplicate shared journey markup** — extract shared partials instead — see `.cursor/rules/reuse-nunjucks-partials.mdc`
+- **HTML fixture accuracy:** every component’s official macros must match the release `fixtures.json` HTML ([GOV.UK docs](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)). Suite: `yarn test:govuk-fixtures` (`src/test/unit/govukFrontend/`)
 - After GOV.UK Frontend upgrades, rebuild webpack assets and run regression suites — see `.cursor/rules/govuk-frontend-upgrade-tests.mdc`
 
 ## Performance and accessibility
@@ -103,6 +106,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - After **server TypeScript** changes, run type-check/build and relevant tests and **fix compile errors** in the same change — prefer real types over `any` / `@ts-ignore` — see `.cursor/rules/verify-ts-build-after-server-changes.mdc`
 - Useful commands:
   - `yarn test` — Jest unit tests
+  - `yarn test:govuk-fixtures` — GOV.UK Frontend macro HTML vs release fixtures.json
   - `yarn test:coverage` — Jest with coverage
   - `yarn test:integration` / `yarn test:routes` — route integration tests
   - `yarn build` — webpack assets

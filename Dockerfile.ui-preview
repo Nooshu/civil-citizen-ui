@@ -4,14 +4,15 @@
 FROM node:24.18.0-alpine AS build
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++
-
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
 COPY . .
 
+# --mode=skip-build: do not run package install scripts (edgedriver, geckodriver,
+# @parcel/watcher, workspace postinstall). Those are for local/FT tooling and are
+# unrelated to serving Nunjucks UI Preview. Avoids YN0007 native builds in CI/Docker.
 RUN corepack enable \
-  && yarn install --immutable \
+  && yarn install --immutable --mode=skip-build \
   && yarn build:prod
 
 FROM node:24.18.0-alpine AS runtime

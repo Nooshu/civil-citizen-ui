@@ -5,6 +5,8 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = "UI Preview" %}
+{# Flat catalogue index — Design System: do not use breadcrumbs on flat structures. #}
+{% set noCrumbs = true %}
 
 {% block nestedContent %}
   {% set bannerHtml %}
