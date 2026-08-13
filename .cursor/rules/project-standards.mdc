@@ -11,7 +11,7 @@ alwaysApply: true
 - Wait **7 days** after a version is published before suggesting or applying routine dependency updates (security fixes may skip the wait); see `.cursor/rules/dependency-pinning.mdc`.
 - Prefer pinning versions you change; preserve `yarn.lock` integrity.
 - Verify installs and avoid introducing breaking changes.
-- Always run tests after dependency changes.
+- After dependency changes, follow `.cursor/rules/dependency-pinning.mdc`: apply the bump, run `yarn test:coverage`, report breakages to the user first, then fix.
 - Before making any code changes after opening the project, sync with upstream `hmcts` (add the remote if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`):
   - If the working tree is not clean, ask for confirmation (or create a branch) before syncing.
   - Run: `git fetch hmcts`

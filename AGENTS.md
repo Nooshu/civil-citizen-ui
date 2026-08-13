@@ -43,7 +43,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - When updating deps, prefer **exact pins** (no `^`, `~`, or ranges) for packages you touch; refresh `yarn.lock`
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
-- Always run tests after dependency changes (`yarn test` / `yarn test:coverage` as appropriate)
+- After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix — see `.cursor/rules/dependency-pinning.mdc`
 
 ## Package-only updates (auto origin sync)
 
@@ -134,7 +134,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | File | Purpose |
 |------|---------|
 | `.cursor/rules/project-standards.mdc` | Node/Yarn, hmcts/origin sync, tests after deps, summary risks |
-| `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity |
+| `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity, full `yarn test:coverage` after bumps |
 | `.cursor/rules/prefer-express-typescript-stack.mdc` | Prefer Express/TS/CUI patterns over ad-hoc stacks |
 | `.cursor/rules/govuk-frontend-ui.mdc` | GOV.UK Frontend macros as UI source of truth |
 | `.cursor/rules/govuk-frontend-upgrade-tests.mdc` | After GOV.UK bumps: rebuild + regression tests |
