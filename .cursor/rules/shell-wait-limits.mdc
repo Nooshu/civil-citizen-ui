@@ -1,0 +1,30 @@
+---
+description: Cap Shell/AwaitShell blocking waits at 2 minutes
+alwaysApply: true
+---
+
+# Shell wait limits (max 2 minutes)
+
+Never block the agent turn on a terminal command for more than **2 minutes** (`120000` ms).
+
+## Rules
+
+- Cap `block_until_ms` at **120000** for `Shell` and `AwaitShell`
+- Do **not** use higher values (e.g. 300000 / 600000) even for `yarn test:coverage` or long installs
+- For work expected to exceed 2 minutes:
+  1. Start with `Shell` `block_until_ms: 0` (background immediately)
+  2. Poll with `AwaitShell` using `block_until_ms` ≤ **120000** (repeat until done or failure)
+  3. Prefer an output `pattern` (e.g. `Test Suites:`) so the wait can end early
+- Short commands (install smoke, focused Jest, git) may use `block_until_ms` ≤ 120000 inline as usual
+
+## Examples
+
+```text
+# ❌ BAD — blocks up to 10 minutes
+Shell block_until_ms=600000 → yarn test:coverage
+
+# ✅ GOOD — background, then poll in ≤2 min slices
+Shell block_until_ms=0 → yarn test:coverage
+AwaitShell block_until_ms=120000 pattern=Test Suites:
+# repeat AwaitShell until complete
+```
