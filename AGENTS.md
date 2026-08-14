@@ -113,7 +113,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
   - `yarn test:coverage` — Jest with coverage
   - `yarn test:integration` / `yarn test:routes` — route integration tests
   - `yarn build` — webpack assets
-  - `yarn lint` — ESLint + stylelint
+  - `yarn lint` — ESLint 10 flat config (`eslint.config.mjs`) + stylelint; Windows: `yarn lint:win`
   - `yarn test:functional` — CodeceptJS functional (needs env)
   - `yarn tests:a11y` — Pa11y accessibility
   - Playwright security specs under `playwright/tests/`

@@ -17,7 +17,7 @@ describe('postcode-lookup', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     $ = require('jquery');
     (dom.window as unknown as {$: typeof $}).$ = $;
     (global as unknown as {$: typeof $}).$ = $;
@@ -60,7 +60,7 @@ describe('postcode-lookup', () => {
   }
 
   function load() {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
   }
 

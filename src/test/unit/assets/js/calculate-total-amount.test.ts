@@ -37,7 +37,7 @@ describe('calculate-total-amount', () => {
       <span class="total-claim-amount"></span>
       <input type="hidden" class="total-claim-amount" />
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const mod = require(scriptPath);
     addTotalClaimAmountCalculationEventListener = mod.addTotalClaimAmountCalculationEventListener;
   }

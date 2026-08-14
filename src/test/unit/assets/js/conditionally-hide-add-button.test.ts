@@ -28,7 +28,7 @@ describe('conditionally-hide-add-button', () => {
       ${itemsHtml(9)}
       <button id="add-another-court-order" class="moj-add-another__add-button">Add</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
 
     const button = document.getElementById('add-another-court-order')!;
@@ -42,7 +42,7 @@ describe('conditionally-hide-add-button', () => {
       ${itemsHtml(5)}
       <button id="add-another-court-order" class="moj-add-another__add-button">Add</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
 
     const button = document.getElementById('add-another-court-order')!;
@@ -54,7 +54,7 @@ describe('conditionally-hide-add-button', () => {
   it('does not throw when the configured button is absent', () => {
     document.body.innerHTML = '<div></div>';
     expect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       require(scriptPath);
     }).not.toThrow();
   });

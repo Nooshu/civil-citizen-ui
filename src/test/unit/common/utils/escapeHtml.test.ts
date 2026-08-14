@@ -2,7 +2,7 @@ import {escapeHtml, escapedListItem, escapedParagraph} from 'common/utils/escape
 
 describe('escapeHtml', () => {
   it('should escape HTML special characters', () => {
-    expect(escapeHtml(`<script>alert("x")</script> & 'y'`)).toEqual(
+    expect(escapeHtml('<script>alert("x")</script> & \'y\'')).toEqual(
       '&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &#039;y&#039;',
     );
   });
@@ -40,7 +40,7 @@ describe('escapedParagraph', () => {
 
 describe('escapedListItem', () => {
   it('should wrap escaped text in a list item', () => {
-    expect(escapedListItem(`a & b`)).toEqual('<li>a &amp; b</li>');
+    expect(escapedListItem('a & b')).toEqual('<li>a &amp; b</li>');
   });
 
   it('should handle undefined text', () => {

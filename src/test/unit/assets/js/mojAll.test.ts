@@ -21,13 +21,13 @@ describe('mojAll', () => {
     (global as unknown as {MutationObserver: typeof MutationObserver}).MutationObserver = window.MutationObserver;
 
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const $ = require('jquery');
     (window as unknown as {$: typeof $}).$ = $;
     (global as unknown as {$: typeof $}).$ = $;
 
     expect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       require(scriptPath);
     }).not.toThrow();
 

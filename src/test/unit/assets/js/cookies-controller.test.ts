@@ -24,7 +24,7 @@ describe('cookies-controller', () => {
       <div class="govuk-notification-banner--success govuk-visually-hidden">Saved</div>
       <div class="govuk-notification-banner--success govuk-visually-hidden">Also saved</div>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
 
     document.getElementById('cui-cookies-submit')!.dispatchEvent(new dom.window.MouseEvent('click'));
@@ -39,7 +39,7 @@ describe('cookies-controller', () => {
       <div class="govuk-notification-banner--success govuk-visually-hidden">Saved</div>
     `;
     expect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       require(scriptPath);
     }).not.toThrow();
     expect(document.querySelector('.govuk-notification-banner--success')!.classList.contains('govuk-visually-hidden')).toBe(true);

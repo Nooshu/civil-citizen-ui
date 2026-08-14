@@ -23,7 +23,7 @@ describe('language-toggle', () => {
   it('sets Welsh toggle link when lang cookie is en', () => {
     createDom('http://localhost/page');
     document.cookie = 'lang=en';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -36,7 +36,7 @@ describe('language-toggle', () => {
   it('sets English toggle link when lang cookie is cy', () => {
     createDom('http://localhost/page?foo=1');
     document.cookie = 'lang=cy';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -49,7 +49,7 @@ describe('language-toggle', () => {
   it('replaces existing lang query param', () => {
     createDom('http://localhost/page?lang=en');
     document.cookie = 'lang=en';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 

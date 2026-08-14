@@ -25,7 +25,7 @@ describe('remove-error-content', () => {
   beforeEach(() => {
     jest.resetModules();
     installDom();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
   });
 

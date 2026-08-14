@@ -15,7 +15,7 @@ describe('setupDev', () => {
   });
 
   it('does nothing when developmentMode is false', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const {setupDev} = require('../../main/development');
     const app = {use: jest.fn()};
 
@@ -26,7 +26,7 @@ describe('setupDev', () => {
   });
 
   it('registers webpack-dev-middleware when developmentMode is true', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const {setupDev} = require('../../main/development');
     const app = {use: jest.fn()};
 

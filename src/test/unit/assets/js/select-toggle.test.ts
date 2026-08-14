@@ -18,7 +18,7 @@ describe('select-toggle', () => {
   beforeEach(() => {
     jest.resetModules();
     installDom();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     $ = require('jquery');
     (dom.window as unknown as {$: typeof $}).$ = $;
     (global as unknown as {$: typeof $}).$ = $;
@@ -43,7 +43,7 @@ describe('select-toggle', () => {
         <button type="button" class="moj-add-another__add-button">Add</button>
       </div>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
   }
 

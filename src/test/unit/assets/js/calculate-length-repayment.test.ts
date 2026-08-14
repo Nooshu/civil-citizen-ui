@@ -42,7 +42,7 @@ describe('calculate-length-repayment', () => {
         <span id="months_schedule" class="hide">months</span>
       </div>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
   }
 

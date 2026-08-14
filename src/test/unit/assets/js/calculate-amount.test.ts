@@ -55,7 +55,7 @@ describe('calculate-amount', () => {
       <span class="total-monthly-income-expense"></span>
       ${html}
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const mod = require(scriptPath);
     getCalculation = mod.getCalculation;
     addCalculationEventListener = mod.addCalculationEventListener;

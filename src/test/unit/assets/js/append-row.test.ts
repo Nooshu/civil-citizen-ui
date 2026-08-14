@@ -45,7 +45,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
   }
@@ -94,7 +94,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -124,7 +124,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -152,7 +152,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -188,7 +188,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 
@@ -213,7 +213,7 @@ describe('append-row', () => {
       </div>
       <button type="button" class="append-row">Add another</button>
     `;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
 

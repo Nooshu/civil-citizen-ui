@@ -15,7 +15,6 @@ import {
   toGovukMacroName,
 } from '../../utils/govukFrontendFixturesHelper';
 
-
 describe('GOV.UK Frontend fixtures (macro HTML accuracy)', () => {
   const env = createGovukNunjucksEnvironment();
   const components = listGovukComponentsWithFixtures();

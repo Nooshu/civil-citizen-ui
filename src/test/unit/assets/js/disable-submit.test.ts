@@ -19,7 +19,7 @@ describe('disable-submit', () => {
     (global as unknown as {window: Window}).window = dom.window;
     (global as unknown as {document: Document}).document = dom.window.document;
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     require(scriptPath);
     document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
     return dom;
