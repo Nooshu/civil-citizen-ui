@@ -19,6 +19,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Node.js must match `engines` in `package.json` and `.nvmrc`
 - Current target: Node `>=24.19.0` (see `.nvmrc`)
 - Package manager: **Yarn 4** (`yarn.lock`, `.yarnrc.yml`) — not npm
+- TypeScript: **`6.0.3`** (exact). `tsconfig.json` sets `"strict": false` and `"types": ["*"]` to preserve pre-6 defaults, plus `"ignoreDeprecations": "6.0"` while `moduleResolution`/`baseUrl` remain transitional (required before TypeScript 7). Jest configs set `"rootDir": "."` for TS 6 / ts-jest (TS5011).
 - Prefer `nvm use` (or equivalent) before install/test commands
 - Local default URL: **https://localhost:3001** (`yarn start:dev`) — HTTPS with self-signed cert in development
 - Redis draft store: `yarn start:redis` (Docker Compose `compose/draft-store.yml`, port `6379`)
