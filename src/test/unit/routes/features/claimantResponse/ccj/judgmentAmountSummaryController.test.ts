@@ -11,6 +11,12 @@ import {
   mockRedisFailure,
 } from '../../../../../utils/mockDraftStore';
 import {TestMessages} from '../../../../../utils/errorMessageTestConstants';
+import {Claim} from 'models/claim';
+import {ClaimantResponse} from 'models/claimantResponse';
+import {YesNo} from 'form/models/yesNo';
+import {PartialAdmission} from 'models/partialAdmission';
+import {HowMuchDoYouOwe} from 'common/form/models/admission/partialAdmission/howMuchDoYouOwe';
+import * as draftStoreService from 'modules/draft-store/draftStoreService';
 
 const civilServiceUrl = config.get<string>('services.civilService.url');
 
@@ -43,6 +49,50 @@ describe('Judgment Amount Summary', () => {
 
       expect(res.status).toBe(200);
       expect(res.text).toContain('Judgment amount');
+    });
+
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
+      const res = await request(app)
+        .get(CCJ_PAID_AMOUNT_SUMMARY_URL)
+        .query({lang: 'cy'});
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
+      const res = await request(app)
+        .get(CCJ_PAID_AMOUNT_SUMMARY_URL)
+        .set('Cookie', ['lang=en']);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('Judgment amount');
+    });
+
+    it('should use partial admission amount when claimant accepted admitted amount', async () => {
+      const claim = new Claim();
+      claim.totalClaimAmount = 1000;
+      claim.claimFee = {calculatedAmountInPence: '10000'} as Claim['claimFee'];
+      claim.claimantResponse = new ClaimantResponse();
+      claim.claimantResponse.hasPartAdmittedBeenAccepted = {option: YesNo.YES} as ClaimantResponse['hasPartAdmittedBeenAccepted'];
+      claim.partialAdmission = new PartialAdmission();
+      claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(250);
+      jest.spyOn(draftStoreService, 'getCaseDataFromStore').mockResolvedValueOnce(claim);
+
+      const res = await request(app).get(CCJ_PAID_AMOUNT_SUMMARY_URL);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('250.00');
+    });
+
+    it('should render when the claim has no claim fee', async () => {
+      const claim = new Claim();
+      claim.totalClaimAmount = 1000;
+      claim.claimantResponse = new ClaimantResponse();
+      claim.partialAdmission = new PartialAdmission();
+      claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(250);
+      jest.spyOn(draftStoreService, 'getCaseDataFromStore').mockResolvedValueOnce(claim);
+
+      const res = await request(app).get(CCJ_PAID_AMOUNT_SUMMARY_URL);
+      expect(res.status).toBe(200);
     });
 
     it('should return http 500 when has error in the get method - from request CCJ', async () => {

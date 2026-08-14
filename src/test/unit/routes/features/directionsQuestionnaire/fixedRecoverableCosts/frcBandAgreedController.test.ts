@@ -54,12 +54,63 @@ describe('FRC Band agreed Controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      mockGetCaseData.mockImplementation(async () => getClaim());
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetCaseData.mockImplementation(async () => getClaim());
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should open FRC Band agreed with yes', async () => {
       mockGetCaseData.mockImplementation(async () => {
         const claim = getClaim();
         claim.directionQuestionnaire = new DirectionQuestionnaire();
         claim.directionQuestionnaire.fixedRecoverableCosts = new FixedRecoverableCosts();
         claim.directionQuestionnaire.fixedRecoverableCosts.frcBandAgreed = {option: YesNo.YES};
+        return claim;
+      });
+
+      await request(app)
+        .get(CONTROLLER_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should open FRC Band agreed when fixed recoverable costs has no band agreed value', async () => {
+      mockGetCaseData.mockImplementation(async () => {
+        const claim = getClaim();
+        claim.directionQuestionnaire = new DirectionQuestionnaire();
+        claim.directionQuestionnaire.fixedRecoverableCosts = new FixedRecoverableCosts();
+        return claim;
+      });
+
+      await request(app)
+        .get(CONTROLLER_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should open FRC Band agreed when band agreed option is missing', async () => {
+      mockGetCaseData.mockImplementation(async () => {
+        const claim = getClaim();
+        claim.directionQuestionnaire = new DirectionQuestionnaire();
+        claim.directionQuestionnaire.fixedRecoverableCosts = new FixedRecoverableCosts();
+        claim.directionQuestionnaire.fixedRecoverableCosts.frcBandAgreed = {} as {option: YesNo};
         return claim;
       });
 
@@ -133,6 +184,24 @@ describe('FRC Band agreed Controller', () => {
     it('should validate the field is empty', async () => {
       await request(app)
         .post(CONTROLLER_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from the query string when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
         });

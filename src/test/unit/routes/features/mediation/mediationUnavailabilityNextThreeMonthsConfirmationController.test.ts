@@ -47,6 +47,25 @@ describe('Mediation Unavailability Next Three Months Confirmation Controller', (
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.MEDIATION_UNAVAILABILITY_NEXT_THREE_MONTHS_CONFIRMATION);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       mockGetCaseData.mockImplementation(async () => {
         throw new Error(TestMessages.REDIS_FAILURE);
@@ -109,6 +128,26 @@ describe('Mediation Unavailability Next Three Months Confirmation Controller', (
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(t('ERRORS.MEDIATION_UNAVAILABILITY_NEXT_THREE_MONTHS_REQUIRED'));
+        });
+    });
+
+    it('should use language from the query string when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

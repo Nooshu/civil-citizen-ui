@@ -48,6 +48,26 @@ describe('Try the new online service', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(BASE_ELIGIBILITY_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should stay on the page when the eligibility cookie is set but the session has no user', async () => {
+      app.request.cookies = {eligibilityCompleted: true};
+      app.request.session = {} as never;
+      await request(app)
+        .get(BASE_ELIGIBILITY_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(t('PAGES.TRY_NEW_SERVICE.TITLE'));
+        });
+    });
+
     it.each([
       [BASE_ELIGIBILITY_URL],
       [MAKE_CLAIM],

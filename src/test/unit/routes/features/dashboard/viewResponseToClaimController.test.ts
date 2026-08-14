@@ -74,6 +74,54 @@ describe('view response to claim controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithResponseType(ResponseType.FULL_ADMISSION));
+
+      await request(app)
+        .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithResponseType(ResponseType.FULL_ADMISSION));
+
+      await request(app)
+        .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('View the response to the claim');
+        });
+    });
+
+    it('should use claimant dashboard url when user is claimant', async () => {
+      nock.cleanAll();
+      nock(idamUrl)
+        .post('/o/token')
+        .reply(200, {id_token: citizenRoleToken});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.CLAIMANT]);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithResponseType(ResponseType.FULL_ADMISSION));
+
+      await request(app)
+        .get(VIEW_RESPONSE_TO_CLAIM.replace(':id', claimId))
+        .query({lang: 'en'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('View the response to the claim');
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       nock(civilServiceUrl)
         .get(CIVIL_SERVICE_CASES_URL + claimId)

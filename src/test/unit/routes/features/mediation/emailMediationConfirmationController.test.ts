@@ -64,7 +64,16 @@ describe('Mediation Email Mediation Confirmation Controller', () => {
 
     it('should support explicit language query parameter', async () => {
       await request(app)
-        .get(`${MEDIATION_EMAIL_CONFIRMATION_URL}?lang=en`)
+        .get(`${MEDIATION_EMAIL_CONFIRMATION_URL}?lang=cy`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(MEDIATION_EMAIL_CONFIRMATION_URL)
+        .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.MEDIATION_EMAIL_CONFIRMATION);

@@ -14,6 +14,7 @@ import {
   getFirstRepaymentDate,
   getPaymentAmount,
   getPaymentDate,
+  getPaymentOptionType,
   getRepaymentFrequency,
   getRepaymentLength,
 } from 'common/utils/repaymentUtils';
@@ -231,6 +232,142 @@ describe('repaymentUtils', () => {
     it('should translate frequency monthly for repayment plan to text', () => {
       const result = convertFrequencyToTextForRepaymentPlan(TransactionSchedule.MONTH, 'en');
       expect(result).toBe(t('COMMON.SCHEDULE.MONTH'));
+    });
+    it('should translate four-week frequency for repayment plan to month text', () => {
+      const result = convertFrequencyToTextForRepaymentPlan(TransactionSchedule.FOUR_WEEKS, 'en');
+      expect(result).toBe(t('COMMON.SCHEDULE.MONTH'));
+    });
+  });
+
+  describe('getPaymentOptionType', () => {
+    it('should return payment option for full admission', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      expect(getPaymentOptionType(claim)).toBe(PaymentOptionType.INSTALMENTS);
+    });
+
+    it('should return payment option for part admission', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      expect(getPaymentOptionType(claim)).toBe(PaymentOptionType.INSTALMENTS);
+    });
+
+    it('should return undefined when full admission has no payment intention', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention = undefined;
+      expect(getPaymentOptionType(claim)).toBeUndefined();
+    });
+
+    it('should return undefined when part admission has no payment intention', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission.paymentIntention = undefined;
+      expect(getPaymentOptionType(claim)).toBeUndefined();
+    });
+  });
+
+  describe('optional repayment plan chains', () => {
+    it('should return undefined payment amount when full admission has no repayment plan', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(getPaymentAmount(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment amount when full admission is missing', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission = undefined;
+      expect(getPaymentAmount(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment amount when part admission has no repayment plan', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(getPaymentAmount(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment amount when part admission is missing', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission = undefined;
+      expect(getPaymentAmount(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment date when full admission has no payment date', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention.paymentDate = undefined;
+      expect(getPaymentDate(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment date when full admission is missing', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission = undefined;
+      expect(getPaymentDate(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment date when part admission has no payment date', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission.paymentIntention.paymentDate = undefined;
+      expect(getPaymentDate(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment date when part admission is missing', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission = undefined;
+      expect(getPaymentDate(claim)).toBeUndefined();
+    });
+
+    it('should return undefined frequency when full admission has no repayment plan', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(getRepaymentFrequency(claim)).toBeUndefined();
+    });
+
+    it('should return undefined frequency when full admission is missing', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission = undefined;
+      expect(getRepaymentFrequency(claim)).toBeUndefined();
+    });
+
+    it('should return undefined frequency when part admission has no repayment plan', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(getRepaymentFrequency(claim)).toBeUndefined();
+    });
+
+    it('should return undefined frequency when part admission is missing', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission = undefined;
+      expect(getRepaymentFrequency(claim)).toBeUndefined();
+    });
+
+    it('should return an Invalid Date when full admission has no first repayment date', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(Number.isNaN(getFirstRepaymentDate(claim).getTime())).toBe(true);
+    });
+
+    it('should return an Invalid Date when part admission has no first repayment date', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission.paymentIntention.repaymentPlan = undefined;
+      expect(Number.isNaN(getFirstRepaymentDate(claim).getTime())).toBe(true);
+    });
+
+    it('should return undefined payment option when full admission is missing', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission = undefined;
+      expect(getPaymentOptionType(claim)).toBeUndefined();
+    });
+
+    it('should return undefined payment option when part admission is missing', () => {
+      const claim = getClaimForPA(TransactionSchedule.WEEK);
+      claim.partialAdmission = undefined;
+      expect(getPaymentOptionType(claim)).toBeUndefined();
+    });
+  });
+
+  describe('getFinalPaymentDate with unknown frequency', () => {
+    it('should return today when repayment frequency is unrecognised', () => {
+      const claim = getClaimForFA(TransactionSchedule.WEEK);
+      claim.fullAdmission.paymentIntention.repaymentPlan.repaymentFrequency = 'UNKNOWN' as TransactionSchedule;
+      const before = Date.now();
+      const result = getFinalPaymentDate(claim);
+      expect(result.getTime()).toBeGreaterThanOrEqual(before - 1000);
     });
   });
 

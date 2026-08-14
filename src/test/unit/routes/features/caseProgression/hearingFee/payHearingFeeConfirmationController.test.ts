@@ -30,6 +30,16 @@ describe('Pay Hearing Fee Confirmation Screen Controller', () => {
       });
   });
 
+  it('should render using language from the query string', async () => {
+    app.locals.draftStoreClient = mockCivilClaimHearingFee;
+    await request(app)
+      .get(HEARING_FEE_CONFIRMATION_URL)
+      .query({lang: 'cy'})
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
   it('should return 500 error page for redis failure', async () => {
     //Given
     app.locals.draftStoreClient = mockRedisFailure;

@@ -62,6 +62,25 @@ describe('Review Defendant\'s Response Controller', () => {
     });
   });
 
+  it('should use language from the query string', async () => {
+    await request(app)
+      .get(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL)
+      .query({lang: 'cy'})
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should use language from cookie when query is absent', async () => {
+    await request(app)
+      .get(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL)
+      .set('Cookie', ['lang=en'])
+      .expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('The defendant’s response');
+      });
+  });
+
   it('should return error page on redis failure', async () => {
     mockGetCaseData.mockImplementation(async () => {
       throw new Error(TestMessages.REDIS_FAILURE);
@@ -156,9 +175,50 @@ describe('Review Defendant\'s Response Controller', () => {
         expect(res.text).toContain('How they want to pay');
       });
   });
+
+  it('should use language from query on how they want to pay page', async () => {
+    claim.respondent1 = new Party();
+    claim.respondent1.responseType = ResponseType.PART_ADMISSION;
+    claim.partialAdmission = new PartialAdmission();
+    claim.partialAdmission.paymentIntention = new PaymentIntention();
+    claim.partialAdmission.paymentIntention.paymentOption = PaymentOptionType.BY_SET_DATE;
+    claim.partialAdmission.paymentIntention.paymentDate = new Date();
+    claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(700, 1200);
+    claim.partialAdmission.whyDoYouDisagree = new WhyDoYouDisagree('Reasons here...');
+    claim.statementOfMeans.explanation = {text: 'Cannot pay now'};
+    mockGetCaseData.mockImplementation(() => claim);
+    await request(app)
+      .get(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL)
+      .query({page: 'how-they-want-to-pay-response', lang: 'cy'})
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should use language from cookie on how they want to pay page', async () => {
+    claim.respondent1 = new Party();
+    claim.respondent1.responseType = ResponseType.PART_ADMISSION;
+    claim.partialAdmission = new PartialAdmission();
+    claim.partialAdmission.paymentIntention = new PaymentIntention();
+    claim.partialAdmission.paymentIntention.paymentOption = PaymentOptionType.BY_SET_DATE;
+    claim.partialAdmission.paymentIntention.paymentDate = new Date();
+    claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(700, 1200);
+    claim.partialAdmission.whyDoYouDisagree = new WhyDoYouDisagree('Reasons here...');
+    claim.statementOfMeans.explanation = {text: 'Cannot pay now'};
+    mockGetCaseData.mockImplementation(() => claim);
+    await request(app)
+      .get(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL)
+      .query({page: 'how-they-want-to-pay-response'})
+      .set('Cookie', ['lang=en'])
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
   it('should redirect to claimant response task list.', async () => {
     claim.respondent1 = new Party();
     claim.respondent1.responseType = ResponseType.FULL_ADMISSION;
+    claim.partialAdmission = undefined;
     mockGetCaseData.mockImplementation(() => claim);
     await request(app)
       .post(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL)

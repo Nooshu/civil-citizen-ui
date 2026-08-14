@@ -30,10 +30,17 @@ const buildSummarySections = (claim: Claim, claimId: string, lang: string, isCar
 export const getSummarySections = (claimId: string, claim: Claim, lang?: string, isCarmEnabled = false ): SummarySections => {
   return buildSummarySections(claim, claimId, lang, isCarmEnabled);
 };
+/**
+ * Builds the claim issue statement of truth form for the signature type the claimant qualifies for.
+ *
+ * @remarks
+ * {@link getSignatureType} only ever yields {@link SignatureType.BASIC} or
+ * {@link SignatureType.QUALIFIED}, so BASIC is handled by `default` rather than a separate `case`.
+ * The previous explicit `case SignatureType.BASIC` duplicated the `default` body and left it dead,
+ * which made a quarter of this file's branches unreachable.
+ */
 export const getStatementOfTruth = (claim: Claim): StatementOfTruthForm | QualifiedStatementOfTruth => {
   switch (getSignatureType(claim)) {
-    case SignatureType.BASIC:
-      return new StatementOfTruthFormClaimIssue(false, SignatureType.BASIC, claim.claimDetails?.statementOfTruth?.signed, claim.claimDetails?.statementOfTruth?.directionsQuestionnaireSigned, claim.claimDetails?.statementOfTruth?.acceptNoChangesAllowed);
     case SignatureType.QUALIFIED:
       return new QualifiedStatementOfTruthClaimIssue(false, claim.claimDetails?.statementOfTruth?.signed, claim.claimDetails?.statementOfTruth?.directionsQuestionnaireSigned, claim.claimDetails?.statementOfTruth?.signerName, claim.claimDetails?.statementOfTruth?.signerRole, claim.claimDetails?.statementOfTruth?.acceptNoChangesAllowed);
     default:

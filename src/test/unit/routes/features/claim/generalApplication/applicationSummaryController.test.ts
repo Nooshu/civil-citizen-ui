@@ -14,6 +14,8 @@ import { ApplicationState } from 'common/models/generalApplication/applicationSu
 import { ApplicationResponse, JudicialDecisionOptions } from 'common/models/generalApplication/applicationResponse';
 import {CivilServiceClient} from 'client/civilServiceClient';
 import {YesNoUpperCamelCase} from 'form/models/yesNo';
+import * as gaResponseService from 'services/features/generalApplication/response/generalApplicationResponseService';
+import * as generalApplicationService from 'services/features/generalApplication/generalApplicationService';
 
 jest.mock('../../../../../../main/modules/oidc');
 jest.mock('../../../../../../main/modules/draft-store/draftStoreService');
@@ -22,6 +24,10 @@ jest.mock('../../../../../../main/routes/guards/generalAplicationGuard',() => ({
   isGAForLiPEnabled: jest.fn((req, res, next) => {
     next();
   }),
+}));
+jest.mock('services/features/generalApplication/response/generalApplicationResponseService', () => ({
+  ...jest.requireActual('services/features/generalApplication/response/generalApplicationResponseService'),
+  isApplicationVisibleToRespondentForClaimant: jest.fn(),
 }));
 
 const mockGetCaseData = getCaseDataFromStore as jest.Mock;
@@ -35,6 +41,12 @@ describe('General Application - Application costs', () => {
       .post('/o/token')
       .reply(200, {id_token: citizenRoleToken});
     (isGaForLipsEnabled as jest.Mock).mockResolvedValue(true);
+  });
+
+  beforeEach(() => {
+    (gaResponseService.isApplicationVisibleToRespondentForClaimant as jest.Mock)
+      .mockImplementation(jest.requireActual('services/features/generalApplication/response/generalApplicationResponseService')
+        .isApplicationVisibleToRespondentForClaimant);
   });
 
   describe('on GET', () => {
@@ -106,6 +118,55 @@ describe('General Application - Application costs', () => {
         });
     });
 
+    it('should use language from cookie when query is absent', async () => {
+      const ccdClaim = new Claim();
+      ccdClaim.generalApplications = [
+        {
+          id: 'test',
+          value: {
+            caseLink: {CaseReference: '1234567890'},
+            generalAppSubmittedDateGAspec: new Date('2024-05-29T14:39:28.483971'),
+          },
+        },
+      ];
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce([applicationMock]);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(ccdClaim);
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should render status for respondent when parent claimant is not applicant', async () => {
+      const respondentApplication = structuredClone(applicationMock);
+      respondentApplication.case_data.parentClaimantIsApplicant = YesNoUpperCamelCase.NO;
+      const ccdClaim = new Claim();
+      ccdClaim.generalApplications = [{
+        id: 'test',
+        value: {
+          caseLink: {CaseReference: respondentApplication.id},
+          generalAppSubmittedDateGAspec: new Date(respondentApplication.created_date),
+        },
+      }];
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce([respondentApplication]);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(ccdClaim);
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should render multiple application types for a claimant applicant', async () => {
       const multiTypeApplication = structuredClone(applicationMock);
       multiTypeApplication.case_data.applicationTypes = 'Adjourn a hearing, Vary order';
@@ -130,6 +191,36 @@ describe('General Application - Application costs', () => {
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(decode(res.text)).toContain(',');
+        });
+    });
+
+    it('should render when a visible application has no case_data', async () => {
+      (gaResponseService.isApplicationVisibleToRespondentForClaimant as jest.Mock).mockReturnValue(true);
+      jest.spyOn(generalApplicationService, 'getViewApplicationUrl').mockReturnValue('/view-application');
+      const sparseApplication = {
+        id: '999',
+        state: ApplicationState.AWAITING_RESPONDENT_RESPONSE,
+        last_modified: '2024-05-29T14:39:28.483971',
+        created_date: '2024-05-29T14:39:28.483971',
+      } as ApplicationResponse;
+      const ccdClaim = new Claim();
+      ccdClaim.generalApplications = [{
+        id: 'test',
+        value: {
+          caseLink: {CaseReference: sparseApplication.id},
+          generalAppSubmittedDateGAspec: new Date(sparseApplication.created_date),
+        },
+      }];
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce([sparseApplication]);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(ccdClaim);
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

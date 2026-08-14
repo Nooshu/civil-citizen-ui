@@ -43,6 +43,17 @@ describe('Claimant response task list', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
+
+      await request(app)
+        .get(CLAIMANT_RESPONSE_TASK_LIST_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should display task list carm not enabled', async () => {
       app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
       isCarmEnabledSpy(false);

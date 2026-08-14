@@ -53,6 +53,28 @@ describe('General Application - Respondent Application hearing preference', () =
         });
     });
 
+    it('should use language from the query string', async () => {
+      mockGetCaseData.mockImplementation(async () => mockClaim);
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(new GaResponse());
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_RESPONDENT_HEARING_PREFERENCE_URL))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetCaseData.mockImplementation(async () => mockClaim);
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(new GaResponse());
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_RESPONDENT_HEARING_PREFERENCE_URL))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
       mockGetCaseData.mockImplementation(() => {
         throw new Error(TestMessages.REDIS_FAILURE);

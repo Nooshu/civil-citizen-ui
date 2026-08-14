@@ -54,6 +54,36 @@ describe('General Application - additional docs submitted controller', () => {
       expect(res.text).toContain('You\'ve uploaded additional documents');
     });
 
+    it('should use language from the query string', async () => {
+      const claimId = '123';
+      const claim = new Claim();
+      (getClaimById as jest.Mock).mockResolvedValue(claim);
+      (generateRedisKey as jest.Mock).mockReturnValue('redis-key');
+      (deleteDraftClaimFromStore as jest.Mock).mockResolvedValue(undefined);
+      (getCancelUrl as jest.Mock).mockResolvedValue('/cancel-url');
+
+      const res = await request(app)
+        .get(GA_UPLOAD_ADDITIONAL_DOCUMENTS_SUBMITTED_URL.replace(':id', claimId))
+        .query({lang: 'cy'});
+
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const claimId = '123';
+      const claim = new Claim();
+      (getClaimById as jest.Mock).mockResolvedValue(claim);
+      (generateRedisKey as jest.Mock).mockReturnValue('redis-key');
+      (deleteDraftClaimFromStore as jest.Mock).mockResolvedValue(undefined);
+      (getCancelUrl as jest.Mock).mockResolvedValue('/cancel-url');
+
+      const res = await request(app)
+        .get(GA_UPLOAD_ADDITIONAL_DOCUMENTS_SUBMITTED_URL.replace(':id', claimId))
+        .set('Cookie', ['lang=en']);
+
+      expect(res.status).toBe(200);
+    });
+
     it('should handle errors', async () => {
       (getClaimById as jest.Mock).mockRejectedValue(new Error('Error'));
 

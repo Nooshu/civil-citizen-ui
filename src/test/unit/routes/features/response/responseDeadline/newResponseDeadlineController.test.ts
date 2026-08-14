@@ -59,6 +59,25 @@ describe('Response - New response deadline', () => {
           expect(res.text).toContain(`/case/${claimId}/response/agreed-to-more-time`);
         });
     });
+    it('should use language from the query string', async () => {
+      mockGetClaimWithExtendedResponseDeadline.mockResolvedValue(claim);
+      await request(app)
+        .get(newResponseDeadlineUrl)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+    it('should use language from cookie when query is absent', async () => {
+      mockGetClaimWithExtendedResponseDeadline.mockResolvedValue(claim);
+      await request(app)
+        .get(newResponseDeadlineUrl)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('31 October 2022');
+        });
+    });
     it('should show error when proposed extended deadline does not exist', async () => {
       mockGetClaimWithExtendedResponseDeadline.mockRejectedValue(new Error('No extended response deadline found'));
       await request(app).get(newResponseDeadlineUrl)

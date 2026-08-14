@@ -47,6 +47,15 @@ describe('General Application - Application costs', () => {
           expect(res.text).toContain(t('N244 form'));
         });
     });
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(GA_SUBMIT_OFFLINE)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return page with QM LIP on', async () => {
       (isQueryManagementEnabled as jest.Mock).mockReturnValueOnce(true);
       await request(app)

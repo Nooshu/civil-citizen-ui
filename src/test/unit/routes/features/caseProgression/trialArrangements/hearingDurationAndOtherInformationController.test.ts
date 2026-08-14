@@ -60,6 +60,16 @@ describe('Hearing duration & other info - On GET', () => {
       });
   });
 
+  it('should use language from cookie when query is absent', async () => {
+    app.locals.draftStoreClient = mockCivilClaimFastTrack;
+    await testSession
+      .get(TRIAL_ARRANGEMENTS_HEARING_DURATION.replace(':id', claimId))
+      .expect((res: { status: unknown; text: unknown; }) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('Finalise your trial arrangements');
+      });
+  });
+
   it('should return "Something went wrong" page when claim does not exist', async () => {
     //Given
     app.locals.draftStoreClient = mockRedisFailure;

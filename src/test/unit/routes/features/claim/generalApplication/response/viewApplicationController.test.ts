@@ -4,6 +4,9 @@ import request from 'supertest';
 import {GA_RESPONSE_VIEW_APPLICATION_URL} from 'routes/urls';
 import {t} from 'i18next';
 import {ApplicationResponse} from 'models/generalApplication/applicationResponse';
+import {ApplicationState} from 'common/models/generalApplication/applicationSummary';
+import {ApplicationTypeOption} from 'models/generalApplication/applicationType';
+import {YesNoUpperCamelCase} from 'form/models/yesNo';
 import {getApplicantDocuments, getResponseFromCourtSection, getApplicationSections, getCourtDocuments, getRespondentDocuments} from 'services/features/generalApplication/viewApplication/viewApplicationService';
 import mockApplication from '../../../../../../utils/mocks/applicationMock.json';
 import * as launchDarkly from '../../../../../../../main/app/auth/launchdarkly/launchDarklyClient';
@@ -16,9 +19,11 @@ import { CourtResponseSummaryList, ResponseButton } from 'common/models/generalA
 import {Claim} from 'models/claim';
 import {getClaimById} from 'modules/utilityService';
 import {CaseState} from 'form/models/claimDetails';
+import {CaseRole} from 'form/models/caseRoles';
 import {
   getApplicationFromGAService,
   getApplicationIndex,
+  hasRespondentResponded,
 } from 'services/features/generalApplication/generalApplicationService';
 
 jest.mock('../../../../../../../main/modules/oidc');
@@ -83,6 +88,120 @@ describe('General Application - View application', () => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.VIEW_APPLICATION.PAGE_TITLE'));
           expect(res.text).toContain('Application type and description');
+        });
+    });
+
+    it('should use language from the query string', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({lang: 'cy', index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query lang is absent', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    // The route guard also resolves the claim, so a one-shot mock would be consumed before
+    // the controller runs; the persistent mock is reset by the shared beforeEach.
+    it('should use claimant visibility check when claim is claimant', async () => {
+      const claim = new Claim();
+      claim.caseRole = CaseRole.CLAIMANT;
+      (getClaimById as jest.Mock).mockResolvedValue(claim);
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use the post-response view when the respondent has responded', async () => {
+      (hasRespondentResponded as jest.Mock).mockReturnValue(true);
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should redirect respondent to accept defendant offer for vary judgment', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      const varyApplication = Object.assign(new ApplicationResponse(), mockApplication);
+      varyApplication.case_data = {
+        ...varyApplication.case_data,
+        parentClaimantIsApplicant: YesNoUpperCamelCase.NO,
+        generalAppType: {types: [ApplicationTypeOption.VARY_PAYMENT_TERMS_OF_JUDGMENT]},
+        generalAppRespondentAgreement: {hasAgreed: YesNoUpperCamelCase.NO},
+      };
+      mockGetApplicationFromGAService.mockResolvedValueOnce(varyApplication);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should agree to order redirect path when with consent', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      const consentApplication = Object.assign(new ApplicationResponse(), mockApplication);
+      consentApplication.case_data = {
+        ...consentApplication.case_data,
+        parentClaimantIsApplicant: YesNoUpperCamelCase.YES,
+        generalAppType: {types: [ApplicationTypeOption.ADJOURN_HEARING]},
+        generalAppRespondentAgreement: {hasAgreed: YesNoUpperCamelCase.YES},
+      };
+      mockGetApplicationFromGAService.mockResolvedValueOnce(consentApplication);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should set additional documents url when upload is allowed', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      const uploadApplication = Object.assign(new ApplicationResponse(), mockApplication);
+      uploadApplication.state = ApplicationState.AWAITING_ADDITIONAL_INFORMATION;
+      mockGetApplicationFromGAService.mockResolvedValueOnce(uploadApplication);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use respondent agreement redirect by default', async () => {
+      mockedSummaryRows.mockResolvedValue({summaryRows: [], responseSummaries: []});
+      const defaultApplication = Object.assign(new ApplicationResponse(), mockApplication);
+      defaultApplication.case_data = {
+        ...defaultApplication.case_data,
+        parentClaimantIsApplicant: YesNoUpperCamelCase.YES,
+        generalAppType: {types: [ApplicationTypeOption.ADJOURN_HEARING]},
+        generalAppRespondentAgreement: {hasAgreed: YesNoUpperCamelCase.NO},
+      };
+      mockGetApplicationFromGAService.mockResolvedValueOnce(defaultApplication);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '1718105701451856', GA_RESPONSE_VIEW_APPLICATION_URL))
+        .query({index: '1'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

@@ -59,4 +59,37 @@ describe('View Defendant Information', () => {
         expect(res.text).toContain('You can send messages and documents to the court');
       });
   });
+
+  it('should use language from query string', async () => {
+    const caseData = Object.assign(new Claim(), claim.case_data);
+    (getClaimById as jest.Mock).mockResolvedValueOnce(caseData);
+    jest.spyOn(launchDarkly, 'isQueryManagementEnabled').mockResolvedValueOnce(false);
+    await request(app)
+      .get(BREATHING_SPACE_INFO_URL)
+      .query({lang: 'cy'})
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should use language from cookie when query is absent', async () => {
+    const caseData = Object.assign(new Claim(), claim.case_data);
+    (getClaimById as jest.Mock).mockResolvedValueOnce(caseData);
+    jest.spyOn(launchDarkly, 'isQueryManagementEnabled').mockResolvedValueOnce(false);
+    await request(app)
+      .get(BREATHING_SPACE_INFO_URL)
+      .set('Cookie', ['lang=en'])
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should return 500 when claim lookup fails', async () => {
+    (getClaimById as jest.Mock).mockRejectedValueOnce(new Error('Redis failure'));
+    await request(app)
+      .get(BREATHING_SPACE_INFO_URL)
+      .expect((res) => {
+        expect(res.status).toBe(500);
+      });
+  });
 });

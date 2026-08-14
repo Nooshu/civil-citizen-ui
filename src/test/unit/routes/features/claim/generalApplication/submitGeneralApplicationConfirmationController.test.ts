@@ -50,6 +50,36 @@ describe('GA submission confirmation controller', () => {
       expect(res.text).toContain('You need to pay the application fee to submit the application');
     });
 
+    it('should use language from the query string', async () => {
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      claim.generalApplication.applicationFee = {
+        calculatedAmountInPence: 100,
+        code: 'test',
+        version: 1,
+      };
+      (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
+      const res = await request(app)
+        .get(GENERAL_APPLICATION_CONFIRM_URL)
+        .query({lang: 'cy'});
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      claim.generalApplication.applicationFee = {
+        calculatedAmountInPence: 100,
+        code: 'test',
+        version: 1,
+      };
+      (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
+      const res = await request(app)
+        .get(GENERAL_APPLICATION_CONFIRM_URL)
+        .set('Cookie', ['lang=en']);
+      expect(res.status).toBe(200);
+    });
+
     it('should return http 500 when has error in the get method', async () => {
       (getClaimById as jest.Mock).mockRejectedValue(new Error(TestMessages.REDIS_FAILURE));
       const res = await request(app).get(GENERAL_APPLICATION_CONFIRM_URL);

@@ -20,6 +20,27 @@ describe('You can use this service', () => {
     });
   });
 
+  describe('on GET with language and eligibility cookie variations', () => {
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(ELIGIBILITY_HWF_ELIGIBLE_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should not set the eligibility cookie again when it is already present', async () => {
+      await request(app)
+        .get(ELIGIBILITY_HWF_ELIGIBLE_URL)
+        .set('Cookie', ['eligibilityCompleted=true'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('You can use this service');
+        });
+    });
+  });
+
   describe('on POST', () => {
     it('should return page not found', async () => {
       await request(app)

@@ -140,6 +140,35 @@ describe('pcqGuardClaim', () => {
     expect(MOCK_NEXT).not.toHaveBeenCalled();
   });
 
+  it('should use language from cookie when redirecting to PCQ', async () => {
+    const claimWithoutPcq = new Claim();
+    claimWithoutPcq.applicant1 = {type: PartyType.INDIVIDUAL} as Claim['applicant1'];
+    mockGetCaseDataFromStore.mockResolvedValue(claimWithoutPcq);
+    mockIsPcqHealthy.mockResolvedValue(true);
+    mockIsPcqElegible.mockReturnValue(true);
+    mockGeneratePcqUrl.mockReturnValue('https://pcq.example/start');
+
+    const req = {
+      method: 'GET',
+      originalUrl: '/claim/check-answers',
+      query: {},
+      cookies: {lang: 'en'},
+      headers: {host: 'localhost:3001'},
+      session: {user: {id: 'user-1'}},
+    } as unknown as Request;
+
+    await isFirstTimeInPCQ(req as unknown as AppRequest, MOCK_RESPONSE, MOCK_NEXT);
+
+    expect(mockGeneratePcqUrl).toHaveBeenCalledWith(
+      'new-pcq-id',
+      'applicant',
+      'claimant@example.com',
+      `localhost:3001${CLAIM_CHECK_ANSWERS_URL}`,
+      'en',
+    );
+    expect(MOCK_RESPONSE.redirect).toHaveBeenCalledWith('https://pcq.example/start');
+  });
+
   it('should call next when PCQ is unhealthy or ineligible', async () => {
     const claimWithoutPcq = new Claim();
     claimWithoutPcq.applicant1 = {type: PartyType.ORGANISATION} as Claim['applicant1'];
