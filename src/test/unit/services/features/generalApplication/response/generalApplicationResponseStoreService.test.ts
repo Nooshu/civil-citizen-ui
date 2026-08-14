@@ -1,12 +1,17 @@
 import { app } from '../../../../../../main/app';
 import { GaResponse } from 'common/models/generalApplication/response/gaResponse';
-import { saveDraftGARespondentResponse, getDraftGARespondentResponse } from 'services/features/generalApplication/response/generalApplicationResponseStoreService';// import { saveDraftGARespondentResponse, getDraftGARespondentResponse } from './path/to/draftStoreService';
+import {
+  saveDraftGARespondentResponse,
+  getDraftGARespondentResponse,
+  deleteDraftGARespondentResponseFromStore,
+} from 'services/features/generalApplication/response/generalApplicationResponseStoreService';
 
 const mockDraftStoreClient = {
   set: jest.fn(),
   ttl: jest.fn(),
   expireat: jest.fn(),
   get: jest.fn(),
+  del: jest.fn(),
 };
 app.locals.draftStoreClient = mockDraftStoreClient;
 
@@ -69,5 +74,29 @@ describe('draftStoreService', () => {
       expect(mockDraftStoreClient.get).toHaveBeenCalledWith(redisKey);
       expect(result).toEqual(expect.any(GaResponse));
     });
+
+    it('should return an empty GaResponse when redis JSON is invalid', async () => {
+      const parseSpy = jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+        throw 'parse-failed-without-stack';
+      });
+      mockDraftStoreClient.get.mockResolvedValueOnce('{}');
+
+      const result = await getDraftGARespondentResponse(redisKey);
+
+      expect(result).toEqual(expect.any(GaResponse));
+      parseSpy.mockRestore();
+    });
+  });
+
+  describe('deleteDraftGARespondentResponseFromStore', () => {
+    it('should delete the redis key', async () => {
+      await deleteDraftGARespondentResponseFromStore(redisKey);
+      expect(mockDraftStoreClient.del).toHaveBeenCalledWith(redisKey);
+    });
+  });
+
+  it('should throw when saving respondent response fails', async () => {
+    mockDraftStoreClient.set.mockRejectedValueOnce(new Error('save failed'));
+    await expect(saveDraftGARespondentResponse(redisKey, response)).rejects.toThrow('save failed');
   });
 });
