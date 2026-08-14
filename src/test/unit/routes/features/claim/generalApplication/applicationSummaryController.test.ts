@@ -13,6 +13,7 @@ import { decode } from 'punycode';
 import { ApplicationState } from 'common/models/generalApplication/applicationSummary';
 import { ApplicationResponse, JudicialDecisionOptions } from 'common/models/generalApplication/applicationResponse';
 import {CivilServiceClient} from 'client/civilServiceClient';
+import {YesNoUpperCamelCase} from 'form/models/yesNo';
 
 jest.mock('../../../../../../main/modules/oidc');
 jest.mock('../../../../../../main/modules/draft-store/draftStoreService');
@@ -104,6 +105,49 @@ describe('General Application - Application costs', () => {
           expect(decode(res.text)).toContain(t('PAGES.GENERAL_APPLICATION.SUMMARY.VIEW_APPLICATION'));
         });
     });
+
+    it('should render multiple application types for a claimant applicant', async () => {
+      const multiTypeApplication = structuredClone(applicationMock);
+      multiTypeApplication.case_data.applicationTypes = 'Adjourn a hearing, Vary order';
+      multiTypeApplication.case_data.parentClaimantIsApplicant = YesNoUpperCamelCase.YES;
+      const ccdClaim = new Claim();
+      ccdClaim.generalApplications = [{
+        id: 'test',
+        value: {
+          caseLink: {CaseReference: multiTypeApplication.id},
+          generalAppSubmittedDateGAspec: new Date(multiTypeApplication.created_date),
+        },
+      }];
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce([multiTypeApplication]);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(ccdClaim);
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(decode(res.text)).toContain(',');
+        });
+    });
+
+    it('should render an empty summary when GA service returns no applications', async () => {
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce(undefined);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(new Claim());
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(decode(res.text)).not.toContain(t('PAGES.GENERAL_APPLICATION.SUMMARY.APPLICATION') + ' 1');
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
       mockGetCaseData.mockImplementation(async () => {
         throw new Error(TestMessages.REDIS_FAILURE);

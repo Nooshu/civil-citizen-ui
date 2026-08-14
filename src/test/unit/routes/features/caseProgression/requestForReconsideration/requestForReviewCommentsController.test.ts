@@ -12,6 +12,7 @@ import config from 'config';
 import nock from 'nock';
 const session = require('supertest-session');
 import {CIVIL_SERVICE_CASES_URL} from 'client/civilServiceUrls';
+import {CaseRole} from 'form/models/caseRoles';
 
 jest.mock('../../../../../../main/modules/oidc');
 jest.mock('../../../../../../main/modules/draft-store');
@@ -21,6 +22,14 @@ const claim = require('../../../../../utils/mocks/civilClaimResponseMock.json');
 const claimId = claim.id;
 const civilServiceUrl = config.get<string>('services.civilService.url');
 const testSession = session(app);
+const mockDefendant = {
+  ...mockCivilClaim,
+  get: jest.fn(() => {
+    const payload = structuredClone(claim);
+    payload.case_data.caseRole = CaseRole.DEFENDANT;
+    return Promise.resolve(JSON.stringify(payload));
+  }),
+};
 
 describe('Request for Review Comments - On GET', () => {
   const citizenRoleToken: string = config.get('citizenRoleToken');
@@ -55,6 +64,17 @@ describe('Request for Review Comments - On GET', () => {
       .expect((res: { status: unknown; text: unknown; }) => {
         expect(res.status).toBe(200);
         expect(res.text).toContain('Ychwanegu eich sylwadau');
+      });
+  });
+
+  it('should render with the defendant summary link for a defendant', async () => {
+    app.locals.draftStoreClient = mockDefendant;
+
+    await testSession
+      .get(REQUEST_FOR_RECONSIDERATION_COMMENTS_URL.replace(':id', claimId))
+      .expect((res: {status: unknown; text: string}) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain(`/dashboard/${claimId}/defendant`);
       });
   });
 
@@ -93,5 +113,24 @@ describe('Request for Review Comments - on POST', () => {
         expect(res.status).toBe(302);
         expect(res.header.location).toEqual(REQUEST_FOR_RECONSIDERATION_COMMENTS_CYA_URL.replace(':id', '1111'));
       });
+  });
+
+  it('should render validation errors when comments are empty', async () => {
+    await testSession
+      .post(REQUEST_FOR_RECONSIDERATION_COMMENTS_URL.replace(':id', '1111'))
+      .send({textArea: ''})
+      .expect((res: {status: unknown; text: string}) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('Enter details');
+      });
+  });
+
+  it('should return 500 when saving comments fails', async () => {
+    app.locals.draftStoreClient = mockRedisFailure;
+
+    await testSession
+      .post(REQUEST_FOR_RECONSIDERATION_COMMENTS_URL.replace(':id', '1111'))
+      .send({textArea: 'Comments added'})
+      .expect(500);
   });
 });

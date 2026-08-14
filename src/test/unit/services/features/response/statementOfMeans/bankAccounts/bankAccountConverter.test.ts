@@ -24,6 +24,15 @@ describe('Convert bank account entity to and from from', () => {
     //Then
     expect(result).toBeUndefined();
   });
+  it('should not convert an undefined bank accounts form', () => {
+    const result = convertFormToCitizenBankAccount(undefined as unknown as BankAccounts);
+    expect(result).toBeUndefined();
+  });
+  it('should not convert a form whose accounts are undefined', () => {
+    const input = new BankAccounts(undefined as unknown as BankAccount[]);
+    const result = convertFormToCitizenBankAccount(input);
+    expect(result).toBeUndefined();
+  });
   it('should not convert form to citizen bank account entity successfully when bank accounts forms are empty', () => {
     //Given
     const input = new BankAccounts([new BankAccount('', '', ''), new BankAccount('', '', '')]);
@@ -60,5 +69,9 @@ describe('Convert bank account entity to and from from', () => {
     const result = convertCitizenBankAccountsToForm(input);
     //Then
     expect(result.accounts.length).toEqual(2);
+  });
+  it('should return empty forms when citizen accounts are undefined', () => {
+    const result = convertCitizenBankAccountsToForm(undefined as unknown as CitizenBankAccount[]);
+    expect(result.accounts).toHaveLength(2);
   });
 });
