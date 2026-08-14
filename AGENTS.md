@@ -17,7 +17,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 ## Runtime
 
 - Node.js must match `engines` in `package.json` and `.nvmrc`
-- Current target: Node `>=24.18.0` (see `.nvmrc`)
+- Current target: Node `>=24.19.0` (see `.nvmrc`)
 - Package manager: **Yarn 4** (`yarn.lock`, `.yarnrc.yml`) — not npm
 - Prefer `nvm use` (or equivalent) before install/test commands
 - Local default URL: **https://localhost:3001** (`yarn start:dev`) — HTTPS with self-signed cert in development
