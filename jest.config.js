@@ -4,6 +4,8 @@ module.exports = {
   testEnvironment: 'node',
   transform: {
     '^.+\\.ts?$': ['ts-jest', {tsconfig: 'tsconfig.jest.json'}],
+    // App asset scripts may use ESM imports (e.g. postcode-lookup.js).
+    '/src/main/assets/js/.+\\.js$': 'babel-jest',
     // ESM-only deps: transform so Jest can load them
     '.*/node_modules/(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|cssstyle|@csstools|parse5|jsdom|@tootallnate/once)/.+\\.(js|mjs|cjs)$': 'babel-jest',
   },

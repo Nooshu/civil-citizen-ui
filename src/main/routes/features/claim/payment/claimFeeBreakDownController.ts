@@ -88,14 +88,14 @@ claimFeeBreakDownController.post(CLAIM_FEE_BREAKUP, (async (req: AppRequest, res
           } else {
             claim.claimDetails.claimFeePayment = paymentRedirectInformation;
             await saveDraftClaim(redisKey, claim, true, req.session.user?.id);
-            res.redirect(paymentRedirectInformation?.nextUrl);
+            redirectToPaymentOrFeeBreakup(res, claimId, paymentRedirectInformation?.nextUrl);
           }
         } else {
-          res.redirect(paymentRedirectInformation?.nextUrl);
+          redirectToPaymentOrFeeBreakup(res, claimId, paymentRedirectInformation?.nextUrl);
         }
       } catch (err: unknown) {
         logger.info(`Error retrieving payment status for claim id ${claimId}`);
-        res.redirect(paymentRedirectInformation?.nextUrl);
+        redirectToPaymentOrFeeBreakup(res, claimId, paymentRedirectInformation?.nextUrl);
       }
     }
   } catch (error) {
@@ -103,6 +103,18 @@ claimFeeBreakDownController.post(CLAIM_FEE_BREAKUP, (async (req: AppRequest, res
     next(error);
   }
 }) as RequestHandler);
+
+/**
+ * Redirect to the payment provider URL when present; otherwise return to the fee breakup page.
+ * @remarks Express 5 deprecates {@link Response.redirect} without a string URL (`nextUrl` may be missing).
+ */
+function redirectToPaymentOrFeeBreakup(res: Response, claimId: string, nextUrl?: string): void {
+  if (typeof nextUrl === 'string' && nextUrl.length > 0) {
+    res.redirect(nextUrl);
+    return;
+  }
+  res.redirect(constructResponseUrlWithIdParams(claimId, CLAIM_FEE_BREAKUP));
+}
 
 async function getRedirectInformation(req: AppRequest) {
   try {
