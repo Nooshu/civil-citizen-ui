@@ -6755,7 +6755,7 @@ __metadata:
     helmet: "npm:8.3.0"
     html-webpack-plugin: "npm:^5.5.0"
     html_codesniffer: "npm:^2.5.1"
-    i18next: "npm:^22.4.6"
+    i18next: "npm:26.3.6"
     i18next-fs-backend: "npm:^2.6.4"
     i18next-http-middleware: "npm:^3.9.3"
     ioredis: "npm:^5.3.2"
@@ -9482,12 +9482,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^22.4.6":
-  version: 22.5.1
-  resolution: "i18next@npm:22.5.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.20.6"
-  checksum: 10/ab1a0adee97911917fc46fb4216b8eb7c4ec0a243966609dda6a384e4b22acd25386a817dc51146328d5272ce1c6133558361788ebc4a36fbca250b8b3e90bd1
+"i18next@npm:26.3.6":
+  version: 26.3.6
+  resolution: "i18next@npm:26.3.6"
+  peerDependencies:
+    typescript: ^5 || ^6 || ^7
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/529f1dbfae6b0fe98d997af98af5d6d0a0e27ddf5b91b81c5dfccad94e3a66dceeba2d1b7327f0045085bc4d552abbf4a1efbfadd4bbb98d13a54e3310eae428
   languageName: node
   linkType: hard
 
