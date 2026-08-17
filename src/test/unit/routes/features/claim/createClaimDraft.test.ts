@@ -15,11 +15,11 @@ import * as draftClaimCache from 'modules/draft-store/draftClaimCache';
 import {CivilServiceClient} from 'client/civilServiceClient';
 import * as launchDarkly from '../../../../../main/app/auth/launchdarkly/launchDarklyClient';
 import {Claim} from 'models/claim';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 jest.mock('jwt-decode', () => ({
   __esModule: true,
-  default: jest.fn(() => ({uid: 'decoded-user'})),
+  jwtDecode: jest.fn(() => ({uid: 'decoded-user'})),
 }));
 
 describe('createDraftClaim Router', () => {
