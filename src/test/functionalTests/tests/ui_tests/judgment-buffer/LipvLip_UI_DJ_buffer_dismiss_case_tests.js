@@ -12,7 +12,7 @@ const {assert} = chai;
 const claimType = 'SmallClaims';
 const ccjRequestedTitle = 'The CCJ has been requested';
 const statusCell = (text) => `//tr[.//td[.//a[normalize-space()='${text}']]]/td[4]`;
-// eslint-disable-next-line no-unused-vars
+ 
 let claimRef, caseData, claimNumber;
 
 Feature('Lip v Lip claim - Judgment Requested state - Case dismissed').tag('@ui-judgment-buffer');

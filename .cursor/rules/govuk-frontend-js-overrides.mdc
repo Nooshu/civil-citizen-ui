@@ -1,0 +1,15 @@
+---
+description: GOV.UK Frontend interactivity via app JS overrides only
+alwaysApply: true
+---
+
+# GOV.UK Frontend interactivity via app JS overrides
+
+Enhance GOV.UK Frontend behaviour **only** in this app’s JavaScript — do not fork or patch vendor GOV.UK Frontend JS.
+
+- Use the packaged GOV.UK Frontend JS as shipped (initialised from the app’s client entry / layout)
+- Do **not** edit files under `node_modules/govuk-frontend` or vendor-copied GOV.UK Frontend scripts
+- Do **not** reimplement GOV.UK components’ built-in JS in templates or by replacing official init with custom component initialisers
+- App-specific interactivity (extra listeners, journey helpers, show/hide of **macro-rendered** markup, calculations, postcode lookup) belongs in `src/main/assets/js/`
+- Prefer attaching behaviour after official init: enhance existing DOM, do not rebuild GOV.UK component HTML in JS when a macro can render it
+- If GOV.UK Frontend JS must change for a bug/upgrade, bump the `govuk-frontend` package — do not paper over it with a vendored fork

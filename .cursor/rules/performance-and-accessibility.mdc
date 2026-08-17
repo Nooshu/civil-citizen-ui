@@ -1,0 +1,35 @@
+---
+description: Prioritise frontend performance, API efficiency, and accessible UI on every change
+alwaysApply: true
+---
+
+# Performance and accessibility priorities
+
+Treat **frontend performance**, **backend/API efficiency**, and **accessible UI** as top priorities on every change — not as optional follow-ups.
+
+## Frontend performance
+
+- Avoid unnecessary client JS, blocking scripts, and layout thrashing
+- Prefer efficient assets (webpack bundles, caching headers, compressed CSS) and avoid shipping unused GOV.UK or app JS/CSS
+- Watch Core Web Vitals risks: large assets, long tasks, layout shift, late LCP
+- Prefer progressive enhancement on macro-rendered markup over heavy client rendering
+
+## Backend / API efficiency
+
+- Prefer selective civil-service / GA client calls; avoid N+1 and unbounded list fetches without pagination or limits
+- Reuse draft-store / session helpers; avoid redundant Redis reads/writes in a single request
+- Do not add chatty round-trips when a single service call or shared helper is enough
+- Call out costly external API or Redis key-design changes in summaries
+
+## Accessible UI
+
+- Prefer GOV.UK Frontend macros, CSS, and JS so accessibility patterns from the Design System are preserved
+- Keep keyboard, focus, error summary, labels, and skip-link behaviour intact when changing templates or app JS
+- Do not “fix” accessibility by breaking GOV.UK Frontend to satisfy a single axe rule — see `.cursor/rules/prefer-govuk-over-axe.mdc`
+- Manual and automated checks should remain green for journeys you touch; if a conflict is intentional, document it
+
+## On every change
+
+- Ask whether the change hurts load time, API cost, or accessibility before shipping
+- Prefer the smaller, clearer fix that keeps all three priorities intact over clever but expensive alternatives
+- Call out residual performance or a11y risks in summaries when they remain

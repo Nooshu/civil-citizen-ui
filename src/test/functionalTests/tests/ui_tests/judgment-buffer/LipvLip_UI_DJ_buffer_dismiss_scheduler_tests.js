@@ -12,7 +12,7 @@ const chai = require('chai');
 const {assert} = chai;
 const claimType = 'SmallClaims';
 const statusCell = (text) => `//tr[.//td[.//a[normalize-space()='${text}']]]/td[4]`;
-// eslint-disable-next-line no-unused-vars
+ 
 let claimRef, caseData, claimNumber;
 
 const runSchedulerUntilDismissed = async (api, attempts = 12, intervalMs = 5000) => {

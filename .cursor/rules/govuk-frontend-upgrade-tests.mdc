@@ -1,0 +1,19 @@
+---
+description: After GOV.UK Frontend updates, rebuild assets and run regression suites
+alwaysApply: true
+---
+
+# Verify GOV.UK Frontend upgrades with tests
+
+When `govuk-frontend` (or closely related Design System assets) is updated, do not finish until regression checks have run.
+
+1. Prefer macros for any HTML/CSS/JS fallout — see `.cursor/rules/govuk-frontend-ui.mdc` and `.cursor/rules/govuk-frontend-theming-overrides.mdc` / `.cursor/rules/govuk-frontend-js-overrides.mdc`
+2. Rebuild frontend assets: `yarn build` (or rely on webpack-dev-middleware in `yarn start:dev` for local smoke)
+3. Run **GOV.UK fixture HTML accuracy** tests: `yarn test:govuk-fixtures` (must pass — macros vs shipped `fixtures.json`)
+4. Run **unit / integration** suites that cover touched UI and content builders: `yarn test` and relevant focused Jest paths
+5. Run **accessibility** where practical: `yarn tests:a11y` (or note if env blocks it)
+6. Prefer fuller coverage when the upgrade is large: functional (`yarn test:functional` / tagged groups) and Playwright security under `playwright/tests/` when env allows
+7. Manually spot-check critical journeys in the browser if automated suites miss a known layout surface (home, claim issue, response, dashboard)
+8. Sync version notes in README / docs / `AGENTS.md` in the same change when they mention GOV.UK Frontend
+
+Do not treat Dependabot/Renovate GOV.UK bumps as complete until automated checks pass (or failures are explained with a documented exception).

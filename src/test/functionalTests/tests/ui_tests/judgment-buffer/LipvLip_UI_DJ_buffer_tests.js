@@ -11,7 +11,7 @@ const {assert} = chai;
 const claimType = 'SmallClaims';
 const claimantCCJRequestedTemplateId = 'edf3ac20-fb30-43ac-a0fd-dc72f9f37aaf';
 const claimantCCJRequestedWelshTemplateId = '730f4e11-3cb0-43a7-aeeb-8373a28fbc1d';
-// eslint-disable-next-line no-unused-vars
+ 
 let claimRef, caseData, claimNumber;
 
 Feature('Create Lip v Lip claim - Default Judgment (Judgment Requested state)').tag('@ui-judgment-buffer');
