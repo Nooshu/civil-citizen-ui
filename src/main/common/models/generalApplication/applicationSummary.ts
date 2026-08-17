@@ -25,9 +25,17 @@ export enum ApplicationStatus {
   COMPLETE = 'COMPLETE',
 }
 
+/**
+ * Row rendered by the applications summary views.
+ *
+ * @remarks
+ * `state` and `status` hold translated display text derived from
+ * {@link ApplicationState} / {@link ApplicationStatus}, not the enum keys, so they
+ * are plain strings.
+ */
 export class ApplicationSummary {
-  state: ApplicationState;
-  status: ApplicationStatus;
+  state: string;
+  status: string;
   statusColor?: string;
   types: string;
   id: string;

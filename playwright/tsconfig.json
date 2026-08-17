@@ -1,0 +1,24 @@
+{
+  // Playwright specs are deliberately excluded from the root tsconfig so they never
+  // reach the app build or `dist/`. Without a project of their own the editor falls
+  // back to an inferred project, which loads no ambient types and reports `process`
+  // and `node:os` as unresolved. This config claims those files for the language
+  // service only; Playwright itself transpiles via esbuild and does not type-check.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    // Scoped to Node rather than inheriting the root's `"*"` wildcard: these specs
+    // import `test`/`expect` from `@playwright/test`, so pulling in the jest, mocha
+    // and chai ambient globals would only create conflicting definitions.
+    "types": ["node"]
+  },
+  // Both must be overridden: the root `exclude` lists `playwright`, which would
+  // otherwise discard every file matched here.
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

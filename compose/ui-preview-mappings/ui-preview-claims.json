@@ -1,0 +1,172 @@
+{
+  "mappings": [
+    {
+      "name": "ui-preview-fixture-case-details",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449409"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "1645882162449409",
+          "state": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
+          "last_modified": "2022-03-01T13:29:24.971Z",
+          "case_data": {
+            "legacyCaseReference": "000MC009",
+            "totalClaimAmount": 1000,
+            "claimFee": {
+              "code": "FEE0204",
+              "version": "4",
+              "calculatedAmountInPence": "7000"
+            },
+            "applicant1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Jane Claimant",
+              "individualTitle": "Ms",
+              "individualFirstName": "Jane",
+              "individualLastName": "Claimant",
+              "partyEmail": "claimant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "1 Claimant Road",
+                "PostTown": "London",
+                "PostCode": "SW1A 1AA"
+              }
+            },
+            "respondent1": {
+              "type": "INDIVIDUAL",
+              "partyName": "John Defendant",
+              "individualTitle": "Mr",
+              "individualFirstName": "John",
+              "individualLastName": "Defendant",
+              "partyEmail": "defendant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "Defendant House",
+                "AddressLine2": "21",
+                "AddressLine3": "Church Road",
+                "PostTown": "Berkshire",
+                "PostCode": "RG4 7AD"
+              }
+            },
+            "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
+            "submittedDate": "2022-03-01T13:29:24.971Z",
+            "claimIssuedDate": "2022-03-01T13:29:24.971Z",
+            "responseClaimTrack": "SMALL_CLAIM"
+          }
+        }
+      }
+    },
+    {
+      "name": "ui-preview-fixture-user-case-roles",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449409/userCaseRoles"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": ["[DEFENDANT]"]
+      }
+    },
+    {
+      "name": "ui-preview-agreed-response-deadline",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/cases/response/agreeddeadline/[0-9]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": "2026-12-31T16:00:00"
+      }
+    },
+    {
+      "name": "ui-preview-claimant-claims",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/cases/claimant/[^/]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "claims": [
+            {
+              "claimId": "1645882162449409",
+              "claimNumber": "000MC009",
+              "claimantName": "Jane Claimant",
+              "defendantName": "John Defendant",
+              "claimAmount": "1000",
+              "responseDeadline": "2026-12-31T16:00:00.000Z",
+              "status": "NO_RESPONSE",
+              "ocmc": false,
+              "numberOfDays": 10,
+              "numberOfDaysOverdue": 0
+            }
+          ],
+          "totalPages": 1
+        }
+      }
+    },
+    {
+      "name": "ui-preview-defendant-claims",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/cases/defendant/[^/]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "claims": [
+            {
+              "claimId": "1645882162449409",
+              "claimNumber": "000MC009",
+              "claimantName": "Jane Claimant",
+              "defendantName": "John Defendant",
+              "claimAmount": "1000",
+              "responseDeadline": "2026-12-31T16:00:00.000Z",
+              "status": "NO_RESPONSE",
+              "ocmc": false,
+              "numberOfDays": 10,
+              "numberOfDaysOverdue": 0
+            }
+          ],
+          "totalPages": 1
+        }
+      }
+    },
+    {
+      "name": "ui-preview-dashboard-notifications",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/dashboard/notifications/[^/]+/role/[^/]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": []
+      }
+    },
+    {
+      "name": "ui-preview-dashboard-task-list",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/dashboard/taskList/[^/]+/role/[^/]+"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": []
+      }
+    }
+  ]
+}

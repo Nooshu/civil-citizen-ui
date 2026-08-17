@@ -84,6 +84,10 @@ export const IGNORED_URLS = [
 
   //We will remove
   urls.TESTING_SUPPORT_URL,
+
+  // Developer-only UI Preview catalogue: not part of the citizen service and has no
+  // captured mock page, so the harness would serve an error page.
+  urls.UI_PREVIEW_URL,
   urls.DEFENDANT_SUMMARY_TAB_URL,
   urls.DEFENDANT_DOCUMENTS_URL,
 

@@ -19,7 +19,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Node.js must match `engines` in `package.json` and `.nvmrc`
 - Current target: Node `>=24.18.0` (see `.nvmrc`)
 - Package manager: **Yarn 4** (`yarn.lock`, `.yarnrc.yml`) — not npm
-- TypeScript: **`6.0.3`** (exact). `tsconfig.json` sets `"strict": false` and `"types": ["*"]` to preserve pre-6 defaults, plus `"ignoreDeprecations": "6.0"` while `moduleResolution`/`baseUrl` remain transitional (required before TypeScript 7). Jest configs set `"rootDir": "."` for TS 6 / ts-jest (TS5011).
+- TypeScript: **`6.0.3`** (exact). `tsconfig.json` sets `"strict": false` and `"types": ["*"]` to preserve pre-6 defaults, plus `"ignoreDeprecations": "6.0"` while `moduleResolution`/`baseUrl` remain transitional (required before TypeScript 7). Jest configs set `"rootDir": "."` for TS 6 / ts-jest (TS5011). `playwright/tsconfig.json` covers the Playwright specs, which the root config excludes — it is editor/type-check only (`noEmit`), and scopes `"types"` to `["node"]` so jest/mocha/chai globals do not clash with `@playwright/test` imports.
 - Prefer `nvm use` (or equivalent) before install/test commands
 - Local default URL: **https://localhost:3001** (`yarn start:dev`) — HTTPS with self-signed cert in development
 - Redis draft store: `yarn start:redis` (Docker Compose `compose/draft-store.yml`, port `6379`)
@@ -27,6 +27,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - **UI Preview (no IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
   - Distinct from `yarn start:dev` (real Redis + OIDC)
   - Fixture user id: `someID`; sample claim: `1645882162449409`
+  - Preview-only WireMock stubs: `compose/ui-preview-mappings/` — keep them out of `charts/civil-citizen-ui/wiremock/mappings`, which is the validated reduced-stack contract set (`yarn wiremock:validate` forbids broad matchers)
   - Stop: `yarn start:ui-preview:down`
 
 ## Before changing code
@@ -65,7 +66,7 @@ If the change is **only** version bumps in `package.json` / `yarn.lock` (no othe
 
 ## GOV.UK Frontend
 
-Pinned dependency: **`govuk-frontend@6.2.0`** (see `package.json`; bump docs when upgrading).
+Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs when upgrading).
 
 - **GOV.UK Frontend is the single source of truth** for the user interface — see `.cursor/rules/govuk-frontend-ui.mdc`
 - All GOV.UK Design System component HTML must come from official Nunjucks macros — do not hand-write component markup when a macro exists

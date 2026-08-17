@@ -159,6 +159,7 @@ export class Nunjucks {
     nunjucksEnv.addGlobal('TestingSupportUrl', '/testing-support/create-draft-claim');
     nunjucksEnv.addGlobal('UiPreviewUrl', '/ui-preview');
     nunjucksEnv.addGlobal('developmentMode', this.developmentMode);
+    nunjucksEnv.addGlobal('e2eTestMode', process.env.NODE_ENV === 'e2eTest');
     nunjucksEnv.addGlobal('nonceValue', nonceValue);
     nunjucksEnv.addGlobal('nonceDataLayer', nonceDataLayer);
     nunjucksEnv.addGlobal('TaskStatus', TaskStatus);

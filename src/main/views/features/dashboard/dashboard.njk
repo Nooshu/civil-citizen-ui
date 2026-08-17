@@ -51,7 +51,7 @@
               {% set viewClaimNumberDraft = t('PAGES.DASHBOARD.VIEW_CLAIM_NUMBER', {claimNumber:t(claimDraftSaved.claimNumber) }) %}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
-                  <a class="table-link" href={{ claimDraftSaved.getHref() }} aria-label="{{ viewClaimNumberDraft }}">
+                  <a class="govuk-link table-link" href={{ claimDraftSaved.getHref() }} aria-label="{{ viewClaimNumberDraft }}">
                     {{ t(claimDraftSaved.claimNumber) }}
                   </a>
                 </td>
@@ -71,7 +71,7 @@
               {% set viewClaimNumber = t('PAGES.DASHBOARD.VIEW_CLAIM_NUMBER', {claimNumber:item.claimNumber })%}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
-                  <a class="table-link" href={{ item.getHref() }} aria-label="{{ viewClaimNumber }}">
+                  <a class="govuk-link table-link" href={{ item.getHref() }} aria-label="{{ viewClaimNumber }}">
                     {{ item.claimNumber }}
                   </a>
                 </td>
@@ -114,7 +114,7 @@
               {% set viewClaimNumberDefendant = t('PAGES.DASHBOARD.VIEW_CLAIM_NUMBER', {claimNumber:item.claimNumber }) %}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
-                  <a class="table-link" href={{ item.getHref() }} aria-label="{{ viewClaimNumberDefendant }}">
+                  <a class="govuk-link table-link" href={{ item.getHref() }} aria-label="{{ viewClaimNumberDefendant }}">
                     {{ item.claimNumber }}
                   </a>
                 </td>

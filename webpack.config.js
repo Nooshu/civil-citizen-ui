@@ -22,8 +22,13 @@ module.exports = {
       ...scss.rules,
       {
         test: /\.ts$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+          },
+        },
+        exclude: [/node_modules/, /src\/test/, /src\/integration-test/, /playwright/],
       },
       {
         test: /\.mjs$/,
