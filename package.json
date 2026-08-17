@@ -156,7 +156,7 @@
     "allure-playwright": "^3.6.0",
     "babel-jest": "^29.7.0",
     "babel-loader": "10.1.1",
-    "chai": "4.3.6",
+    "chai": "6.2.2",
     "codeceptjs": "3.4.1",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.2",
