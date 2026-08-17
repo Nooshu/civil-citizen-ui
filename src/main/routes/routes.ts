@@ -322,6 +322,7 @@ import accessibilityStatementController from './features/public/accessibilitySta
 import termsAndConditionsController from './features/public/termsAndConditionsController';
 import contactUsController from './features/public/contactUsController';
 import privacyPolicyController from './features/public/privacyPolicyController';
+import uiPreviewController from './features/uiPreview/uiPreviewController';
 import hearingArrangementsGuidanceController
   from 'routes/features/generalApplication/hearingArrangementsGuidanceController';
 import wantToUploadDocumentsController from 'routes/features/generalApplication/wantToUploadDocuments';
@@ -722,6 +723,7 @@ export default [
   accessibilityStatementController,
   termsAndConditionsController,
   privacyPolicyController,
+  uiPreviewController,
   contactUsController,
   hearingArrangementsGuidanceController,
   wantToUploadDocumentsController,

@@ -56,6 +56,25 @@ describe('Mediation Unavailability Select Dates Confirmation Controller', () => 
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.MEDIATION_UNAVAILABILITY_DATES);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       mockGetCaseData.mockImplementation(async () => {
         throw new Error(TestMessages.REDIS_FAILURE);
@@ -65,6 +84,34 @@ describe('Mediation Unavailability Select Dates Confirmation Controller', () => 
         .expect((res) => {
           expect(res.status).toBe(500);
           expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
+        });
+    });
+  });
+
+  describe('on POST - validation errors', () => {
+    it('should re-render with language from query when form is invalid', async () => {
+      getUnavailableDatesMediationFormMock.mockImplementation(() => {
+        return new UnavailableDatePeriodMediation(UnavailableDateType.SINGLE_DATE);
+      });
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should re-render with language from cookie when form is invalid', async () => {
+      getUnavailableDatesMediationFormMock.mockImplementation(() => {
+        return new UnavailableDatePeriodMediation(UnavailableDateType.SINGLE_DATE);
+      });
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
   });

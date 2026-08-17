@@ -68,6 +68,36 @@ describe('General Application - ask proof of debt payment guidance', () => {
           expect(decodedText).toContain(t('PAGES.GENERAL_APPLICATION.ASK_FOR_PROOF_OF_DEBT_PAYMENT.PARA_8'));
         });
     });
+
+    it('should initialise general application when missing on the claim', async () => {
+      const claimWithoutGa = new Claim();
+      mockGetCaseData.mockImplementation(async () => claimWithoutGa);
+      (gaApplicationFeeDetails as jest.Mock).mockResolvedValueOnce({
+        calculatedAmountInPence: 1400,
+        code: 'FEE0459',
+        version: 0,
+      });
+
+      await request(app)
+        .get(GA_ASK_PROOF_OF_DEBT_PAYMENT_GUIDANCE_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(claimWithoutGa.generalApplication).toBeDefined();
+          expect(claimWithoutGa.generalApplication.applicationTypes[0].option)
+            .toBe(ApplicationTypeOption.CONFIRM_CCJ_DEBT_PAID);
+        });
+    });
+
+    it('should return 500 when fee lookup fails', async () => {
+      mockGetCaseData.mockImplementation(async () => mockClaim);
+      (gaApplicationFeeDetails as jest.Mock).mockRejectedValueOnce(new Error('fee failed'));
+
+      await request(app)
+        .get(GA_ASK_PROOF_OF_DEBT_PAYMENT_GUIDANCE_URL)
+        .expect((res) => {
+          expect(res.status).toBe(500);
+        });
+    });
   });
 });
 

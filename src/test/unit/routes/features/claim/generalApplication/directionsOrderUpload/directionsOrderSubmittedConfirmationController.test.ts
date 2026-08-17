@@ -50,6 +50,34 @@ describe('General Application - Request More Information Confirmation', () => {
       expect(res.text).toContain('uploaded additional documents');
     });
 
+    it('should use language from the query string', async () => {
+      const claimId = '123';
+      const claim = new Claim();
+      (getClaimById as jest.Mock).mockResolvedValue(claim);
+      (generateRedisKeyForGA as jest.Mock).mockReturnValue('redis-key');
+      (deleteGADocumentsFromDraftStore as jest.Mock).mockResolvedValue(undefined);
+
+      const res = await request(app)
+        .get(GA_UPLOAD_DOCUMENT_DIRECTIONS_ORDER_CONFIRMATION_URL.replace(':id', claimId))
+        .query({lang: 'cy'});
+
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const claimId = '123';
+      const claim = new Claim();
+      (getClaimById as jest.Mock).mockResolvedValue(claim);
+      (generateRedisKeyForGA as jest.Mock).mockReturnValue('redis-key');
+      (deleteGADocumentsFromDraftStore as jest.Mock).mockResolvedValue(undefined);
+
+      const res = await request(app)
+        .get(GA_UPLOAD_DOCUMENT_DIRECTIONS_ORDER_CONFIRMATION_URL.replace(':id', claimId))
+        .set('Cookie', ['lang=en']);
+
+      expect(res.status).toBe(200);
+    });
+
     it('should handle errors', async () => {
       (getClaimById as jest.Mock).mockRejectedValue(new Error('Error'));
 

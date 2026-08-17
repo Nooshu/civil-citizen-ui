@@ -62,4 +62,23 @@ describe('draftGADocumentService', () => {
     await deleteGADocumentsFromDraftStore(redisKey);
     expect(mockDraftStoreClient.del).toHaveBeenCalledWith(redisKey + 'DOCKEY');
   });
+
+  it('should throw when saving GA documents fails', async () => {
+    mockDraftStoreClient.set.mockRejectedValueOnce(new Error('redis down'));
+    await expect(saveGADocumentsInDraftStore(redisKey, uploadDocuments)).rejects.toThrow('redis down');
+  });
+
+  it('should return empty array when redis has no GA documents', async () => {
+    mockDraftStoreClient.get.mockResolvedValueOnce(null);
+    await expect(getGADocumentsFromDraftStore(redisKey)).resolves.toEqual([]);
+  });
+
+  it('should return empty array when redis GA documents JSON is invalid', async () => {
+    const parseSpy = jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+      throw 'parse-failed-without-stack';
+    });
+    mockDraftStoreClient.get.mockResolvedValueOnce('{}');
+    await expect(getGADocumentsFromDraftStore(redisKey)).resolves.toEqual([]);
+    parseSpy.mockRestore();
+  });
 });

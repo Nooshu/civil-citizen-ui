@@ -151,4 +151,59 @@ describe('claimant response check Your Answers Guard', () => {
     expect(MOCK_RESPONSE.redirect).not.toHaveBeenCalled();
     expect(MOCK_NEXT).toHaveBeenLastCalledWith(error);
   });
+
+  it('should use cookie language when query language is absent', async () => {
+    const mockRequest = {
+      params: {id: CLAIM_ID},
+      session: {user: {id: '123'}},
+      cookies: {lang: 'cy'},
+      query: {},
+    } as unknown as AppRequest;
+
+    mockClaim.mockResolvedValue(Object.assign(new Claim(), {id: CLAIM_ID}));
+    mockOutstandingClaimantResponseTasks.mockReturnValue([]);
+
+    await claimantResponsecheckYourAnswersGuard(
+      mockRequest,
+      MOCK_RESPONSE,
+      MOCK_NEXT,
+    );
+
+    expect(mockOutstandingClaimantResponseTasks.mock.calls[0][2]).toBe('cy');
+    expect(MOCK_NEXT).toHaveBeenCalled();
+  });
+
+  it('should treat undefined outstanding tasks as incomplete', async () => {
+    const mockRequest = MOCK_REQUEST();
+    mockClaim.mockResolvedValue(Object.assign(new Claim(), {id: CLAIM_ID}));
+    mockOutstandingClaimantResponseTasks.mockReturnValue(undefined);
+
+    await claimantResponsecheckYourAnswersGuard(
+      mockRequest,
+      MOCK_RESPONSE,
+      MOCK_NEXT,
+    );
+
+    expect(MOCK_RESPONSE.redirect).toHaveBeenCalled();
+    expect(MOCK_NEXT).not.toHaveBeenCalled();
+  });
+
+  it('should tolerate a missing session user and language', async () => {
+    const mockRequest = {
+      params: {id: CLAIM_ID},
+    } as unknown as AppRequest;
+
+    mockClaim.mockResolvedValue(Object.assign(new Claim(), {id: CLAIM_ID}));
+    mockOutstandingClaimantResponseTasks.mockReturnValue([]);
+
+    await claimantResponsecheckYourAnswersGuard(
+      mockRequest,
+      MOCK_RESPONSE,
+      MOCK_NEXT,
+    );
+
+    expect(mockOutstandingClaimantResponseTasks.mock.calls[0][1]).toBeUndefined();
+    expect(mockOutstandingClaimantResponseTasks.mock.calls[0][2]).toBeUndefined();
+    expect(MOCK_NEXT).toHaveBeenCalled();
+  });
 });

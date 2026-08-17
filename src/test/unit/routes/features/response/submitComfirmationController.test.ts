@@ -62,6 +62,37 @@ describe('Submit confirmation controller', () => {
           expect(res.text).toContain('You&#39;ve submitted your response');
         });
     });
+    it('should use language from the query string', async () => {
+      mockGetCaseData.mockImplementation(() => mockClaim);
+      nock('http://localhost:4000')
+        .get('/cases/:id')
+        .reply(200, civilClaimResponseMock);
+      nock('http://localhost:4000')
+        .get('/cases/:id/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await request(app)
+        .get(CONFIRMATION_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+    it('should use language from cookie when query is absent', async () => {
+      mockGetCaseData.mockImplementation(() => mockClaim);
+      nock('http://localhost:4000')
+        .get('/cases/:id')
+        .reply(200, civilClaimResponseMock);
+      nock('http://localhost:4000')
+        .get('/cases/:id/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await request(app)
+        .get(CONFIRMATION_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('You&#39;ve submitted your response');
+        });
+    });
     it('should return http 500 when has error in the get method', async () => {
       nock.cleanAll();
       nock(idamUrl)

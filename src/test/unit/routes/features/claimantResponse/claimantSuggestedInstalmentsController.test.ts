@@ -52,6 +52,28 @@ describe('Suggest instalments for the defendant', () => {
           expect(res.text).toContain('Suggest instalments for the defendant');
         });
     });
+
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await request(app)
+        .get(CLAIMANT_RESPONSE_PAYMENT_PLAN_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await request(app)
+        .get(CLAIMANT_RESPONSE_PAYMENT_PLAN_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Suggest instalments for the defendant');
+        });
+    });
+
     it('should return 500 status code when error occurs', async () => {
       app.locals.draftStoreClient = mockRedisFailure;
       await request(app)

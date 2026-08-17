@@ -24,6 +24,10 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Local default URL: **https://localhost:3001** (`yarn start:dev`) — HTTPS with self-signed cert in development
 - Redis draft store: `yarn start:redis` (Docker Compose `compose/draft-store.yml`, port `6379`)
 - Health: `https://localhost:3001/health`
+- **UI Preview (no IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
+  - Distinct from `yarn start:dev` (real Redis + OIDC)
+  - Fixture user id: `someID`; sample claim: `1645882162449409`
+  - Stop: `yarn start:ui-preview:down`
 
 ## Before changing code
 

@@ -64,7 +64,16 @@ describe('Mediation Email Mediation Confirmation Controller', () => {
 
     it('should support explicit language query parameter', async () => {
       await request(app)
-        .get(`${CONTROLLER_URL}?lang=en`)
+        .get(`${CONTROLLER_URL}?lang=cy`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.MEDIATION_PHONE_CONFIRMATION);
@@ -246,6 +255,68 @@ describe('Mediation Email Mediation Confirmation Controller', () => {
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('Select if the mediator can use 333333 to call you for your mediation appointment or not');
+        });
+    });
+
+    it('should use company mediation phone confirmation when the company option is yes', async () => {
+      mockGetCaseData.mockImplementation(async () => {
+        const claim = new Claim();
+        claim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+        jest.spyOn(claim, 'isClaimantIntentionPending').mockReturnValue(true);
+        return claim;
+      });
+      mockDraftClaimFromStore.mockImplementation(async () => {
+        return {
+          case_data: {
+            claimantResponse: {
+              mediation: {
+                companyTelephoneNumber: {
+                  option: 'yes',
+                  mediationPhoneNumberConfirmation: '555111',
+                },
+              },
+            },
+          } as unknown as CCDClaim,
+        } as CivilClaimResponse;
+      });
+
+      await request(app)
+        .post(CONTROLLER_URL)
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('555111');
+        });
+    });
+
+    it('should use company mediation phone number when the company option is no', async () => {
+      mockGetCaseData.mockImplementation(async () => {
+        const claim = new Claim();
+        claim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+        jest.spyOn(claim, 'isClaimantIntentionPending').mockReturnValue(true);
+        return claim;
+      });
+      mockDraftClaimFromStore.mockImplementation(async () => {
+        return {
+          case_data: {
+            claimantResponse: {
+              mediation: {
+                companyTelephoneNumber: {
+                  option: 'no',
+                  mediationPhoneNumber: '555222',
+                },
+              },
+            },
+          } as unknown as CCDClaim,
+        } as CivilClaimResponse;
+      });
+
+      await request(app)
+        .post(CONTROLLER_URL)
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('555222');
         });
     });
 

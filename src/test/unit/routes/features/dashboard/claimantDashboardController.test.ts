@@ -183,6 +183,27 @@ describe('claimant Dashboard Controller', () => {
         expect(res.text).not.toContain('Case number: ');
       });
     });
+
+    it('should use language from the query string', async () => {
+      jest.spyOn(UtilityService, 'getClaimById').mockReturnValueOnce(Promise.resolve(new Claim()));
+      await request(app)
+        .get(DASHBOARD_CLAIMANT_URL.replace(':id', 'draft'))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      jest.spyOn(UtilityService, 'getClaimById').mockReturnValueOnce(Promise.resolve(new Claim()));
+      await request(app)
+        .get(DASHBOARD_CLAIMANT_URL.replace(':id', 'draft'))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return old claimant dashboard page', async () => {
 
       jest.spyOn(UtilityService, 'getClaimById').mockReturnValueOnce(Promise.resolve(new Claim()));
@@ -790,6 +811,56 @@ describe('claimant Dashboard Controller', () => {
       expect(draftStoreService.updateFieldDraftClaimFromStore).toHaveBeenCalledWith('12345', req, 'respondentSolicitor1EmailAddress', 'solicitor@example.com');
       expect(draftStoreService.updateFieldDraftClaimFromStore).toHaveBeenCalledWith('12345', req, 'specRespondent1Represented', YesNoUpperCamelCase.YES);
       expect(draftStoreService.updateFieldDraftClaimFromStore).not.toHaveBeenCalledWith('12345', req, 'respondentSolicitorDetails', expect.anything());
+    });
+
+    it('should render without a user id when the request has no session', async () => {
+      const claim = new Claim();
+      claim.caseRole = CaseRole.CLAIMANT;
+      claim.ccdState = CaseState.CASE_ISSUED;
+      claim.totalClaimAmount = 500;
+      claim.submittedDate = new Date('2024-01-01');
+
+      jest.spyOn(UtilityService, 'getClaimById').mockResolvedValueOnce(claim);
+      jest.spyOn(dashboardService, 'getDashboardForm').mockResolvedValueOnce(undefined);
+
+      const req: any = {
+        params: {id: '12345'},
+        query: {},
+        cookies: {lang: 'en'},
+        session: undefined,
+      };
+      const res: any = {render: jest.fn()};
+      const next = jest.fn();
+
+      await claimantDashboardHandler(req, res, next);
+
+      expect(next).not.toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
+    });
+
+    it('should render without a user id when the session has no user', async () => {
+      const claim = new Claim();
+      claim.caseRole = CaseRole.CLAIMANT;
+      claim.ccdState = CaseState.CASE_ISSUED;
+      claim.totalClaimAmount = 500;
+      claim.submittedDate = new Date('2024-01-01');
+
+      jest.spyOn(UtilityService, 'getClaimById').mockResolvedValueOnce(claim);
+      jest.spyOn(dashboardService, 'getDashboardForm').mockResolvedValueOnce(new Dashboard([]));
+
+      const req: any = {
+        params: {id: '12345'},
+        query: {},
+        cookies: {lang: 'en'},
+        session: {},
+      };
+      const res: any = {render: jest.fn()};
+      const next = jest.fn();
+
+      await claimantDashboardHandler(req, res, next);
+
+      expect(next).not.toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalled();
     });
 
     it('should persist solicitor details when no correspondence address is required', async () => {

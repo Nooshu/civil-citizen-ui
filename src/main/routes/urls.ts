@@ -39,6 +39,7 @@ export const ACCESSIBILITY_STATEMENT_URL = '/accessibility-statement';
 export const CONTACT_US_URL = '/contact-us';
 export const TERMS_AND_CONDITIONS_URL = '/terms-and-conditions';
 export const PRIVACY_POLICY_URL = '/privacy-policy';
+export const UI_PREVIEW_URL = '/ui-preview';
 export const DOB_URL = `${BASE_CASE_RESPONSE_URL}/your-dob`;
 export const AGE_ELIGIBILITY_URL = `${BASE_CASE_RESPONSE_URL}/eligibility/under-18`;
 export const SEND_RESPONSE_BY_EMAIL_URL = `${BASE_CASE_RESPONSE_URL}/eligibility/send-your-response-by-email`;

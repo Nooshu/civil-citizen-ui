@@ -53,6 +53,41 @@ describe('General Application - upload n245 form', () => {
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.UPLOAD_N245_FORM.TITLE'));
         });
     });
+
+    it('should use language from query string', async () => {
+      await request(app)
+        .get(GA_UPLOAD_N245_FORM_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie and create empty upload form when missing', async () => {
+      claim.generalApplication.uploadN245Form = undefined;
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .get(GA_UPLOAD_N245_FORM_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should render with file upload errors from session', async () => {
+      const save = jest.fn((cb: any) => cb && cb());
+      app.request.session = {
+        save,
+        fileUpload: JSON.stringify([{property: 'file', constraints: {isDefined: 'error'}, target: {}, value: undefined, children: []}]),
+        fileUploadSource: 'ga_upload_n245',
+      } as any;
+      await request(app)
+        .get(GA_UPLOAD_N245_FORM_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should remove the file upon click', async () => {
       const mockCaseDocument: CaseDocument = <CaseDocument>{
         createdBy: 'test',
@@ -73,6 +108,19 @@ describe('General Application - upload n245 form', () => {
           expect(claim.generalApplication.uploadN245Form).toBeUndefined();
         });
     });
+    // The guard needs the vary-judgment application type, so only the controller's own
+    // claim lookup is switched to a claim without a general application.
+    it('should render an empty upload form when the claim has no general application', async () => {
+      mockDataFromStore.mockReset();
+      mockDataFromStore.mockResolvedValueOnce(claim);
+      mockDataFromStore.mockResolvedValue(new Claim());
+      await request(app)
+        .get(GA_UPLOAD_N245_FORM_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
       mockDataFromStore.mockRejectedValueOnce(new Error(TestMessages.SOMETHING_WENT_WRONG));
       await request(app)
@@ -135,7 +183,7 @@ describe('General Application - upload n245 form', () => {
           expect(res.text).toContain(file.originalname);
         });
     });
-    it('should return http 500 when has error in the get method', async () => {
+    it('should return http 500 when upload fails', async () => {
       const file = {
         fieldname: 'selectedFile',
         originalname: 'test.text',
@@ -151,6 +199,61 @@ describe('General Application - upload n245 form', () => {
         .expect((res) => {
           expect(res.status).toBe(500);
           expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
+        });
+    });
+
+    it('should show validation errors when continuing without an uploaded form', async () => {
+      claim.generalApplication.uploadN245Form = new UploadGAFiles();
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .post(GA_UPLOAD_N245_FORM_URL)
+        .send({})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from the query string', async () => {
+      claim.generalApplication.uploadN245Form = new UploadGAFiles();
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .post(GA_UPLOAD_N245_FORM_URL)
+        .query({lang: 'cy'})
+        .send({})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should build an empty upload form when the claim has no general application', async () => {
+      mockDataFromStore.mockReset();
+      mockDataFromStore.mockResolvedValueOnce(claim);
+      mockDataFromStore.mockResolvedValue(new Claim());
+      await request(app)
+        .post(GA_UPLOAD_N245_FORM_URL)
+        .send({})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should redirect when a form has already been uploaded', async () => {
+      const mockCaseDocument: CaseDocument = <CaseDocument>{
+        createdBy: 'test',
+        documentLink: { document_url: 'http://test', document_binary_url: 'http://test/binary', document_filename: 'test.png' },
+        documentName: 'test.text',
+        documentType: null,
+        documentSize: 12345,
+        createdDatetime: new Date(),
+      };
+      claim.generalApplication.uploadN245Form = new UploadGAFiles();
+      claim.generalApplication.uploadN245Form.caseDocument = mockCaseDocument;
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .post(GA_UPLOAD_N245_FORM_URL)
+        .send({})
+        .expect((res) => {
+          expect(res.status).toBe(302);
         });
     });
   });

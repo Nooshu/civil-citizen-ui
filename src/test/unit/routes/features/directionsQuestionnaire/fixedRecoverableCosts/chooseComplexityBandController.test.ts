@@ -52,6 +52,26 @@ describe('Choose complexity band Controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      mockGetCaseData.mockImplementation(async () => getClaim());
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetCaseData.mockImplementation(async () => getClaim());
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should open Choose complexity band page with value', async () => {
       mockGetCaseData.mockImplementation(async () => {
         const claim = getClaim();
@@ -135,6 +155,24 @@ describe('Choose complexity band Controller', () => {
     it('should validate the field is empty', async () => {
       await request(app)
         .post(CONTROLLER_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from the query string when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
         });

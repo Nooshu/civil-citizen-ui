@@ -64,6 +64,31 @@ describe('Share query confirmation controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .get(QM_SHARE_QUERY_CONFIRMATION.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .get(QM_SHARE_QUERY_CONFIRMATION.replace(':id', claimId))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Send a message');
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       (getCancelUrl as jest.Mock).mockImplementation(() => {
         throw new Error('Forced error');
@@ -88,6 +113,32 @@ describe('Share query confirmation controller', () => {
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('To continue you must select that your message can be shared. If you do not want to share your message, email the court.');
+        });
+    });
+
+    it('should use language from query when re-rendering validation errors', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .post(QM_SHARE_QUERY_CONFIRMATION.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .send({ confirmed: '' })
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .post(QM_SHARE_QUERY_CONFIRMATION.replace(':id', claimId))
+        .set('Cookie', ['lang=en'])
+        .send({ confirmed: '' })
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

@@ -50,6 +50,41 @@ describe('General Application - add another application', () => {
         });
     });
 
+    it('should preselect no when addType is set with a single application', async () => {
+      claim.generalApplication.addType = true;
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .get(GA_ADD_ANOTHER_APPLICATION_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should preselect yes when addType is set with multiple applications', async () => {
+      claim.generalApplication.addType = true;
+      claim.generalApplication.applicationTypes = [
+        new ApplicationType(ApplicationTypeOption.STAY_THE_CLAIM),
+        new ApplicationType(ApplicationTypeOption.STRIKE_OUT),
+      ];
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .get(`${GA_ADD_ANOTHER_APPLICATION_URL}?index=0`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    // `index` must be non-zero so the controller skips the unguarded
+    // `claim.generalApplication.applicationTypes` read and reaches the `?.` fallbacks.
+    it('should render when the claim has no general application', async () => {
+      mockDataFromStore.mockResolvedValue(new Claim());
+      await request(app)
+        .get(`${GA_ADD_ANOTHER_APPLICATION_URL}?index=1`)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
 
       mockDataFromStore.mockRejectedValueOnce(new Error(TestMessages.SOMETHING_WENT_WRONG));
@@ -67,6 +102,29 @@ describe('General Application - add another application', () => {
       await request(app)
         .post(GA_ADD_ANOTHER_APPLICATION_URL)
         .send({ option: 'yes' })
+        .expect((res) => {
+          expect(res.status).toBe(302);
+        });
+    });
+
+    it('should redirect to upload documents when option is no', async () => {
+      await request(app)
+        .post(GA_ADD_ANOTHER_APPLICATION_URL)
+        .send({ option: 'no' })
+        .expect((res) => {
+          expect(res.status).toBe(302);
+        });
+    });
+
+    it('should remove other applications when changing from a later screen', async () => {
+      claim.generalApplication.applicationTypes = [
+        new ApplicationType(ApplicationTypeOption.STAY_THE_CLAIM),
+        new ApplicationType(ApplicationTypeOption.STRIKE_OUT),
+      ];
+      mockDataFromStore.mockResolvedValue(claim);
+      await request(app)
+        .post(`${GA_ADD_ANOTHER_APPLICATION_URL}?changeScreen=true&index=1`)
+        .send({ option: 'no' })
         .expect((res) => {
           expect(res.status).toBe(302);
         });

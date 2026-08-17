@@ -64,6 +64,24 @@ describe('General Application - Respondent Agree to order', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
 
       mockGetClaim.mockImplementation(() => {
@@ -88,6 +106,16 @@ describe('General Application - Respondent Agree to order', () => {
         });
     });
 
+    it('should redirect to respondent agreement when option is no', async () => {
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
+        .send({option: 'no'})
+        .expect((res) => {
+          expect(res.status).toBe(302);
+          expect(res.header.location).toContain('respondent-agreement');
+        });
+    });
+
     it('should return errors on no input', async () => {
       await request(app)
         .post(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
@@ -95,6 +123,26 @@ describe('General Application - Respondent Agree to order', () => {
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(t('ERRORS.GENERAL_APPLICATION.AGREE_TO_ORDER_NOT_SELECTED'));
+        });
+    });
+
+    it('should use language from query string when re-rendering validation errors', async () => {
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
+        .query({lang: 'cy'})
+        .send({option: null})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('123', '345', GA_AGREE_TO_ORDER_URL))
+        .set('Cookie', ['lang=en'])
+        .send({option: null})
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

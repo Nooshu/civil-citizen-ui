@@ -69,6 +69,28 @@ describe('Response - Check answers', () => {
       expect(bulletPoints[0].textContent?.trim()).toBe(TASK_DESCRIPTION);
     });
 
+    it('should use language from the query string', async () => {
+      mockGetCaseDataFromStore.mockImplementation(() => {
+        const claim = new Claim();
+        claim.submittedDate = new Date();
+        return claim;
+      });
+      mockOutstandingTasksFromCase.mockImplementation(() => [
+        {
+          description: TASK_DESCRIPTION,
+          status: TaskStatus.INCOMPLETE,
+          url: TASK_URL,
+        },
+      ]);
+
+      await request(app)
+        .get(respondentIncompleteSubmissionUrl)
+        .query({lang: 'cy'})
+        .expect((res: {status: number}) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return status 500 when error thrown', async () => {
       mockGetCaseDataFromStore.mockImplementation(() => {
         throw new Error(TestMessages.REDIS_FAILURE);

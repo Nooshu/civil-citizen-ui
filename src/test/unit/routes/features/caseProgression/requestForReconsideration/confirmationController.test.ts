@@ -78,5 +78,23 @@ describe('Request for reconsideration page test', () => {
         });
     });
 
+    it('should use the claimant dashboard for claimant case roles and query language', async () => {
+      app.locals.draftStoreClient = mockCivilClaimFastTrack;
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.CLAIMANT]);
+
+      await testSession
+        .get(REQUEST_FOR_RECONSIDERATION_CONFIRMATION_URL.replace(':id', claimId))
+        .query({lang: 'en'})
+        .expect((res: { status: unknown; text: string }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/claimantNewDesign`);
+        });
+    });
+
   });
 });

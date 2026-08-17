@@ -45,6 +45,39 @@ describe('view mediation settlement agreement document controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+
+      await request(app)
+        .get(VIEW_ORDERS_AND_NOTICES_URL.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should show the claimant dashboard link for claimants', async () => {
+      nock.cleanAll();
+      nock(config.get<string>('idamUrl'))
+        .post('/o/token')
+        .reply(200, {id_token: config.get('citizenRoleToken')});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.CLAIMANT]);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+
+      await request(app)
+        .get(VIEW_ORDERS_AND_NOTICES_URL.replace(':id', claimId))
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/claimantNewDesign`);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       //given
       nock(civilServiceUrl)

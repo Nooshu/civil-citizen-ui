@@ -1,5 +1,6 @@
 import nock from 'nock';
 import config from 'config';
+import express, {Response as ExpressResponse} from 'express';
 import {getSummarySections} from 'services/features/claim/checkAnswers/checkAnswersService';
 import {CLAIM_CHECK_ANSWERS_URL, CLAIM_CONFIRMATION_URL} from 'routes/urls';
 import {TestMessages} from '../../../../utils/errorMessageTestConstants';
@@ -18,6 +19,8 @@ import {Party} from 'models/party';
 import {Email} from 'models/Email';
 import {PartyPhone} from 'models/PartyPhone';
 import {CivilServiceClient} from 'client/civilServiceClient';
+import {AppRequest} from 'models/AppRequest';
+import claimCheckAnswersController from 'routes/features/claim/checkAnswersController';
 
 const jsdom = require('jsdom');
 const {JSDOM} = jsdom;
@@ -90,6 +93,33 @@ describe('Claim - Check answers', () => {
       expect(header[0].textContent).toBe(checkYourAnswerEng);
 
     });
+
+    it('should use language from the query string', async () => {
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.claimDetails = new ClaimDetails();
+        return claim;
+      });
+
+      const response = await session(app)
+        .get(CLAIM_CHECK_ANSWERS_URL)
+        .query({lang: 'cy'});
+      expect(response.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.claimDetails = new ClaimDetails();
+        return claim;
+      });
+
+      const response = await session(app)
+        .get(CLAIM_CHECK_ANSWERS_URL)
+        .set('Cookie', ['lang=en']);
+      expect(response.status).toBe(200);
+    });
+
     it('should return check answers page with Your details and their details sections', async () => {
       mockGetSummarySections.mockImplementation(() => {
         return createClaimWithBasicDetails();
@@ -214,6 +244,79 @@ describe('Claim - Check answers', () => {
           expect(res.text).toContain('Tell us if you believe the facts stated in this response are true');
         });
     });
+
+    it('should use language from the query string when re-rendering validation errors', async () => {
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getHearingAmount')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.applicant1 = new Party();
+        claim.applicant1.emailAddress = new Email('aaaa@gmail.com');
+        claim.applicant1.partyPhone = new PartyPhone('07557350546');
+        claim.respondent1 = new Party();
+        claim.respondent1.emailAddress = new Email('aaaa@gmail.com');
+        claim.respondent1.partyPhone = new PartyPhone('07557350546');
+        claim.claimDetails = new ClaimDetails();
+        claim.claimDetails.helpWithFees = new HelpWithFees();
+        claim.totalClaimAmount = 1000;
+        claim.claimDetails.helpWithFees.option = YesNo.NO;
+        return claim;
+      });
+      await request(app)
+        .post(CLAIM_CHECK_ANSWERS_URL)
+        .query({lang: 'cy'})
+        .send({
+          type: 'qualified',
+          isFullAmountRejected: 'true',
+          directionsQuestionnaireSigned: 'Test',
+          signerRole: 'Test',
+          signerName: 'Test',
+        })
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getHearingAmount')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.applicant1 = new Party();
+        claim.applicant1.emailAddress = new Email('aaaa@gmail.com');
+        claim.applicant1.partyPhone = new PartyPhone('07557350546');
+        claim.respondent1 = new Party();
+        claim.respondent1.emailAddress = new Email('aaaa@gmail.com');
+        claim.respondent1.partyPhone = new PartyPhone('07557350546');
+        claim.claimDetails = new ClaimDetails();
+        claim.claimDetails.helpWithFees = new HelpWithFees();
+        claim.totalClaimAmount = 1000;
+        claim.claimDetails.helpWithFees.option = YesNo.NO;
+        return claim;
+      });
+      await request(app)
+        .post(CLAIM_CHECK_ANSWERS_URL)
+        .set('Cookie', ['lang=en'])
+        .send({
+          type: 'qualified',
+          isFullAmountRejected: 'true',
+          directionsQuestionnaireSigned: 'Test',
+          signerRole: 'Test',
+          signerName: 'Test',
+        })
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return errors when form claimant Phone Number is undefined', async () => {
       jest
         .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
@@ -398,6 +501,62 @@ describe('Claim - Check answers', () => {
       expect(spyClearcookie).toBeCalledWith('eligibilityCompleted');
       expect(spyClearcookie).toBeCalledWith('eligibility');
     });
+    it('should validate contact details when neither party is on the claim', async () => {
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.claimDetails = new ClaimDetails();
+        claim.claimDetails.helpWithFees = new HelpWithFees();
+        claim.claimDetails.helpWithFees.option = YesNo.NO;
+        claim.totalClaimAmount = 1000;
+        return claim;
+      });
+      await request(app)
+        .post(CLAIM_CHECK_ANSWERS_URL)
+        .send({
+          type: 'qualified',
+          isFullAmountRejected: 'true',
+          directionsQuestionnaireSigned: 'Test',
+          signerRole: 'Test',
+          signerName: 'Test',
+        })
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Enter telephone number');
+        });
+    });
+
+    it('should validate contact details when parties have no email or phone stored', async () => {
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
+        .mockResolvedValueOnce(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.applicant1 = new Party();
+        claim.respondent1 = new Party();
+        claim.claimDetails = new ClaimDetails();
+        claim.claimDetails.helpWithFees = new HelpWithFees();
+        claim.claimDetails.helpWithFees.option = YesNo.NO;
+        claim.totalClaimAmount = 1000;
+        return claim;
+      });
+      await request(app)
+        .post(CLAIM_CHECK_ANSWERS_URL)
+        .send({
+          type: 'qualified',
+          isFullAmountRejected: 'true',
+          directionsQuestionnaireSigned: 'Test',
+          signerRole: 'Test',
+          signerName: 'Test',
+        })
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Enter telephone number');
+        });
+    });
+
     it('should return 500 when error in service', async () => {
       mockGetSummarySections.mockImplementation(() => {
         throw new Error(TestMessages.REDIS_FAILURE);
@@ -409,6 +568,48 @@ describe('Claim - Check answers', () => {
           expect(res.status).toBe(500);
           expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
         });
+    });
+  });
+
+  // Mounted standalone so every shape of `req.session` reaches the controller and exercises
+  // both sides of the `session?.user?.id` chains on GET and POST.
+  describe.each([
+    {label: 'a signed-in user', session: {user: {id: 'user-id'}}},
+    {label: 'a session without a user', session: {}},
+    {label: 'no session at all', session: undefined},
+  ])('with $label', ({session}) => {
+    const sessionlessApp = express();
+    sessionlessApp.use(express.json());
+    sessionlessApp.use(express.urlencoded({extended: true}));
+    sessionlessApp.use((req, res, next) => {
+      (req as AppRequest).session = session as AppRequest['session'];
+      req.cookies = {};
+      res.render = ((view: string) => res.status(200).send(view)) as ExpressResponse['render'];
+      next();
+    });
+    sessionlessApp.use(claimCheckAnswersController);
+
+    beforeEach(() => {
+      mockGetSummarySections.mockReturnValue(undefined);
+      jest
+        .spyOn(CivilServiceClient.prototype, 'getClaimFeeData')
+        .mockResolvedValue(Promise.resolve({'calculatedAmountInPence': '50'}) as any);
+      mockGetClaim.mockImplementation(() => {
+        const claim = new Claim();
+        claim.claimDetails = new ClaimDetails();
+        claim.claimDetails.helpWithFees = new HelpWithFees();
+        claim.claimDetails.helpWithFees.option = YesNo.NO;
+        claim.totalClaimAmount = 1000;
+        return claim;
+      });
+    });
+
+    it('should still render the check answers page', async () => {
+      await request(sessionlessApp).get(CLAIM_CHECK_ANSWERS_URL).expect(200);
+    });
+
+    it('should still re-render the check answers page when the statement of truth is incomplete', async () => {
+      await request(sessionlessApp).post(CLAIM_CHECK_ANSWERS_URL).send({}).expect(200);
     });
   });
 });

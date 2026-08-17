@@ -33,6 +33,61 @@ describe('First contact - claim summary controller', () => {
     });
   });
 
+  it('should use language from the query string', async () => {
+    nock(civilServiceUrl)
+      .post('/fees/claim/calculate-interest')
+      .reply(200, '0');
+    nock(civilServiceUrl)
+      .post('/fees/claim/interest')
+      .reply(200, '0');
+    app.request['session'] = { 'firstContact': { claimId: '1645882162449404', pin: 'U2FsdGVkX1/zOWTQROZZZeiZIfqxcAIoSBnhZM6So0s=' } } as unknown as Session;
+    app.locals.draftStoreClient = mockCivilClaimWithTimelineAndEvidence;
+    await request(app)
+      .get(FIRST_CONTACT_CLAIM_SUMMARY_URL)
+      .query({lang: 'cy'})
+      .expect((res) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should use language from cookie when query is absent', async () => {
+    nock(civilServiceUrl)
+      .post('/fees/claim/calculate-interest')
+      .reply(200, '0');
+    nock(civilServiceUrl)
+      .post('/fees/claim/interest')
+      .reply(200, '0');
+    app.request['session'] = { 'firstContact': { claimId: '1645882162449404', pin: 'U2FsdGVkX1/zOWTQROZZZeiZIfqxcAIoSBnhZM6So0s=' } } as unknown as Session;
+    app.locals.draftStoreClient = mockCivilClaimWithTimelineAndEvidence;
+    await request(app)
+      .get(FIRST_CONTACT_CLAIM_SUMMARY_URL)
+      .set('Cookie', ['lang=en'])
+      .expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain(t('PAGES.FIRST_CONTACT_CLAIM_SUMMARY.PAGE_TITLE'));
+      });
+  });
+
+  it('should redirect when claim has no access code', async () => {
+    const claimData = JSON.parse(JSON.stringify(require('../../../../../utils/mocks/civilClaimResponseTimelineAndEvidenceMock.json')));
+    delete claimData.case_data.respondent1PinToPostLRspec;
+    const mockClient = {
+      get: jest.fn(() => Promise.resolve(JSON.stringify(claimData))),
+      set: jest.fn(() => Promise.resolve({})),
+      ttl: jest.fn(() => Promise.resolve(-1)),
+      expireat: jest.fn(() => Promise.resolve({})),
+    };
+    app.request['session'] = { 'firstContact': { claimId: '1645882162449404', pin: 'U2FsdGVkX1/zOWTQROZZZeiZIfqxcAIoSBnhZM6So0s=' } } as unknown as Session;
+    app.locals.draftStoreClient = mockClient;
+    await request(app)
+      .get(FIRST_CONTACT_CLAIM_SUMMARY_URL)
+      .query({lang: 'en'})
+      .expect((res) => {
+        expect(res.status).toBe(302);
+        expect(res.header.location).toBe(FIRST_CONTACT_ACCESS_DENIED_URL);
+      });
+  });
+
   it('should return 500 error page for redis failure', async () => {
     app.request['session'] = { 'firstContact': { claimId: '1645882162449404', pin: 'U2FsdGVkX1/zOWTQROZZZeiZIfqxcAIoSBnhZM6So0s=' } } as unknown as Session;
     app.locals.draftStoreClient = mockRedisFailure;

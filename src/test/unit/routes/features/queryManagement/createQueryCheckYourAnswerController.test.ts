@@ -59,6 +59,39 @@ describe('create query check your answer controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      mockGetClaimById.mockImplementation(async () => {
+        const claim = new Claim();
+        claim.queryManagement = new QueryManagement();
+        const date = new Date();
+        claim.queryManagement.createQuery = new CreateQuery('Dummy subject', 'Message details', 'Yes', (date.getFullYear() + 1).toString(), date.getMonth().toString(), date.getDay().toString());
+        return claim;
+      });
+      await request(app)
+        .get(QM_CYA)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetClaimById.mockImplementation(async () => {
+        const claim = new Claim();
+        claim.queryManagement = new QueryManagement();
+        const date = new Date();
+        claim.queryManagement.createQuery = new CreateQuery('Dummy subject', 'Message details', 'Yes', (date.getFullYear() + 1).toString(), date.getMonth().toString(), date.getDay().toString());
+        return claim;
+      });
+      await request(app)
+        .get(QM_CYA)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Dummy subject');
+        });
+    });
+
     it('should render query page from follow up', async () => {
       mockGetClaimById.mockImplementation(async () => {
         const claim = new Claim();

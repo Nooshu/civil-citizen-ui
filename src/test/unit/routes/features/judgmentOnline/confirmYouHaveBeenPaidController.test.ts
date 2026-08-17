@@ -52,6 +52,36 @@ describe('Confirm you have been paid', () => {
         });
     });
 
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await testSession
+        .get(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', claimId))
+        .expect((res: { status: unknown; text: unknown; }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.CONFIRM_YOU_HAVE_BEEN_PAID_PAGE_TITLE);
+        });
+    });
+
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await testSession
+        .get(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res: { status: unknown; text: unknown; }) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should reset language to English for following tests', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await testSession
+        .get(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', claimId))
+        .query({lang: 'en'})
+        .expect((res: { status: unknown }) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return "Something went wrong" page when claim does not exist', async () => {
     //Given
       app.locals.draftStoreClient = mockRedisFailure;
@@ -129,6 +159,16 @@ describe('Confirm you have been paid', () => {
         .expect((res: {status: unknown, header: {location: unknown}, text: unknown;}) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.CONFIRM_YOU_HAVE_BEEN_PAID_CHECK_ERROR_MESSAGE);
+        });
+    });
+
+    it('should use language from query when re-rendering validation errors', async () => {
+      await testSession
+        .post(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', '1645882162449409'))
+        .query({lang: 'cy'})
+        .send({ day:2, month:3, year: 2024, confirm:false })
+        .expect((res: {status: unknown}) => {
+          expect(res.status).toBe(200);
         });
     });
 
@@ -238,7 +278,20 @@ describe('Confirm you have been paid', () => {
       //When
       await testSession
         .post(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', '1234'))
+        .query({lang: 'en'})
       //Then
+        .expect((res: { status: unknown; text: unknown; }) => {
+          expect(res.status).toBe(500);
+          expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
+        });
+    });
+
+    it('should return error when defendant posts confirmation', async () => {
+      app.locals.draftStoreClient = mockCivilClaimDefendantCaseProgression;
+      await testSession
+        .post(CONFIRM_YOU_HAVE_BEEN_PAID_URL.replace(':id', '1645882162449409'))
+        .query({lang: 'en'})
+        .send({ day:2, month:3, year: 2024, confirmed:true })
         .expect((res: { status: unknown; text: unknown; }) => {
           expect(res.status).toBe(500);
           expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);

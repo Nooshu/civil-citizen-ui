@@ -1,4 +1,5 @@
 import request from 'supertest';
+import express, {Response} from 'express';
 import {app} from '../../../../../main/app';
 import {QM_QUERY_DETAILS_URL} from 'routes/urls';
 import nock from 'nock';
@@ -8,6 +9,8 @@ import {CIVIL_SERVICE_CASES_URL} from 'client/civilServiceUrls';
 import {CaseRole} from 'form/models/caseRoles';
 import {FormattedDocument, QueryDetail, QueryListItem} from 'form/models/queryManagement/viewQuery';
 import {YesNoUpperCamelCase} from 'form/models/yesNo';
+import {AppRequest} from 'models/AppRequest';
+import qmViewQueryDetailsController from 'routes/features/queryManagement/qmViewQueryDetailsController';
 
 const buildQueryListItemsByQueryIdMock = ViewQueriesService.ViewQueriesService.buildQueryListItemsByQueryId as jest.Mock;
 
@@ -102,6 +105,41 @@ describe('View query controller', () => {
           expect(res.text).toContain('You');
           expect(res.text).toContain('Sent on');
           expect(res.text).not.toContain('Send a follow up message');
+        });
+    });
+
+    it('should use language from the query string', async () => {
+      buildQueryListItemsByQueryIdMock.mockReturnValue(new QueryDetail(
+        'Query 1',
+        'PAGES.QM.VIEW_QUERY.STATUS_SENT',
+        Array.of(queryMessage()), false, '',
+      ));
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .get(QM_QUERY_DETAILS_URL.replace(':id', claimId).replace(':queryId', '123456'))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      buildQueryListItemsByQueryIdMock.mockReturnValue(new QueryDetail(
+        'Query 1',
+        'PAGES.QM.VIEW_QUERY.STATUS_SENT',
+        Array.of(queryMessage()), false, '',
+      ));
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      await request(app)
+        .get(QM_QUERY_DETAILS_URL.replace(':id', claimId).replace(':queryId', '123456'))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Query 1');
         });
     });
 
@@ -212,6 +250,50 @@ describe('View query controller', () => {
           expect(res.text).not.toContain('Only send follow up messages related to the original query.');
           expect(res.text).not.toContain('Sending follow up messages that are not related will delay the court’s response.');
         });
+    });
+
+    it('should return http 500 when retrieve claim fails', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(500);
+      await request(app)
+        .get(QM_QUERY_DETAILS_URL.replace(':id', claimId).replace(':queryId', '123456'))
+        .query({lang: 'en'})
+        .expect((res) => {
+          expect(res.status).toBe(500);
+        });
+    });
+  });
+
+  // Mounted standalone so every shape of `req.session` reaches the controller and exercises
+  // both sides of the `session?.user?.id` chain.
+  describe.each([
+    {label: 'a signed-in user', session: {user: {id: 'user-id'}}},
+    {label: 'a session without a user', session: {}},
+    {label: 'no session at all', session: undefined},
+  ])('with $label', ({session}) => {
+    const sessionlessApp = express();
+    sessionlessApp.use((req, res, next) => {
+      (req as AppRequest).session = session as AppRequest['session'];
+      req.cookies = {};
+      res.render = ((view: string) => res.status(200).send(view)) as Response['render'];
+      next();
+    });
+    sessionlessApp.use(qmViewQueryDetailsController);
+
+    it('should still render the query details page', async () => {
+      buildQueryListItemsByQueryIdMock.mockReturnValue(new QueryDetail(
+        'Query 1',
+        'PAGES.QM.VIEW_QUERY.STATUS_SENT',
+        Array.of(queryMessage()), false, '',
+      ));
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+
+      await request(sessionlessApp)
+        .get(QM_QUERY_DETAILS_URL.replace(':id', claimId).replace(':queryId', '123456'))
+        .expect(200);
     });
   });
 });

@@ -44,7 +44,8 @@ applicationSummaryController.get(GA_APPLICATION_SUMMARY_URL, async (req: AppRequ
     const applicationsRows: ApplicationSummary[] = [];
     for (const application of visibleApplications) {
       const index = applications.indexOf(application);
-      const isApplicant = application.case_data.parentClaimantIsApplicant === YesNoUpperCamelCase.YES;
+      // Optional chain matches later `case_data?.` reads so a sparse GA payload does not throw here first.
+      const isApplicant = application.case_data?.parentClaimantIsApplicant === YesNoUpperCamelCase.YES;
       const status = getApplicationStatus(isApplicant, application.state);
       const type = displayToEnumKey(application.case_data?.applicationTypes);
       let typeString = t(`PAGES.GENERAL_APPLICATION.SUMMARY.APPLICATION_TYPE_CCD.${type}`, {lng});

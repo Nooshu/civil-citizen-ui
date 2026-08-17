@@ -65,6 +65,26 @@ describe('Query management what do do controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      mockGetCaption.mockImplementation(() => `PAGES.QM.CAPTIONS.${WhatToDoTypeOption.GET_UPDATE}`);
+      await request(app)
+        .get(getUrlByQmType(WhatToDoTypeOption.GET_UPDATE))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      mockGetCaption.mockImplementation(() => `PAGES.QM.CAPTIONS.${WhatToDoTypeOption.GET_UPDATE}`);
+      await request(app)
+        .get(getUrlByQmType(WhatToDoTypeOption.GET_UPDATE))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it.each([
       [WhatToDoTypeOption.MANAGE_HEARING, QualifyingQuestionTypeOption.MANAGE_HEARING_SOMETHING_ELSE],
     ])(
@@ -112,6 +132,24 @@ describe('Query management what do do controller', () => {
             });
         },
       );
+
+      it('should use language from the query string when re-rendering validation errors', async () => {
+        await request(app)
+          .post(getUrlByQmType(WhatToDoTypeOption.GET_UPDATE))
+          .query({lang: 'cy'})
+          .expect((res) => {
+            expect(res.status).toBe(200);
+          });
+      });
+
+      it('should use language from cookie when re-rendering validation errors', async () => {
+        await request(app)
+          .post(getUrlByQmType(WhatToDoTypeOption.GET_UPDATE))
+          .set('Cookie', ['lang=en'])
+          .expect((res) => {
+            expect(res.status).toBe(200);
+          });
+      });
     });
 
     describe('Redirection Tests', () => {

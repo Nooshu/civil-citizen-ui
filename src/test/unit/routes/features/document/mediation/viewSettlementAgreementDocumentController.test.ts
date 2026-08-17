@@ -59,6 +59,41 @@ describe('view mediation settlement agreement document controller', () => {
         });
     });
 
+    it('should use language from query and defendant dashboard url', async () => {
+      nock.cleanAll();
+      nock(idamUrl)
+        .post('/o/token')
+        .reply(200, {id_token: citizenRoleToken});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.DEFENDANT]);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, MEDIATION_AGREEMENT_MOCK());
+
+      await request(app)
+        .get(VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/defendant`);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, MEDIATION_AGREEMENT_MOCK());
+
+      await request(app)
+        .get(VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT.replace(':id', claimId))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/claimant`);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       //given
       nock(civilServiceUrl)

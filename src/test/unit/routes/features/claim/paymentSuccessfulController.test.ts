@@ -39,21 +39,56 @@ describe('Apply for help with fees', () => {
           expect(res.text).toContain('Hearing fee');
         });
     });
+
+    it('should use language from the query string', async () => {
+      const caseData = Object.assign(new Claim(), claim.case_data);
+      jest
+        .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValueOnce(caseData);
+      app.request.cookies = {lang: 'en'};
+      app.locals.draftStoreClient = mockCivilClaimHearingFee;
+      await request(app)
+        .get(PAY_HEARING_FEE_SUCCESSFUL_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return resolving successful payment page in english', async () => {
       const caseData = Object.assign(new Claim(), claim.case_data);
       jest
         .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
         .mockResolvedValueOnce(caseData);
+      app.request.cookies = {lang: 'en'};
       app.locals.draftStoreClient = mockCivilClaimHearingFee;
       await request(app)
         .get(PAY_HEARING_FEE_SUCCESSFUL_URL)
+        .query({lang: 'en'})
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(t('PAGES.PAYMENT_CONFIRMATION.SUCCESSFUL.PAGE_TITLE',{lng:'en'}));
           expect(res.text).toContain(t('PAGES.PAYMENT_CONFIRMATION.SUCCESSFUL.PAYMENT_IS',{lng:'en'}));
-          expect(res.text).toContain(t('COMMON.MICRO_TEXT.HEARING_FEE',{lng:'cy'}));
+          expect(res.text).toContain(t('COMMON.MICRO_TEXT.HEARING_FEE',{lng:'en'}));
         });
     });
+
+    it('should render when hearing fee amount is missing', async () => {
+      const caseData = Object.assign(new Claim(), claim.case_data);
+      caseData.caseProgressionHearing = undefined;
+      jest
+        .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValueOnce(caseData);
+      app.request.cookies = {lang: 'en'};
+      app.locals.draftStoreClient = mockCivilClaimHearingFee;
+      await request(app)
+        .get(PAY_HEARING_FEE_SUCCESSFUL_URL)
+        .query({lang: 'en'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return resolving successful payment page in welsh', async () => {
       const caseData = Object.assign(new Claim(), claim.case_data);
       jest

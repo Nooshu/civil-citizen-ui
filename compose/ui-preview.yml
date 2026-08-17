@@ -1,0 +1,26 @@
+services:
+  wiremock:
+    image: wiremock/wiremock:3.9.1
+    ports:
+      - "1111:8080"
+    volumes:
+      # Includes create-claim + health + ui-preview-*.json mappings
+      - ../charts/civil-citizen-ui/wiremock/mappings:/home/wiremock/mappings:ro
+    command: ["--global-response-templating", "--disable-gzip", "--verbose"]
+
+  citizen-ui:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ui-preview
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: e2eTest
+      PORT: "3001"
+      CIVIL_SERVICE_URL: http://wiremock:8080
+      ORDNANCE_SURVEY_API_URL: http://wiremock:8080
+      ORDNANCE_SURVEY_API_KEY: mock-key
+      LOG_LEVEL: INFO
+      APPINSIGHTS_KEY: ""
+    depends_on:
+      - wiremock

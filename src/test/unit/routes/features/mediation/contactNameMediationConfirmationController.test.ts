@@ -11,6 +11,7 @@ import {TestMessages} from '../../../../utils/errorMessageTestConstants';
 import * as draftStoreService from 'modules/draft-store/draftStoreService';
 
 import {mockCivilClaim, mockCivilClaimClaimantIntention, mockRedisFailure} from '../../../../utils/mockDraftStore';
+import {Claim} from 'models/claim';
 
 jest.mock('../../../../../main/modules/oidc');
 
@@ -37,6 +38,42 @@ describe('Mediation Contact Person Mediation Confirmation Controller', () => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.MEDIATION_CONTACT_PERSON_CONFIRMATION);
         });
+    });
+
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(MEDIATION_CONTACT_PERSON_CONFIRMATION_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(MEDIATION_CONTACT_PERSON_CONFIRMATION_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.MEDIATION_CONTACT_PERSON_CONFIRMATION);
+        });
+    });
+
+    it('should return Contact Person Confirmation page for claimant response', async () => {
+      const claim = new Claim();
+      claim.applicant1AdditionalLipPartyDetails = {contactPerson: 'Claimant Contact'};
+      jest.spyOn(claim, 'isClaimantIntentionPending').mockReturnValue(true);
+      jest.spyOn(draftStoreService, 'getCaseDataFromStore').mockResolvedValue(claim);
+
+      await request(app)
+        .get(MEDIATION_CONTACT_PERSON_CONFIRMATION_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Claimant Contact');
+        });
+
+      jest.restoreAllMocks();
+      jest.spyOn(draftStoreService, 'generateRedisKey').mockReturnValue('12345');
     });
 
     it('should return http 500 when has error', async () => {

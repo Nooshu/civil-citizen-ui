@@ -56,6 +56,24 @@ describe('General Application - Respondent Agree to order', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(GA_RESPONDENT_INFORMATION_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(GA_RESPONDENT_INFORMATION_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error in the get method', async () => {
 
       mockGetClaim.mockImplementation(() => {
