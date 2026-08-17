@@ -1,0 +1,13 @@
+---
+description: Never invent JIRA or ticket IDs in commits, PRs, or docs
+alwaysApply: true
+---
+
+# No invented JIRA / ticket IDs
+
+Do **not** make up ticket keys.
+
+- Never invent or guess IDs such as `DTSCCI-####`, `CIV-####`, or similar in commit messages, PR titles/bodies, branch names, or documentation
+- Only include a ticket key when the user **explicitly** provides it for that change
+- If no ticket is given, write a normal conventional message **without** a ticket prefix
+- Do not “fill in” a plausible ticket number from nearby commits, branch names, or habit

@@ -1,0 +1,15 @@
+---
+description: Never attribute Cursor agent identity on git commits or pushes
+alwaysApply: true
+---
+
+# No Cursor agent on commits or pushes
+
+Never attach Cursor agent identity to git history.
+
+- Do **not** add `Co-Authored-By`, `Co-authored-by`, or any trailer naming Cursor, Cursor Agent, `cursoragent`, or similar
+- Do **not** set commit author or committer to a Cursor / agent identity
+- Do **not** amend, rewrite, or push in a way that injects agent attribution
+- Commit messages must not claim the agent as an author, co-author, or signer
+- Use only the user’s configured git identity for author/committer
+- If a hook or tool would add agent co-author metadata, omit or strip it before committing or pushing

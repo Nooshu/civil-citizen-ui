@@ -1,0 +1,15 @@
+---
+description: After server TypeScript changes, verify build/tests and fix compile errors
+alwaysApply: true
+---
+
+# Verify build and tests after server TypeScript changes
+
+When you change server/app TypeScript (`src/main/**/*.ts`, routes, services, modules, clients, form models, etc.):
+
+1. Run a TypeScript-aware check before considering the work done — prefer focused Jest on touched modules, and `yarn build` when the change affects webpack-served assets or compile paths
+2. Run relevant tests (`yarn test`, focused Jest suites under `src/test/unit`, or `yarn test:integration` when routes/middleware are involved)
+3. **Fix compile errors** (and failing type-check) in the same change — do not leave `ts-node` / webpack / Jest transform red
+4. Fix test failures caused by the TypeScript change in the same change when they are clear regressions
+5. If a failure is environmental or pre-existing and unrelated, say so in the summary; do not ignore new compile errors introduced by your edit
+6. Prefer fixing types properly (interfaces, form classes, service return types) over silencing with `any` or `@ts-ignore` unless explicitly required and documented

@@ -11,7 +11,7 @@ const {assert} = chai;
 const claimType = 'SmallClaims';
 const ccjRequestedTitle = 'The CCJ has been requested';
 const ccjRequestedContent = ['A judgment against the defendant has been requested.', 'You will be notified when this judgment is granted.'];
-// eslint-disable-next-line no-unused-vars
+ 
 let claimRef, caseData, claimNumber;
 
 function londonBackdate(hoursAgo) {

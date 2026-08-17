@@ -672,7 +672,7 @@ export class CivilServiceClient {
     const responseRoles = response.data as string[];
     return responseRoles
       .map(role => Object.values(CaseRole).find(enumValue => enumValue === role))
-      .at(0);
+      [0];
   }
 
   async getCalculatedDecisionOnClaimantProposedRepaymentPlan(claimId: RouteParam, req: AppRequest, claimantProposedPlan: CCDClaimantProposedPlan) :Promise<RepaymentDecisionType> {

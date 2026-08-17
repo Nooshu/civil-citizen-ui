@@ -1,0 +1,14 @@
+---
+description: Prefer GOV.UK Frontend over axe / axe-core when they conflict
+alwaysApply: true
+---
+
+# Prefer GOV.UK Frontend over axe
+
+When accessibility tooling conflicts with the Design System, **GOV.UK Frontend wins**.
+
+- Prefer official **GOV.UK Frontend** HTML (macros), CSS, and JS over changes driven solely by **axe** / **axe-core** (or similar automated a11y scanners)
+- Do **not** deviate from GOV.UK Frontend markup, classes, attributes, or behaviour just to silence an axe rule
+- If axe reports an issue that is inherent to official GOV.UK Frontend output or documented Design System patterns, treat that as an acceptable false conflict: document/disable the specific rule in tests if needed, rather than rewriting GOV.UK components
+- Custom page composition may still follow axe guidance **only** where it does not alter or contradict GOV.UK Frontend components
+- When investigating a conflict, verify against current GOV.UK Frontend docs and macros before changing UI code

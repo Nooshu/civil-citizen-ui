@@ -79,8 +79,9 @@ In order to test if the application is up, you can visit https://localhost:3001 
 
 ### Code style
 
-We use [ESLint](https://github.com/typescript-eslint/typescript-eslint)
-alongside [stylelint](https://github.com/stylelint/stylelint)
+We use [ESLint](https://eslint.org/) **10** (flat config in `eslint.config.mjs`) with
+[@typescript-eslint](https://typescript-eslint.io/) alongside [stylelint](https://stylelint.io/).
+Windows line endings: `yarn lint:win` (uses `eslint.config.win.mjs`).
 
 Running the linting with auto fix:
 ```bash
