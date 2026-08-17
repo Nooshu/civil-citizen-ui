@@ -8753,12 +8753,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flat@npm:^5.0.1":
-  version: 5.0.2
-  resolution: "flat@npm:5.0.2"
+"flat@npm:6.0.1":
+  version: 6.0.1
+  resolution: "flat@npm:6.0.1"
   bin:
     flat: cli.js
-  checksum: 10/72479e651c15eab53e25ce04c31bab18cfaac0556505cac19221dbbe85bbb9686bc76e4d397e89e5bf516ce667dcf818f8b07e585568edba55abc2bf1f698fb5
+  checksum: 10/c7a5f2e7e3ba0bec28b9c3aca27e68ff74df446df15cdb77ddef9e3d4fd0e9321ca52e49ca8b861c46157215006666b0dad25457f231083fc7bd2f7fcb67d7eb
   languageName: node
   linkType: hard
 
@@ -15841,7 +15841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs-unparser@npm:^2.0.0":
+"yargs-unparser@npm:2.0.0":
   version: 2.0.0
   resolution: "yargs-unparser@npm:2.0.0"
   dependencies:
@@ -15850,6 +15850,18 @@ __metadata:
     flat: "npm:^5.0.2"
     is-plain-obj: "npm:^2.1.0"
   checksum: 10/68f9a542c6927c3768c2f16c28f71b19008710abd6b8f8efbac6dcce26bbb68ab6503bed1d5994bdbc2df9a5c87c161110c1dfe04c6a3fe5c6ad1b0e15d9a8a3
+  languageName: node
+  linkType: hard
+
+"yargs-unparser@patch:yargs-unparser@npm%3A2.0.0#./.yarn/patches/yargs-unparser-npm-2.0.0-930f3ff3f6.patch::locator=civil-citizen-ui%40workspace%3A.":
+  version: 2.0.0
+  resolution: "yargs-unparser@patch:yargs-unparser@npm%3A2.0.0#./.yarn/patches/yargs-unparser-npm-2.0.0-930f3ff3f6.patch::version=2.0.0&hash=954913&locator=civil-citizen-ui%40workspace%3A."
+  dependencies:
+    camelcase: "npm:^6.0.0"
+    decamelize: "npm:^4.0.0"
+    flat: "npm:^5.0.2"
+    is-plain-obj: "npm:^2.1.0"
+  checksum: 10/516fd56b9fd984579e24839caf2326cb0364abdd38578c2a9266b40a81c7e8f25eab6e2aff7ff79cb0899ae7aad9cfbd34f60982e4a42c87d5bd4fb44b285eef
   languageName: node
   linkType: hard
 

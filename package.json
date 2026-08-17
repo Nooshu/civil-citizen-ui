@@ -215,7 +215,7 @@
     "glob-parent": "^6.0.1",
     "js-yaml": "4.3.1",
     "qs": "^6.15.2",
-    "flat": "^5.0.1",
+    "flat": "6.0.1",
     "follow-redirects": "^1.16.0",
     "debug": "^4.3.4",
     "semver": "^7.5.2",
@@ -251,7 +251,8 @@
     "@opentelemetry/core": "^2.8.0",
     "lodash": "^4.18.1",
     "express/body-parser": "^2.3.0",
-    "@pact-foundation/pact/body-parser": "^1.20.6"
+    "@pact-foundation/pact/body-parser": "^1.20.6",
+    "yargs-unparser@npm:^2.0.0": "patch:yargs-unparser@npm%3A2.0.0#./.yarn/patches/yargs-unparser-npm-2.0.0-930f3ff3f6.patch"
   },
   "packageManager": "yarn@4.10.3"
 }
