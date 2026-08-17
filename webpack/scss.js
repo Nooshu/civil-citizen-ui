@@ -29,7 +29,17 @@ module.exports = {
             url: false,
           },
         },
-        'sass-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            // Quiet dependency @import noise; silence Dart Sass deprecations until @use migration.
+            // https://frontend.design-system.service.gov.uk/import-css/#silence-deprecation-warnings-from-dependencies-in-dart-sass
+            sassOptions: {
+              quietDeps: true,
+              silenceDeprecations: ['import', 'legacy-js-api'],
+            },
+          },
+        },
       ],
     },
   ],

@@ -57,6 +57,32 @@ $ yarn start
 
 The application's home page will be available at https://localhost:3001
 
+### UI Preview (no IDAM)
+
+To browse live Nunjucks pages **without login or the full CCD stack**, use the UI Preview Docker stack.
+
+One command (stops anything on ports `3001`/`1111`, rebuilds webpack assets in Docker, starts WireMock + CUI, then prints the URL):
+
+```bash
+yarn preview
+```
+
+Same as `yarn start:ui-preview`. When ready, open **http://localhost:3001/ui-preview**.
+
+| Mode | Command | Auth | Backends |
+|------|---------|------|----------|
+| **UI Preview** | `yarn preview` | None (`e2eTest`) | WireMock + in-memory Redis fixtures |
+| Local full | `yarn start:dev` | IDAM | Redis + real services on localhost |
+| Mocked functional | `yarn test:mocked-functional` | None | WireMock (automated browser tests) |
+
+Stop preview with `yarn start:ui-preview:down`.
+
+Compose file: [`compose/ui-preview.yml`](compose/ui-preview.yml). WireMock stubs for the preview fixture claim live in
+[`compose/ui-preview-mappings/`](compose/ui-preview-mappings/), deliberately separate from the
+validated reduced-stack contracts in `charts/civil-citizen-ui/wiremock/mappings` (see
+[reduced-stack WireMock contracts](docs/reduced-stack-wiremock-contracts.md)). The compose stack mounts the preview
+stubs as the WireMock mappings root and the chart contracts as a nested `reduced-stack/` directory, so both sets load.
+
 ### Running with Docker
 
 Create docker image:
