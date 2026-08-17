@@ -204,7 +204,7 @@
     "undici": "7.29.0",
     "table/ajv": "^8.18.0",
     "@tootallnate/once": "^3.0.1",
-    "test-exclude": "^7.0.1",
+    "test-exclude": "8.0.0",
     "csurf": "npm:@dr.pogodin/csurf@^1.16.8",
     "otplib": "^13.0.0",
     "glob": "13.0.6",
