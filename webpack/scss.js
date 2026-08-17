@@ -1,3 +1,4 @@
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
@@ -34,9 +35,12 @@ module.exports = {
           options: {
             // Quiet dependency @import noise; silence Dart Sass deprecations until @use migration.
             // https://frontend.design-system.service.gov.uk/import-css/#silence-deprecation-warnings-from-dependencies-in-dart-sass
+            // sass-loader@17 uses the modern Sass API only; loadPaths keeps
+            // `@import 'node_modules/...'` resolving from the repo root.
             sassOptions: {
               quietDeps: true,
-              silenceDeprecations: ['import', 'legacy-js-api'],
+              silenceDeprecations: ['import'],
+              loadPaths: [path.resolve(__dirname, '..')],
             },
           },
         },
