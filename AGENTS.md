@@ -46,7 +46,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
 - After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix — see `.cursor/rules/dependency-pinning.mdc`
-  - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite
+  - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
   - Long coverage runs: background and poll with ≤1 minute waits — see `.cursor/rules/shell-wait-limits.mdc`
 
 ## Package-only updates (auto origin sync)
@@ -118,6 +118,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
   - `yarn test:functional` — CodeceptJS functional (needs env)
   - `yarn tests:a11y` — Pa11y accessibility
   - Playwright security specs under `playwright/tests/`
+- All Jest entry points run through `node --no-sparkplug ./node_modules/jest/bin/jest.js`. Sparkplug plus the `vm` module Jest uses to execute test files triggers a V8 13.6 garbage-collector segfault in `ClearStaleLeftTrimmedPointerVisitor`, which kills a random worker mid-run ([nodejs/node#62393](https://github.com/nodejs/node/issues/62393), still present in Node 24.18.0). Jest forks workers with the parent's `execArgv`, so setting the flag on the entry point covers them. Keep the flag when editing test scripts, and do not move it into `NODE_OPTIONS` — Node rejects V8 flags there.
 
 ## Git and commits
 
