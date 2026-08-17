@@ -13,6 +13,10 @@ import {
 } from 'routes/urls';
 import {TestMessages} from '../../../../utils/errorMessageTestConstants';
 import {YesNo} from 'form/models/yesNo';
+import * as launchDarkly from '../../../../../main/app/auth/launchdarkly/launchDarklyClient';
+import {Claim} from 'models/claim';
+import * as supportRequiredService from 'services/features/directionsQuestionnaire/supportRequiredService';
+import {SupportRequiredList} from 'models/directionsQuestionnaire/supportRequired';
 
 jest.mock('../../../../../main/modules/oidc');
 jest.mock('../../../../../main/modules/draft-store');
@@ -27,6 +31,7 @@ describe('Support required', () => {
     nock(idamServiceUrl)
       .post('/o/token')
       .reply(200, {id_token: citizenRoleToken});
+    jest.spyOn(launchDarkly, 'isCarmEnabledForCase').mockResolvedValue(false);
   });
 
   describe('on GET', () => {
@@ -39,6 +44,55 @@ describe('Support required', () => {
           expect(res.text).toContain('Do you, your experts or witnesses need support to attend a hearing');
         });
     });
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaimWithExpertAndWitness;
+      await request(app)
+        .get(supportRequiredUrl)
+        .query({lang: 'cy'})
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaimWithExpertAndWitness;
+      await request(app)
+        .get(supportRequiredUrl)
+        .set('Cookie', ['lang=en'])
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Do you, your experts or witnesses need support to attend a hearing');
+        });
+    });
+    it('should enable carm path when feature flag and small claims track apply', async () => {
+      app.locals.draftStoreClient = mockCivilClaimWithExpertAndWitness;
+      jest.spyOn(launchDarkly, 'isCarmEnabledForCase').mockResolvedValueOnce(true);
+      jest.spyOn(Claim.prototype, 'isSmallClaimsTrackDQ', 'get').mockReturnValueOnce(true);
+      await request(app)
+        .get(supportRequiredUrl)
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+    it('should render when the stored support required list is undefined', async () => {
+      app.locals.draftStoreClient = mockCivilClaimWithExpertAndWitness;
+      jest.spyOn(supportRequiredService, 'getSupportRequired').mockResolvedValueOnce(undefined);
+      await request(app)
+        .get(supportRequiredUrl)
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should render when the stored support required list has no people', async () => {
+      app.locals.draftStoreClient = mockCivilClaimWithExpertAndWitness;
+      jest.spyOn(supportRequiredService, 'getSupportRequired').mockResolvedValueOnce(new SupportRequiredList());
+      await request(app)
+        .get(supportRequiredUrl)
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return status 500 when error thrown', async () => {
       app.locals.draftStoreClient = mockRedisFailure;
       await request(app)
@@ -56,6 +110,44 @@ describe('Support required', () => {
     });
 
     it('wshould display error when there is no option selection', async () => {
+      await request(app)
+        .post(supportRequiredUrl)
+        .send({
+          model: {items:[]},
+        })
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.SELECT_YES_IF_SUPPORT);
+        });
+    });
+
+    it('should use language from query when re-rendering validation errors', async () => {
+      await request(app)
+        .post(supportRequiredUrl)
+        .query({lang: 'cy'})
+        .send({
+          model: {items:[]},
+        })
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(supportRequiredUrl)
+        .set('Cookie', ['lang=en'])
+        .send({
+          model: {items:[]},
+        })
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should evaluate the carm small claims path when re-rendering validation errors', async () => {
+      jest.spyOn(launchDarkly, 'isCarmEnabledForCase').mockResolvedValueOnce(true);
+      jest.spyOn(Claim.prototype, 'isSmallClaimsTrackDQ', 'get').mockReturnValueOnce(true);
       await request(app)
         .post(supportRequiredUrl)
         .send({

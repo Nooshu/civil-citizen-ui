@@ -24,6 +24,47 @@ describe(('For Address Form'), () => {
     });
   });
 
+  describe('helpers', () => {
+    it('should report empty when all fields are blank', () => {
+      expect(new Address().isEmpty()).toBeTruthy();
+      expect(new Address('', '', '', '', '').isEmpty()).toBeTruthy();
+    });
+
+    it('should report not empty when any field is set', () => {
+      expect(new Address('1 High Street').isEmpty()).toBeFalsy();
+    });
+
+    it('should build Address.fromObject with indexed fields', () => {
+      const address = Address.fromObject({
+        addressLine1: ['Line 1'],
+        addressLine2: ['Line 2'],
+        addressLine3: ['Line 3'],
+        city: ['London'],
+        postCode: ['SW1A 1AA'],
+      } as unknown as Record<string, string>, 0);
+      expect(address.addressLine1).toBe('Line 1');
+      expect(address.city).toBe('London');
+      expect(address.postCode).toBe('SW1A 1AA');
+    });
+
+    it('should return empty Address.fromObject when addressLine1 missing', () => {
+      const address = Address.fromObject({city: ['London']} as unknown as Record<string, string>, 0);
+      expect(address.isEmpty()).toBeTruthy();
+    });
+
+    it('should build Address.fromObject with empty optional indexed fields', () => {
+      const address = Address.fromObject({
+        addressLine1: ['Only line'],
+        addressLine2: [''],
+        addressLine3: [''],
+        city: [''],
+        postCode: [''],
+      } as unknown as Record<string, string>, 0);
+      expect(address.addressLine1).toBe('Only line');
+      expect(address.isEmpty()).toBeFalsy();
+    });
+  });
+
   describe('judgment online validation', () => {
     it('should not throw error if address length OK', async () => {
       //Given

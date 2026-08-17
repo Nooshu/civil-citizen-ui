@@ -55,6 +55,24 @@ describe('Query management start Controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return query management start page and remove the old QM information', async () => {
       await request(app)
         .get(`${CONTROLLER_URL}?linkFrom=start`)
@@ -80,6 +98,25 @@ describe('Query management start Controller', () => {
     it('should Valid page', async () => {
       await request(app)
         .post(CONTROLLER_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.QUERY_MANAGEMENT_YOU_MUST_SELECT);
+        });
+    });
+
+    it('should use language from the query string when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.QUERY_MANAGEMENT_YOU_MUST_SELECT);

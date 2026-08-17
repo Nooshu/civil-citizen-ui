@@ -40,6 +40,23 @@ describe('Judgment Amount Summary Extended', () => {
       expect(res.text).toContain('Judgment amount');
     });
 
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
+      const res = await request(app)
+        .get(CCJ_EXTENDED_PAID_AMOUNT_SUMMARY_URL)
+        .query({lang: 'cy'});
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaimClaimantIntention;
+      const res = await request(app)
+        .get(CCJ_EXTENDED_PAID_AMOUNT_SUMMARY_URL)
+        .set('Cookie', ['lang=en']);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('Judgment amount');
+    });
+
     it('should return http 500 when has error in the get method - from claimant response task-list', async () => {
       app.locals.draftStoreClient = mockRedisFailure;
       await request(app)

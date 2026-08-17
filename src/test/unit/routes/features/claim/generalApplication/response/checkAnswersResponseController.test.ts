@@ -81,6 +81,48 @@ describe('General application - response - check your answers', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      const gaResponse = new GaResponse();
+      gaResponse.generalApplicationType = [ApplicationTypeOption.ADJOURN_HEARING];
+      gaResponse.hasUnavailableDatesHearing = YesNo.YES;
+      mockGetCaseData.mockResolvedValueOnce(new Claim());
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const gaResponse = new GaResponse();
+      gaResponse.generalApplicationType = [ApplicationTypeOption.ADJOURN_HEARING];
+      gaResponse.hasUnavailableDatesHearing = YesNo.YES;
+      mockGetCaseData.mockResolvedValueOnce(new Claim());
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use multi-application caption when more than one type', async () => {
+      const gaResponse = new GaResponse();
+      gaResponse.generalApplicationType = [ApplicationTypeOption.ADJOURN_HEARING, ApplicationTypeOption.STAY_THE_CLAIM];
+      gaResponse.hasUnavailableDatesHearing = YesNo.YES;
+      mockGetCaseData.mockResolvedValueOnce(new Claim());
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.CHECK_YOUR_ANSWER_RESPONSE.RESPOND_TO_AN_APPLICATION'));
+        });
+    });
+
     it('displays response data', async () => {
       const gaResponse = new GaResponse();
       gaResponse.respondentAgreement = new RespondentAgreement(YesNo.YES);
@@ -98,6 +140,30 @@ describe('General application - response - check your answers', () => {
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.RESPONDENT_AGREEMENT.TITLE'));
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.CHECK_YOUR_ANSWER.NEED_ADJUSTMENTS'));
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.HEARING_SUPPORT.SUPPORT.HEARING_LOOP'));
+        });
+    });
+
+    it.each([
+      CaseRole.APPLICANTSOLICITORONE,
+      CaseRole.DEFENDANT,
+    ])('should show the qualified statement of truth for a business acting as %s', async (caseRole) => {
+      const claim = new Claim();
+      claim.caseRole = caseRole;
+      claim.applicant1 = new Party();
+      claim.applicant1.type = PartyType.ORGANISATION;
+      claim.respondent1 = new Party();
+      claim.respondent1.type = PartyType.ORGANISATION;
+      mockGetClaimId.mockResolvedValue(claim);
+      const gaResponse = new GaResponse();
+      gaResponse.generalApplicationType = [ApplicationTypeOption.ADJOURN_HEARING];
+      gaResponse.hasUnavailableDatesHearing = YesNo.YES;
+      mockGetCaseData.mockResolvedValueOnce(claim);
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+
+      await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 
@@ -137,6 +203,7 @@ describe('General application - response - check your answers', () => {
       claim.applicant1.type = PartyType.ORGANISATION;
       claim.caseRole = CaseRole.APPLICANTSOLICITORONE;
       claim.generalApplication = new GeneralApplication(new ApplicationType(ApplicationTypeOption.ADJOURN_HEARING));
+      mockGetClaimId.mockResolvedValue(claim);
       mockGetCaseData.mockImplementation(async () => claim);
       mockGenerateRedisKey.mockReturnValue('123');
       const mockSaveDraftClaim = jest.spyOn(gaStoreResponseService, 'saveDraftGARespondentResponse');
@@ -151,6 +218,55 @@ describe('General application - response - check your answers', () => {
           expect(res.status).toBe(302);
           expect(mockSaveDraftClaim).toBeCalledTimes(1);
           expect(mockSaveDraftClaim).toBeCalledWith('123', gaResponse);
+        });
+    });
+
+    it('should use qualified statement of truth for defendant business', async () => {
+      const claim = new Claim();
+      claim.respondent1 = new Party();
+      claim.respondent1.type = PartyType.ORGANISATION;
+      claim.caseRole = CaseRole.DEFENDANT;
+      mockGetClaimId.mockResolvedValue(claim);
+      mockGenerateRedisKey.mockReturnValue('123');
+      const mockSaveDraftClaim = jest.spyOn(gaStoreResponseService, 'saveDraftGARespondentResponse');
+      const statementOfTruth: QualifiedStatementOfTruth = {signed: true, name: 'Ms Defendant', title: 'director'};
+      const gaResponse = new GaResponse();
+      gaResponse.statementOfTruth = statementOfTruth;
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .send({signed: 'yes', name: 'Ms Defendant', title: 'director'})
+        .expect((res) => {
+          expect(res.status).toBe(302);
+          expect(mockSaveDraftClaim).toBeCalledTimes(1);
+        });
+    });
+
+    it('should use language from query when re-rendering validation errors', async () => {
+      mockGetCaseData.mockResolvedValueOnce(new Claim());
+      const gaResponse = new GaResponse();
+      gaResponse.generalApplicationType = [ApplicationTypeOption.ADJOURN_HEARING];
+      gaResponse.hasUnavailableDatesHearing = YesNo.YES;
+      jest.spyOn(gaStoreResponseService, 'getDraftGARespondentResponse').mockResolvedValueOnce(gaResponse);
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .query({lang: 'cy'})
+        .send({signed: undefined, name: ''})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should return http 500 when has error in the post method', async () => {
+      mockGetClaimId.mockImplementationOnce(() => {
+        throw new Error(TestMessages.REDIS_FAILURE);
+      });
+      await request(app)
+        .post(constructResponseUrlWithIdAndAppIdParams('1234567', '345', GA_RESPONSE_CHECK_ANSWERS_URL))
+        .send({signed: true, name: 'Mr Applicant'})
+        .expect((res) => {
+          expect(res.status).toBe(500);
+          expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
         });
     });
 

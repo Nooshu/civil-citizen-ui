@@ -46,6 +46,7 @@ describe('on GET', () => {
   const app = express();
   app.use(express.json());
   app.use((req, res, next) => {
+    req.session = {user: {id: 'user-id'}} as unknown as Session;
     res.render = jest.fn((view, options) => res.status(200).send(options));
     next();
   });
@@ -145,6 +146,78 @@ describe('on GET', () => {
       });
   });
 
+  it('should clear payment sync error when present', async () => {
+    const claimId = '111111';
+    const mockClaimData = {
+      totalClaimAmount: 1000,
+      claimInterest: 'no',
+      claimFee: {
+        calculatedAmountInPence: 10000,
+      },
+      paymentSyncError: true,
+    };
+    (getClaimById as jest.Mock).mockResolvedValueOnce(mockClaimData);
+    (getClaimBusinessProcess as jest.Mock).mockResolvedValueOnce({
+      hasBusinessProcessFinished: () => false,
+    });
+
+    await request(app)
+      .get(CLAIM_FEE_BREAKUP.replace(':id', claimId)).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body.paymentSyncError).toBe(true);
+        expect(res.body.hasInterest).toBe(false);
+        expect(res.body.interest).toBe(0);
+        expect(res.body.totalAmount).toBe('1100.00');
+      });
+  });
+
+  it('should handle missing claim fee and total amount on GET', async () => {
+    const claimId = '111111';
+    const mockClaimData = {
+      claimInterest: 'no',
+    };
+    (getClaimById as jest.Mock).mockResolvedValueOnce(mockClaimData);
+    (getClaimBusinessProcess as jest.Mock).mockResolvedValueOnce({
+      hasBusinessProcessFinished: () => true,
+    });
+
+    await request(app)
+      .get(CLAIM_FEE_BREAKUP.replace(':id', claimId)).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body.hasInterest).toBe(false);
+        // convertToPoundsFilter(undefined) is NaN, which JSON serialises as null.
+        expect(res.body.claimFee).toBeNull();
+        expect(res.body.totalClaimAmount).toBeUndefined();
+      });
+  });
+
+  it('should clear payment sync error when the session has no user', async () => {
+    const sessionlessApp = express();
+    sessionlessApp.use(express.json());
+    sessionlessApp.use((req, res, next) => {
+      req.session = {} as unknown as Session;
+      res.render = jest.fn((view, options) => res.status(200).send(options)) as unknown as express.Response['render'];
+      next();
+    });
+    sessionlessApp.use(claimFeeBreakDownController);
+
+    (getClaimById as jest.Mock).mockResolvedValueOnce({
+      totalClaimAmount: 1000,
+      claimInterest: 'no',
+      claimFee: {calculatedAmountInPence: 10000},
+      paymentSyncError: true,
+    });
+    (getClaimBusinessProcess as jest.Mock).mockResolvedValueOnce({
+      hasBusinessProcessFinished: () => true,
+    });
+
+    await request(sessionlessApp)
+      .get(CLAIM_FEE_BREAKUP.replace(':id', '111111')).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body.paymentSyncError).toBe(true);
+      });
+  });
+
   it('should return 500 status code when error occurs', async () => {
     //given
     app.locals.draftStoreClient = mockRedisFailure;
@@ -227,18 +300,100 @@ describe('on POST', () => {
         expect(res.header.location).toEqual(CLAIM_FEE_BREAKUP);
       });
   });
-  it('should redirect to payment if cannot get payment status', async () => {
-    const paymentUrl = 'paymentUrl';
-    jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation').mockResolvedValueOnce({nextUrl: paymentUrl});
+  it('should redirect to fee breakup when payment status is pending and nextUrl is missing', async () => {
     const claim = new Claim();
     claim.claimDetails = new ClaimDetails();
+    claim.claimDetails.claimFeePayment = {paymentReference: 'RC-1234-1234-1234-1234'};
     (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
-    (getClaimById as jest.Mock).mockResolvedValueOnce(new Claim());
-    jest.spyOn(feePaymentServiceModule, 'getFeePaymentStatus').mockRejectedValueOnce(new Error('something went wrong'));
+    jest.spyOn(feePaymentServiceModule, 'getFeePaymentStatus').mockResolvedValueOnce({status: 'Pending'});
     await request(app)
       .post(CLAIM_FEE_BREAKUP).expect((res) => {
         expect(res.status).toBe(302);
-        expect(res.header.location).toEqual(paymentUrl);
+        expect(res.header.location).toEqual(CLAIM_FEE_BREAKUP);
+      });
+  });
+
+  it('should redirect to fee breakup when no payment redirect information exists', async () => {
+    const claim = new Claim();
+    claim.claimDetails = new ClaimDetails();
+    (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+    jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation').mockResolvedValueOnce(undefined);
+    (getClaimById as jest.Mock).mockResolvedValueOnce(new Claim());
+    await request(app)
+      .post(CLAIM_FEE_BREAKUP).expect((res) => {
+        expect(res.status).toBe(302);
+        expect(res.header.location).toEqual(CLAIM_FEE_BREAKUP);
+      });
+  });
+
+  it('should redirect to fee breakup when the payment status is unavailable', async () => {
+    const claim = new Claim();
+    claim.claimDetails = new ClaimDetails();
+    claim.claimDetails.claimFeePayment = {paymentReference: 'RC-1234-1234-1234-1234'};
+    (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+    jest.spyOn(feePaymentServiceModule, 'getFeePaymentStatus').mockResolvedValueOnce(undefined);
+    await request(app)
+      .post(CLAIM_FEE_BREAKUP).expect((res) => {
+        expect(res.status).toBe(302);
+        expect(res.header.location).toEqual(CLAIM_FEE_BREAKUP);
+      });
+  });
+
+  it('should return 500 when the claim has no claim details', async () => {
+    (getCaseDataFromStore as jest.Mock).mockResolvedValue(new Claim());
+    jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation').mockResolvedValueOnce({});
+    await request(app)
+      .post(CLAIM_FEE_BREAKUP).expect((res) => {
+        expect(res.status).toBe(500);
+      });
+  });
+
+  describe('without a signed-in user on the session', () => {
+    let originalSession: unknown;
+
+    beforeEach(() => {
+      originalSession = app.request['session'];
+      app.request['session'] = {} as unknown as Session;
+    });
+
+    afterEach(() => {
+      app.request['session'] = originalSession as Session;
+    });
+
+    it('should return 500 when saving the payment reference without a user id', async () => {
+      const claim = new Claim();
+      claim.claimDetails = new ClaimDetails();
+      claim.claimDetails.claimFeePayment = {paymentReference: 'RC-1234-1234-1234-1234'};
+      (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+      await request(app)
+        .post(CLAIM_FEE_BREAKUP).expect((res) => {
+          expect(res.status).toBe(500);
+        });
+    });
+
+    it('should record the payment sync error without a user id when the payment request fails', async () => {
+      const claim = new Claim();
+      claim.claimDetails = new ClaimDetails();
+      (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+      (getClaimById as jest.Mock).mockResolvedValueOnce(new Claim());
+      jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation')
+        .mockRejectedValueOnce(new Error('something went wrong'));
+      await request(app)
+        .post(CLAIM_FEE_BREAKUP).expect((res) => {
+          expect(res.status).toBe(302);
+          expect(res.header.location).toEqual(CLAIM_FEE_BREAKUP);
+        });
+    });
+  });
+
+  it('should return 500 when draft store lookup fails', async () => {
+    (getCaseDataFromStore as jest.Mock).mockReset();
+    (getCaseDataFromStore as jest.Mock).mockImplementation(() => {
+      throw new Error('redis down');
+    });
+    await request(app)
+      .post(CLAIM_FEE_BREAKUP).expect((res) => {
+        expect(res.status).toBe(500);
       });
   });
 });

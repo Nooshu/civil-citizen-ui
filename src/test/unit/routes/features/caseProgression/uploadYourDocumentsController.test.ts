@@ -6,6 +6,7 @@ import {CIVIL_SERVICE_CASES_URL} from 'client/civilServiceUrls';
 import Module from 'module';
 import {TestMessages} from '../../../../utils/errorMessageTestConstants';
 import {mockCivilClaim, mockRedisFailure} from '../../../../utils/mockDraftStore';
+import {CaseRole} from 'form/models/caseRoles';
 const session = require('supertest-session');
 const testSession = session(app);
 const citizenRoleToken: string = config.get('citizenRoleToken');
@@ -80,6 +81,25 @@ describe('"upload your documents" page test', () => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('Uwchlwytho eich dogfennau');
           expect(res.text).toContain('Gwrandawiad');
+        });
+    });
+
+    it('should use the defendant dashboard link for defendants', async () => {
+      const defendantClaim = structuredClone(claim);
+      defendantClaim.case_data.caseRole = CaseRole.DEFENDANT;
+      app.locals.draftStoreClient = {
+        ...mockCivilClaim,
+        get: jest.fn(() => Promise.resolve(JSON.stringify(defendantClaim))),
+      };
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, defendantClaim);
+
+      await testSession
+        .get(UPLOAD_YOUR_DOCUMENTS_URL.replace(':id', claimId))
+        .expect((res: { status: unknown; text: string }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/defendant`);
         });
     });
 

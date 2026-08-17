@@ -69,6 +69,25 @@ describe('Mediation check and send Controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(TestMessages.MEDIATION_CHECK_YOUR_ANSWERS);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       mockGetCaseData.mockImplementation(async () => {
         throw new Error(TestMessages.REDIS_FAILURE);
@@ -98,6 +117,26 @@ describe('Mediation check and send Controller', () => {
         .expect((res) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(TestMessages.MEDIATION_CHECK_YOUR_ANSWERS);
+        });
+    });
+
+    it('should use language from query when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .query({lang: 'cy'})
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when re-rendering validation errors', async () => {
+      await request(app)
+        .post(CONTROLLER_URL)
+        .set('Cookie', ['lang=en'])
+        .send()
+        .expect((res) => {
+          expect(res.status).toBe(200);
         });
     });
 

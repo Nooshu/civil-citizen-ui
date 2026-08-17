@@ -25,7 +25,7 @@ import { GaServiceClient } from 'client/gaServiceClient';
 import { constructResponseUrlWithIdParams } from 'common/utils/urlFormatter';
 import {APPLICATION_TYPE_URL, GA_APPLICATION_RESPONSE_SUMMARY_URL} from 'routes/urls';
 import { YesNoUpperCamelCase } from 'common/form/models/yesNo';
-import { getContactCourtLink } from 'services/dashboard/dashboardService';
+import { getContactCourtLink, getDashboardForm } from 'services/dashboard/dashboardService';
 import {ClaimBilingualLanguagePreference} from 'models/claimBilingualLanguagePreference';
 
 const nock = require('nock');
@@ -41,6 +41,7 @@ const isCarmEnabledForCaseMock = launchDarklyClient.isCarmEnabledForCase as jest
 const isDashboardEnabledForCase = launchDarklyClient.isDashboardEnabledForCase as jest.Mock;
 const isGAForLiPEnabledMock = launchDarklyClient.isGaForLipsEnabled as jest.Mock;
 const isWelshEnabledForMainCaseMock = launchDarklyClient.isWelshEnabledForMainCase as jest.Mock;
+const getDashboardFormMock = getDashboardForm as jest.Mock;
 
 const mockExpectedDashboardInfo=
   [{
@@ -220,6 +221,52 @@ describe('Claim Summary Controller Defendant', () => {
       //then
       await testSession
         .get(`/dashboard/${claimId}/defendant`)
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Mock evidence tab');
+        });
+    });
+
+    it('should use language from the query string', async () => {
+      getLatestUpdateContentMock.mockReturnValue([]);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithSdo);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId  + '/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await testSession
+        .get(`/dashboard/${claimId}/defendant`)
+        .query({lang: 'cy'})
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+      // Reset session language so later English assertions are stable
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithSdo);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId  + '/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await testSession
+        .get(`/dashboard/${claimId}/defendant`)
+        .query({lang: 'en'})
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      getLatestUpdateContentMock.mockReturnValue([]);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claimWithSdo);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId  + '/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await testSession
+        .get(`/dashboard/${claimId}/defendant`)
+        .set('Cookie', 'lang=en')
         .expect((res: Response) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('Mock evidence tab');
@@ -614,6 +661,44 @@ describe('Claim Summary Controller Defendant', () => {
             expect(res.text).toContain(t('COMMON.CONTACT_US_FOR_HELP.TELEPHONE'));
           });
       });
+    });
+
+    it('should store the response claim track and fall back to no hearing tasks when the dashboard has no hearing section', async () => {
+      const claim = new Claim();
+      claim.caseRole = CaseRole.DEFENDANT;
+      claim.ccdState = CaseState.CASE_ISSUED;
+      claim.responseClaimTrack = 'SMALL_CLAIM';
+      jest
+        .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValueOnce(claim);
+      isDashboardEnabledForCase.mockResolvedValue(true);
+      isGAForLiPEnabledMock.mockResolvedValue(false);
+      getDashboardFormMock.mockResolvedValueOnce(new Dashboard([]));
+      const updateField = jest.spyOn(draftStoreService, 'updateFieldDraftClaimFromStore');
+
+      await testSession
+        .get(`/dashboard/${claimId}/defendant`).expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+
+      expect(updateField).toHaveBeenCalledWith(claimId, expect.anything(), 'responseClaimTrack', 'SMALL_CLAIM');
+    });
+
+    it('should fall back to no hearing tasks when no dashboard task list is returned', async () => {
+      const claim = new Claim();
+      claim.caseRole = CaseRole.DEFENDANT;
+      claim.ccdState = CaseState.CASE_ISSUED;
+      jest
+        .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValueOnce(claim);
+      isDashboardEnabledForCase.mockResolvedValue(true);
+      isGAForLiPEnabledMock.mockResolvedValue(false);
+      getDashboardFormMock.mockResolvedValueOnce(undefined);
+
+      await testSession
+        .get(`/dashboard/${claimId}/defendant`).expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
     });
 
     it('should show welsh party banner', async () => {

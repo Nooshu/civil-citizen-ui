@@ -1,11 +1,16 @@
 import config from 'config';
+import express from 'express';
 import nock from 'nock';
+import request from 'supertest';
+import {Session} from 'express-session';
 import {app} from '../../../../../../main/app';
+import finaliseTrialArrangementsController from 'routes/features/caseProgression/trialArrangements/finaliseTrialArrangementsController';
 import {CP_FINALISE_TRIAL_ARRANGEMENTS_URL, DEFENDANT_SUMMARY_URL} from 'routes/urls';
 import {CIVIL_SERVICE_CASES_URL} from 'client/civilServiceUrls';
 import Module from 'module';
 import {TestMessages} from '../../../../../utils/errorMessageTestConstants';
 import {mockCivilClaim, mockCivilClaimFastTrack, mockRedisFailure} from '../../../../../utils/mockDraftStore';
+import {CivilServiceClient} from 'client/civilServiceClient';
 import {CaseRole} from 'form/models/caseRoles';
 import {DocumentType} from 'models/document/documentType';
 const session = require('supertest-session');
@@ -101,6 +106,63 @@ describe('"finalise trial arrangements" page test', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaimFastTrack;
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.APPLICANTSOLICITORONE]);
+      await testSession
+        .get(CP_FINALISE_TRIAL_ARRANGEMENTS_URL.replace(':id', claimId))
+        .query({lang: 'cy'})
+        .expect((res: { status: unknown; text: unknown; }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Cwblhau trefniadau eich treial');
+        });
+    });
+
+    it('should use claimant dashboard url when case role is claimant', async () => {
+      app.locals.draftStoreClient = mockCivilClaimFastTrack;
+      nock.cleanAll();
+      nock(idamUrl)
+        .post('/o/token')
+        .reply(200, {id_token: citizenRoleToken});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.CLAIMANT]);
+      await testSession
+        .get(CP_FINALISE_TRIAL_ARRANGEMENTS_URL.replace(':id', claimId))
+        .expect((res: { status: unknown; text: string }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/claimant`);
+        });
+    });
+
+    it('should use defendant dashboard url when case role is defendant', async () => {
+      app.locals.draftStoreClient = mockCivilClaimFastTrack;
+      nock.cleanAll();
+      nock(idamUrl)
+        .post('/o/token')
+        .reply(200, {id_token: citizenRoleToken});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.DEFENDANT]);
+      await testSession
+        .get(CP_FINALISE_TRIAL_ARRANGEMENTS_URL.replace(':id', claimId))
+        .expect((res: { status: unknown; text: string }) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(`/dashboard/${claimId}/defendant`);
+        });
+    });
+
     it('should return expected page in Welsh when claim exists with Welsh cookie', async () => {
       //Given
       app.request.cookies = {lang: 'cy'};
@@ -137,13 +199,43 @@ describe('"finalise trial arrangements" page test', () => {
         });
     });
 
+    // Mounted standalone so the request reaches the controller with a session that has no
+    // signed-in user, which is the only way to exercise the `session.user?.id` fallback.
+    it('should render when the session has no signed-in user', async () => {
+      const sessionlessApp = express();
+      sessionlessApp.use((req, res, next) => {
+        req.session = {} as unknown as Session;
+        req.cookies = {};
+        res.render = ((view: string) => res.status(200).send(view)) as express.Response['render'];
+        next();
+      });
+      sessionlessApp.use(finaliseTrialArrangementsController);
+
+      app.locals.draftStoreClient = mockCivilClaimFastTrack;
+      nock.cleanAll();
+      nock(idamUrl)
+        .post('/o/token')
+        .reply(200, {id_token: citizenRoleToken});
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId)
+        .reply(200, claim);
+      nock(civilServiceUrl)
+        .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+        .reply(200, [CaseRole.CLAIMANT]);
+
+      await request(sessionlessApp)
+        .get(CP_FINALISE_TRIAL_ARRANGEMENTS_URL.replace(':id', claimId))
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return "Something went wrong" page when claim does not exist', async () => {
       //Given
       app.request.cookies = {lang: 'en'};
       app.locals.draftStoreClient = mockRedisFailure;
-      nock(civilServiceUrl)
-        .get(CIVIL_SERVICE_CASES_URL + '1111')
-        .reply(404, null);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockRejectedValueOnce(new Error('claim missing'));
       //When
       await testSession
         .get(CP_FINALISE_TRIAL_ARRANGEMENTS_URL.replace(':id', '1111'))

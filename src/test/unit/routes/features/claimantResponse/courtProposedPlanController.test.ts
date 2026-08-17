@@ -38,6 +38,27 @@ describe('Claimant court proposed plan Controller', () => {
       });
     });
 
+    it('should use language from the query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await request(app)
+        .get(CLAIMANT_RESPONSE_COURT_OFFERED_INSTALMENTS_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      await request(app)
+        .get(CLAIMANT_RESPONSE_COURT_OFFERED_INSTALMENTS_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain(t('PAGES.CLAIMANT_RESPONSE.COURT_PROPOSED_PLAN.TITLE'));
+        });
+    });
+
     it('should return status 500 when error thrown', async () => {
       app.locals.draftStoreClient = mockRedisFailure;
       await request(app)

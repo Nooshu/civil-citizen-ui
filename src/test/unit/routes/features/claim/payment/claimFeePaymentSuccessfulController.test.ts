@@ -42,6 +42,21 @@ describe('Claim fee payment confirmation', () => {
         });
     });
 
+    it('should render using language from the query string', async () => {
+      const claim = new Claim();
+      claim.claimDetails = new ClaimDetails();
+      claim.claimDetails.claimFeePayment = new PaymentInformation('', 'REF-123-123', 'status');
+      claim.claimFee = { calculatedAmountInPence: 1000 } as ClaimFee;
+      jest
+        .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails').mockResolvedValueOnce(claim);
+      await request(app)
+        .get(PAY_CLAIM_FEE_SUCCESSFUL_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return error if there is no claim fee data', async () => {
       jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails').mockRejectedValueOnce(new Error(TestMessages.SOMETHING_WENT_WRONG));
 

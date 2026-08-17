@@ -66,8 +66,41 @@ describe('Pay Hearing Fee Start Screen Controller', () => {
       });
   });
 
+  it('should use language from the query string', async () => {
+    app.locals.draftStoreClient = mockCivilClaimFastTrack;
+    nock(civilServiceUrl)
+      .get(CIVIL_SERVICE_CASES_URL + claimId)
+      .reply(200, claim);
+    nock(civilServiceUrl)
+      .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+      .reply(200, [CaseRole.CLAIMANT]);
+    await testSession
+      .get(PAY_HEARING_FEE_URL.replace(':id', claimId))
+      .query({lang: 'cy'})
+      .expect((res: { status: unknown }) => {
+        expect(res.status).toBe(200);
+      });
+  });
+
+  it('should use defendant dashboard url when case role is defendant', async () => {
+    app.locals.draftStoreClient = mockCivilClaimFastTrack;
+    nock(civilServiceUrl)
+      .get(CIVIL_SERVICE_CASES_URL + claimId)
+      .reply(200, claim);
+    nock(civilServiceUrl)
+      .get(CIVIL_SERVICE_CASES_URL + claimId + '/userCaseRoles')
+      .reply(200, [CaseRole.DEFENDANT]);
+    await testSession
+      .get(PAY_HEARING_FEE_URL.replace(':id', claimId))
+      .expect((res: { status: unknown; text: string }) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain(`/dashboard/${claimId}/defendant`);
+      });
+  });
+
   it('should return "Something went wrong" page when claim does not exist', async () => {
-    //Given
+    //Given — reset language so the English error page is asserted after any Welsh query tests
+    app.request.cookies = {lang: 'en'};
     app.locals.draftStoreClient = mockRedisFailure;
     nock(civilServiceUrl)
       .get(CIVIL_SERVICE_CASES_URL + '1111')
@@ -75,6 +108,7 @@ describe('Pay Hearing Fee Start Screen Controller', () => {
 
     //When
     await testSession.get(PAY_HEARING_FEE_URL.replace(':id', '1111'))
+      .query({lang: 'en'})
       //Then
       .expect((res: { status: unknown; text: unknown; }) => {
         expect(res.status).toBe(500);
@@ -99,5 +133,28 @@ describe('Pay Hearing Fee Start Screen Controller', () => {
 
     expect(axiosError.status).toBe(500);
     expect(next).toHaveBeenCalledWith(axiosError);
+  });
+
+  it('should leave non-404 errors unchanged when passing them to next', async () => {
+    const controllerStack = (payHearingFeeStartScreenController as unknown as {stack: Array<any>}).stack;
+    const routeLayer = controllerStack.find((layer) => layer.route?.path === PAY_HEARING_FEE_URL);
+    const handler = routeLayer.route.stack[0].handle as RequestHandler;
+    const axiosError: {response: {status: number}; status?: number} = {response: {status: 503}};
+    jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails').mockRejectedValueOnce(axiosError);
+    const next = jest.fn();
+    await handler({params: {id: '999'}, cookies: {}, query: {}} as unknown as Request, {render: jest.fn()} as unknown as Response, next);
+    expect(axiosError.status).toBeUndefined();
+    expect(next).toHaveBeenCalledWith(axiosError);
+  });
+
+  it('should pass through errors that have no response status', async () => {
+    const controllerStack = (payHearingFeeStartScreenController as unknown as {stack: Array<any>}).stack;
+    const routeLayer = controllerStack.find((layer) => layer.route?.path === PAY_HEARING_FEE_URL);
+    const handler = routeLayer.route.stack[0].handle as RequestHandler;
+    const plainError = new Error('network down');
+    jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails').mockRejectedValueOnce(plainError);
+    const next = jest.fn();
+    await handler({params: {id: '999'}, cookies: {}, query: {}} as unknown as Request, {render: jest.fn()} as unknown as Response, next);
+    expect(next).toHaveBeenCalledWith(plainError);
   });
 });

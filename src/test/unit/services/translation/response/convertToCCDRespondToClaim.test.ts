@@ -51,4 +51,18 @@ describe('convert respond to claim', () => {
     expect(ccdResponse.howWasThisAmountPaidOther).toEqual(claim.rejectAllOfClaim.howMuchHaveYouPaid.text);
     expect(ccdResponse.whenWasThisAmountPaid).toEqual(claim.rejectAllOfClaim.howMuchHaveYouPaid.date);
   });
+
+  it('should return undefined when payment details are absent', () => {
+    expect(toCCDRespondToClaim(undefined as unknown as HowMuchHaveYouPaid)).toBeUndefined();
+  });
+
+  it('should omit payment method when no amount was supplied', () => {
+    const result = toCCDRespondToClaim({
+      amount: undefined,
+      date: new Date(2022, 2, 3),
+      text: 'No payment',
+    } as HowMuchHaveYouPaid);
+
+    expect(result.howWasThisAmountPaid).toBeUndefined();
+  });
 });

@@ -107,6 +107,42 @@ describe('General Application - additional docs check answer controller ', () =>
       expect(res.text).toContain('Check your answers');
     });
 
+    it('should use language from the query string', async () => {
+      const claimId = '123';
+      const gaId = '456';
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
+      (getCancelUrl as jest.Mock).mockResolvedValue('/cancel-url');
+      (buildSummarySection as jest.Mock).mockReturnValue([]);
+      (getGADocumentsFromDraftStore as jest.Mock).mockReturnValue(uploadDocuments);
+
+      const res = await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams(claimId, gaId, GA_UPLOAD_DOCUMENT_DIRECTIONS_ORDER_CYA_URL))
+        .query({lang: 'cy'});
+
+      expect(res.status).toBe(200);
+      expect(buildSummarySection).toHaveBeenCalledWith(uploadDocuments, claimId, gaId, 'cy');
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const claimId = '123';
+      const gaId = '456';
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
+      (getCancelUrl as jest.Mock).mockResolvedValue('/cancel-url');
+      (buildSummarySection as jest.Mock).mockReturnValue([]);
+      (getGADocumentsFromDraftStore as jest.Mock).mockReturnValue(uploadDocuments);
+
+      const res = await request(app)
+        .get(constructResponseUrlWithIdAndAppIdParams(claimId, gaId, GA_UPLOAD_DOCUMENT_DIRECTIONS_ORDER_CYA_URL))
+        .set('Cookie', ['lang=en']);
+
+      expect(res.status).toBe(200);
+      expect(buildSummarySection).toHaveBeenCalledWith(uploadDocuments, claimId, gaId, 'en');
+    });
+
     it('should handle errors', async () => {
       const claimId = '123';
       const gaId = '456';

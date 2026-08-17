@@ -7,11 +7,20 @@ import {
   CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL,
   CLAIMANT_RESPONSE_TASK_LIST_URL,
 } from 'routes/urls';
-import {mockRedisFailure} from '../../../../utils/mockDraftStore';
 import {CaseState} from 'form/models/claimDetails';
 import * as utilService from 'modules/utilityService';
 import {Claim} from 'models/claim';
 import * as draftStoreService from 'modules/draft-store/draftStoreService';
+import {ResponseType} from 'form/models/responseType';
+import {Party} from 'models/party';
+import {PartialAdmission} from 'models/partialAdmission';
+import {HowMuchDoYouOwe} from 'form/models/admission/partialAdmission/howMuchDoYouOwe';
+import {RejectAllOfClaim} from 'form/models/rejectAllOfClaim';
+import {HowMuchHaveYouPaid} from 'form/models/admission/howMuchHaveYouPaid';
+import * as claimantResponseService from 'services/features/claimantResponse/claimantResponseService';
+import {ClaimantResponse} from 'models/claimantResponse';
+import {GenericYesNo} from 'form/models/genericYesNo';
+import {YesNo} from 'form/models/yesNo';
 
 jest.mock('../../../../../main/modules/oidc');
 jest.mock('../../../../../main/modules/draft-store');
@@ -24,6 +33,9 @@ describe('Claimant Response - Settle Part Admit Claim Controller', () => {
 
   const claim = new Claim();
   claim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+  claim.totalClaimAmount = 1000;
+  claim.partialAdmission = new PartialAdmission();
+  claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(250, 1000);
   jest.mock('modules/utilityService', () => ({
     getRedisStoreForSession: jest.fn(),
   }));
@@ -47,9 +59,67 @@ describe('Claimant Response - Settle Part Admit Claim Controller', () => {
       });
     });
 
+    it('should return settle claim page for a full defence states-paid claim', async () => {
+      const fullDefenceClaim = new Claim();
+      fullDefenceClaim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+      fullDefenceClaim.totalClaimAmount = 1000;
+      fullDefenceClaim.respondent1 = new Party();
+      fullDefenceClaim.respondent1.responseType = ResponseType.FULL_DEFENCE;
+      fullDefenceClaim.rejectAllOfClaim = new RejectAllOfClaim();
+      fullDefenceClaim.rejectAllOfClaim.howMuchHaveYouPaid = Object.assign(new HowMuchHaveYouPaid(), {amount: 50000});
+      const claimantResponse = new ClaimantResponse();
+      claimantResponse.hasFullDefenceStatesPaidClaimSettled = new GenericYesNo(YesNo.YES);
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(fullDefenceClaim);
+      jest.spyOn(claimantResponseService, 'getClaimantResponse').mockResolvedValue(claimantResponse);
+
+      await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('Do you want to settle the claim for the');
+      });
+    });
+
+    it('should return settle claim page when there is no saved claimant response', async () => {
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(claim);
+      jest.spyOn(claimantResponseService, 'getClaimantResponse').mockResolvedValueOnce(undefined);
+
+      await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('Do you want to settle the claim for the');
+      });
+    });
+
+    it('should return settle claim page for a full defence claim with no saved claimant response', async () => {
+      const fullDefenceClaim = new Claim();
+      fullDefenceClaim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+      fullDefenceClaim.totalClaimAmount = 1000;
+      fullDefenceClaim.respondent1 = new Party();
+      fullDefenceClaim.respondent1.responseType = ResponseType.FULL_DEFENCE;
+      fullDefenceClaim.rejectAllOfClaim = new RejectAllOfClaim();
+      fullDefenceClaim.rejectAllOfClaim.howMuchHaveYouPaid = Object.assign(new HowMuchHaveYouPaid(), {amount: 50000});
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(fullDefenceClaim);
+      jest.spyOn(claimantResponseService, 'getClaimantResponse').mockResolvedValueOnce(undefined);
+
+      await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('Do you want to settle the claim for the');
+      });
+    });
+
+    it('should return status 500 when reading the claimant response fails', async () => {
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(claim);
+      jest.spyOn(claimantResponseService, 'getClaimantResponse')
+        .mockRejectedValueOnce(new Error(TestMessages.REDIS_FAILURE));
+
+      await request(app)
+        .get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL)
+        .expect((res) => {
+          expect(res.status).toBe(500);
+          expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
+        });
+    });
+
     it('should return status 500 when error thrown', async () => {
-      app.locals.draftStoreClient = mockRedisFailure;
-      jest.spyOn(utilService, 'getClaimById').mockRejectedValueOnce(mockRedisFailure);
+      jest.spyOn(utilService, 'getClaimById').mockRejectedValueOnce(new Error(TestMessages.REDIS_FAILURE));
       await request(app)
         .get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL)
         .expect((res) => {
@@ -90,9 +160,43 @@ describe('Claimant Response - Settle Part Admit Claim Controller', () => {
         });
     });
 
+    it('should save full defence settlement choice when option yes is selected', async () => {
+      const fullDefenceClaim = new Claim();
+      fullDefenceClaim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+      fullDefenceClaim.totalClaimAmount = 1000;
+      fullDefenceClaim.respondent1 = new Party();
+      fullDefenceClaim.respondent1.responseType = ResponseType.FULL_DEFENCE;
+      fullDefenceClaim.rejectAllOfClaim = new RejectAllOfClaim();
+      fullDefenceClaim.rejectAllOfClaim.howMuchHaveYouPaid = Object.assign(new HowMuchHaveYouPaid(), {amount: 50000});
+      jest.clearAllMocks();
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(fullDefenceClaim);
+      const saveSpy = jest.spyOn(claimantResponseService, 'saveClaimantResponse').mockResolvedValue();
+      await request(app).post(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).send({option: 'yes'})
+        .expect((res) => {
+          expect(res.status).toBe(302);
+          expect(res.get('location')).toBe(CLAIMANT_RESPONSE_TASK_LIST_URL);
+        });
+      expect(saveSpy).toHaveBeenCalled();
+      expect(saveSpy.mock.calls[0][2]).toBe('hasFullDefenceStatesPaidClaimSettled');
+    });
+
+    it('should return status 500 when saving the claimant response fails', async () => {
+      jest.clearAllMocks();
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(claim);
+      jest.spyOn(claimantResponseService, 'saveClaimantResponse')
+        .mockRejectedValueOnce(new Error(TestMessages.REDIS_FAILURE));
+
+      await request(app)
+        .post(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL)
+        .send({option: 'yes'})
+        .expect((res) => {
+          expect(res.status).toBe(500);
+          expect(res.text).toContain(TestMessages.SOMETHING_WENT_WRONG);
+        });
+    });
+
     it('should return status 500 when error thrown', async () => {
-      app.locals.draftStoreClient = mockRedisFailure;
-      jest.spyOn(utilService, 'getClaimById').mockRejectedValueOnce(mockRedisFailure);
+      jest.spyOn(utilService, 'getClaimById').mockRejectedValueOnce(new Error(TestMessages.REDIS_FAILURE));
       await request(app)
         .post(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL)
         .send({option: 'yes'})

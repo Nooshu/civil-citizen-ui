@@ -1,0 +1,74 @@
+{% extends "claim-details-tpl-dashboard.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitle = "UI Preview" %}
+{# Flat catalogue index — Design System: do not use breadcrumbs on flat structures. #}
+{% set noCrumbs = true %}
+
+{% block nestedContent %}
+  {% set bannerHtml %}
+    <p class="govuk-notification-banner__heading">UI Preview — no IDAM</p>
+    <p class="govuk-body">
+      This mode runs with <code class="govuk-!-font-size-16">NODE_ENV=e2eTest</code>:
+      login is skipped and the session user is fixture id
+      <strong>{{ fixtureUserId }}</strong>.
+      Civil-service calls go to WireMock.
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-0">
+      Use <strong>Ready</strong> links for reliable renders.
+      <strong>Stub</strong> links are listed for discovery and may error until more fixtures are added.
+    </p>
+  {% endset %}
+
+  {{ govukNotificationBanner({
+    html: bannerHtml,
+    type: "important",
+    titleText: "UI Preview mode"
+  }) }}
+
+  <h1 class="govuk-heading-l">Browse journeys</h1>
+  <p class="govuk-body">
+    Live Nunjucks pages with fixture data. Start here instead of signing in to IDAM.
+  </p>
+
+  {{ govukInsetText({
+    text: "Command: yarn start:ui-preview  ·  Stack: compose/ui-preview.yml"
+  }) }}
+
+  {% for group in catalog %}
+    <h2 class="govuk-heading-m">{{ group.title }}</h2>
+    <p class="govuk-body">{{ group.description }}</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Page</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+          <th scope="col" class="govuk-table__header">Notes</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for page in group.pages %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a class="govuk-link" href="{{ page.path }}">{{ page.title }}</a>
+              <br>
+              <span class="govuk-hint govuk-!-font-size-16">{{ page.path }}</span>
+            </td>
+            <td class="govuk-table__cell">
+              {% if page.status == 'ready' %}
+                {{ govukTag({ text: "Ready", classes: "govuk-tag--green" }) }}
+              {% else %}
+                {{ govukTag({ text: "Stub", classes: "govuk-tag--grey" }) }}
+              {% endif %}
+            </td>
+            <td class="govuk-table__cell">{{ page.notes or "—" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endfor %}
+{% endblock %}

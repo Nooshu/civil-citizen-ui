@@ -3,6 +3,22 @@ import {ClaimSummaryType} from 'form/models/claimSummarySection';
 import {t} from 'i18next';
 
 describe('PageSectionBuilder tests', ()=> {
+  it('should build start, linked start, subtitle and inset sections', () => {
+    const sections = new PageSectionBuilder()
+      .addStartButton('Start', '/start')
+      .addStartButtonWithLink('Start linked', '/start-linked', '/cancel')
+      .addSubTitle('Subheading', {name: 'Alex'}, 'govuk-heading-s')
+      .addInsetText('Important information', {claimId: '1234'})
+      .build();
+
+    expect(sections.map(section => section.type)).toEqual([
+      ClaimSummaryType.BUTTON,
+      ClaimSummaryType.BUTTON_WITH_CANCEL_LINK,
+      ClaimSummaryType.SUBTITLE,
+      ClaimSummaryType.INSET_TEXT,
+    ]);
+  });
+
   it('should create title', ()=> {
     //Given
     const titleExpected = ({
@@ -178,6 +194,14 @@ describe('PageSectionBuilder tests', ()=> {
     expect(linkBuilt).toEqual([linkExpected]);
   });
 
+  it('should default a full stop link to an internal link', () => {
+    const [link] = new PageSectionBuilder()
+      .addFullStopLink('text', 'href')
+      .build();
+
+    expect(link.data.externalLink).toBe(false);
+  });
+
   it('should add Green Button', ()=> {
     //Given
     const buttonExpected = ({
@@ -195,6 +219,14 @@ describe('PageSectionBuilder tests', ()=> {
 
     //Then
     expect(buttonBuilt).toEqual([buttonExpected]);
+  });
+
+  it('should default button with cancel link to a non-start button', () => {
+    const [button] = new PageSectionBuilder()
+      .addButtonWithCancelLink('Continue', '/continue')
+      .build();
+
+    expect(button.data.isStartButton).toBe(false);
   });
 
   it('should create mainTitle', ()=> {

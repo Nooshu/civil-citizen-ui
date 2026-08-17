@@ -19,6 +19,7 @@ import {
   CONTACT_US_URL,
   TERMS_AND_CONDITIONS_URL,
   PRIVACY_POLICY_URL,
+  UI_PREVIEW_URL,
   CONTACT_CNBC_URL,
   CONTACT_MEDIATION_URL,
   HEARING_FEE_PAYMENT_CONFIRMATION_URL,
@@ -83,6 +84,10 @@ const isTermAndConditionsPage = (requestUrl: string): boolean => {
 
 const isPrivacyPolicyPage = (requestUrl: string): boolean => {
   return requestUrl.startsWith(PRIVACY_POLICY_URL);
+};
+
+const isUiPreviewPage = (requestUrl: string): boolean => {
+  return requestUrl.startsWith(UI_PREVIEW_URL);
 };
 
 const isMakeClaimPage = (requestUrl: string): boolean => {
@@ -238,6 +243,7 @@ export class OidcMiddleware {
           isContactUsPage(req.originalUrl) ||
           isTermAndConditionsPage(req.originalUrl) ||
           isPrivacyPolicyPage(req.originalUrl) ||
+          isUiPreviewPage(req.originalUrl) ||
           isWebchatPage(req.originalUrl)
         ) {
           return next();

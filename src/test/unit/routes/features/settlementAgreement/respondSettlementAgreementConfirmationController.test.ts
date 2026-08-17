@@ -46,6 +46,25 @@ describe('Claimant response confirmation controller', () => {
       expect(res.text).toContain("You've both signed a settlement agreement");
     });
 
+    it('should use language from the query string', async () => {
+      const mockClaim = getMockClaim();
+      (getClaimById as jest.Mock).mockResolvedValueOnce(mockClaim);
+      const res = await request(app)
+        .get(DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_CONFIRMATION)
+        .query({lang: 'cy'});
+      expect(res.status).toBe(200);
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      const mockClaim = getMockClaim();
+      (getClaimById as jest.Mock).mockResolvedValueOnce(mockClaim);
+      const res = await request(app)
+        .get(DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_CONFIRMATION)
+        .set('Cookie', ['lang=en']);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain("You've both signed a settlement agreement");
+    });
+
     it('In favour claimant-should return accept settlement agreement confirmation', async () => {
       // Given
       const mockClaim = new Claim();

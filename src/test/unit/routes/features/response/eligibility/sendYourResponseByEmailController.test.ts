@@ -39,6 +39,29 @@ describe('Send your response by email', () => {
           expect(res.text).toContain('Telephone');
         });
     });
+
+    it('should use language from query string', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      nock(citizenBaseUrl).get('/fees/ranges').reply(200, data);
+      await request(app)
+        .get(SEND_RESPONSE_BY_EMAIL_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      app.locals.draftStoreClient = mockCivilClaim;
+      nock(citizenBaseUrl).get('/fees/ranges').reply(200, data);
+      await request(app)
+        .get(SEND_RESPONSE_BY_EMAIL_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
     it('should return http 500 when has error', async () => {
       app.locals.draftStoreClient = mockRedisFailure;
       await request(app)

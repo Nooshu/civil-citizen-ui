@@ -46,6 +46,25 @@ describe('Telephone Mediation Controller', () => {
       });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(TELEPHONE_MEDIATION_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(TELEPHONE_MEDIATION_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('telephone mediation');
+        });
+    });
+
     it('should return telephone mediation page successfully when applicant is business and claimant', async () => {
       mockGetCaseData.mockImplementation(async () => {
         const claim = new Claim();

@@ -80,6 +80,99 @@ describe('Notification Redirect Controller - Get', () => {
 
   });
 
+  it('Redirect to bundle overview page', async () => {
+    //given
+    const claim: Claim = new Claim();
+    claim.id = '123';
+
+    nock(civilServiceUrl)
+      .put(CIVIL_SERVICE_RECORD_NOTIFICATION_CLICK_URL.replace(':notificationId', '321'))
+      .reply(200, {});
+
+    jest
+      .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+      .mockResolvedValueOnce(Object.assign(claim, civilClaimResponseMock.case_data));
+
+    //when
+    await request(app)
+      .get(DASHBOARD_NOTIFICATION_REDIRECT
+        .replace(':id', '123')
+        .replace(':locationName', 'VIEW_BUNDLE')
+        .replace(':notificationId', '321'))
+      //then
+      .expect((res: Response) => {
+        expect(res.status).toBe(302);
+        expect(res.text).toBe('Found. Redirecting to /case/123/bundle-overview');
+      });
+  });
+
+  it('Redirect to the decision made on applications document', async () => {
+    //given
+    const claim: Claim = new Claim();
+    claim.id = '123';
+    claim.systemGeneratedCaseDocuments = [
+      {
+        id: '789',
+        value: {
+          documentLink: {
+            document_url: 'url',
+            document_filename: 'name',
+            document_binary_url: '/456/binary',
+          },
+          documentType: DocumentType.DECISION_MADE_ON_APPLICATIONS,
+        },
+      },
+    ] as SystemGeneratedCaseDocuments[];
+
+    nock(civilServiceUrl)
+      .put(CIVIL_SERVICE_RECORD_NOTIFICATION_CLICK_URL.replace(':notificationId', '321'))
+      .reply(200, {});
+
+    jest
+      .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+      .mockResolvedValueOnce(claim);
+
+    //when
+    await request(app)
+      .get(DASHBOARD_NOTIFICATION_REDIRECT
+        .replace(':id', '123')
+        .replace(':locationName', 'VIEW_DECISION_RECONSIDERATION')
+        .replace(':notificationId', '321'))
+      //then
+      .expect((res: Response) => {
+        expect(res.status).toBe(302);
+        expect(res.text).toBe('Found. Redirecting to /case/123/view-documents/456');
+      });
+  });
+
+  it('Redirect to the defendant dashboard if documentId is awaiting-translation', async () => {
+    //given
+    const claim: Claim = new Claim();
+    claim.id = '123';
+    claim.caseRole = CaseRole.DEFENDANT;
+
+    nock(civilServiceUrl)
+      .put(CIVIL_SERVICE_RECORD_NOTIFICATION_CLICK_URL.replace(':notificationId', '321'))
+      .reply(200, {});
+
+    jest
+      .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+      .mockResolvedValueOnce(claim);
+
+    //when
+    await request(app)
+      .get(DASHBOARD_NOTIFICATION_REDIRECT_DOCUMENT
+        .replace(':id', '123')
+        .replace(':locationName', 'VIEW_FINAL_ORDER')
+        .replace(':notificationId', '321')
+        .replace(':documentId', 'awaiting-translation'))
+      //then
+      .expect((res: Response) => {
+        expect(res.status).toBe(302);
+        expect(res.text).toBe('Found. Redirecting to /dashboard/123/defendant?errorAwaitingTranslation');
+      });
+  });
+
   it('Redirect to view queries page', async () => {
     //given
     const claim: Claim = new Claim();
@@ -619,6 +712,22 @@ describe('notificationRedirectController - VIEW_HEARING_NOTICE (Welsh block)', (
     const res = await request(app).get(baseUrl).send();
     expect(res.status).toBe(302);
     expect(res.text).toContain('/case/123/view-documents/undefined');
+  });
+
+  it('should use language from cookie when query is absent', async () => {
+    claim.caseProgressionHearing.hearingDocumentsWelsh = [
+      { id: 'wDoc', value: { documentLink: { document_binary_url: 'http://dm-store:8080/documents/ab5417ae-0004-4765-9b92-4c4680d7680e/binary' } } } as CaseProgressionHearingDocuments,
+    ];
+    jest
+      .spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+      .mockResolvedValueOnce(claim);
+    (checkWelshHearingNotice as jest.Mock).mockReturnValue(true);
+    const res = await request(app)
+      .get(baseUrl)
+      .set('Cookie', ['lang=cy'])
+      .send();
+    expect(res.status).toBe(302);
+    expect(res.text).toContain('/case/123/view-documents/');
   });
 
   it('should not redirect to Welsh doc if checkWelshHearingNotice is false', async () => {

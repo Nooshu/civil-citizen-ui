@@ -23,18 +23,37 @@ describe('Cookies page', () => {
   });
 
   describe('on GET', () => {
-    it('should display cookies page', async () => {
+    it('should display cookies page with default preferences', async () => {
       const res = await request(app).get(COOKIES_URL);
       expect(res.status).toBe(200);
       expect(res.text).toContain(t('PAGES.COOKIES.TITLE'));
     });
 
-    describe('on POST', () => {
-      it('saved cookie preferences', async () => {
-        const res = await request(app).post(COOKIES_URL).send(defaultCookiePreferences);
-        expect(res.status).toBe(200);
-        expect(res.text).toContain('Success');
-      });
+    it('should display cookies page using saved preferences', async () => {
+      const preferences = {analytics: 'on', apm: 'on'};
+      const res = await request(app)
+        .get(COOKIES_URL)
+        .set('Cookie', [`money-claims-cookie-preferences=${JSON.stringify(preferences)}`]);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain(t('PAGES.COOKIES.TITLE'));
+    });
+  });
+
+  describe('on POST', () => {
+    it('saved cookie preferences when none exist yet', async () => {
+      const res = await request(app).post(COOKIES_URL).send(defaultCookiePreferences);
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('Success');
+    });
+
+    it('updates existing cookie preferences', async () => {
+      const existing = {analytics: 'off', apm: 'off'};
+      const res = await request(app)
+        .post(COOKIES_URL)
+        .set('Cookie', [`money-claims-cookie-preferences=${JSON.stringify(existing)}`])
+        .send({analytics: 'on', apm: 'on'});
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('Success');
     });
   });
 });

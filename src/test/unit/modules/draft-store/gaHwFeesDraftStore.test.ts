@@ -52,5 +52,22 @@ describe('GA Hwf Store Service', () => {
       expect(mockDraftStoreClient.get).toHaveBeenCalledWith(redisKey);
       expect(result).toEqual(expect.any(GaHelpWithFees));
     });
+
+    it('should return an empty GaHelpWithFees when redis JSON is invalid', async () => {
+      const parseSpy = jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+        throw 'parse-failed-without-stack';
+      });
+      mockDraftStoreClient.get.mockResolvedValueOnce('{}');
+
+      const result = await getDraftGAHWFDetails(redisKey);
+
+      expect(result).toEqual(expect.any(GaHelpWithFees));
+      parseSpy.mockRestore();
+    });
+  });
+
+  it('should throw when saving draft HWF details fails', async () => {
+    mockDraftStoreClient.set.mockRejectedValueOnce(new Error('write failed'));
+    await expect(saveDraftGAHWFDetails(redisKey, gaHelpWithFees)).rejects.toThrow('write failed');
   });
 });

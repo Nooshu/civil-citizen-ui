@@ -18,6 +18,7 @@ import {CLAIM_ID} from '../../../../../utils/checkAnswersConstants';
 import {ResponseType} from 'form/models/responseType';
 import {ClaimDetails} from 'form/models/claim/details/claimDetails';
 import {StatementOfTruthFormClaimIssue} from 'form/models/statementOfTruth/statementOfTruthFormClaimIssue';
+import {QualifiedStatementOfTruthClaimIssue} from 'form/models/statementOfTruth/qualifiedStatementOfTruthClaimIssue';
 
 jest.mock('../../../../../../main/modules/draft-store');
 jest.mock('../../../../../../main/modules/draft-store/draftStoreService');
@@ -52,6 +53,21 @@ describe('Check Answers service', () => {
       await expect(
         saveStatementOfTruth(CLAIM_ID, new StatementOfTruthForm(false, SignatureType.BASIC, true))).rejects.toThrow(TestMessages.REDIS_FAILURE);
     });
+    it('should create claim details before saving when the draft has none', async () => {
+      //Given
+      const claim = new Claim();
+      mockGetCaseDataFromStore.mockResolvedValue(claim);
+      const statementOfTruth = new StatementOfTruthFormClaimIssue(false, SignatureType.BASIC, true, true, false);
+
+      //When
+      await saveStatementOfTruth(CLAIM_ID, statementOfTruth);
+
+      //Then
+      expect(claim.claimDetails).toBeInstanceOf(ClaimDetails);
+      expect(claim.claimDetails.statementOfTruth).toBe(statementOfTruth);
+      expect(draftStoreService.saveDraftClaim).toHaveBeenCalledWith(CLAIM_ID, claim);
+    });
+
     it('should retrieve data from draft store', async () => {
       //Given
       mockGetCaseDataFromStore.mockImplementation(async () => {
@@ -88,6 +104,34 @@ describe('Check Answers service', () => {
       claim.applicant1 = new Party();
       claim.applicant1.type = PartyType.ORGANISATION;
       expect(getStatementOfTruth(claim)).toEqual({isFullAmountRejected: false, type: 'qualified'});
+    });
+
+    it('should create an empty basic statement of truth when the claim has no claim details', () => {
+      claim.claimDetails = undefined;
+      expect(getStatementOfTruth(claim)).toEqual({isFullAmountRejected: false, type: 'basic'});
+    });
+
+    it('should create an empty qualified statement of truth when the claim has no claim details', () => {
+      claim.applicant1 = new Party();
+      claim.applicant1.type = PartyType.ORGANISATION;
+      claim.claimDetails = undefined;
+      expect(getStatementOfTruth(claim)).toEqual({isFullAmountRejected: false, type: 'qualified'});
+    });
+
+    it('should return the stored qualified statement of truth if it is set in the draft store', () => {
+      claim.applicant1 = new Party();
+      claim.applicant1.type = PartyType.ORGANISATION;
+      claim.claimDetails.statementOfTruth = new QualifiedStatementOfTruthClaimIssue(false, true, true, 'Jane Doe', 'Director', false);
+
+      expect(getStatementOfTruth(claim)).toEqual({
+        isFullAmountRejected: false,
+        type: 'qualified',
+        signed: true,
+        directionsQuestionnaireSigned: true,
+        signerName: 'Jane Doe',
+        signerRole: 'Director',
+        acceptNoChangesAllowed: false,
+      });
     });
   });
 

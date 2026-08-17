@@ -57,6 +57,25 @@ describe('Query management Information controller', () => {
         });
     });
 
+    it('should use language from the query string', async () => {
+      await request(app)
+        .get(FOLLOW_UP_URL)
+        .query({lang: 'cy'})
+        .expect((res) => {
+          expect(res.status).toBe(200);
+        });
+    });
+
+    it('should use language from cookie when query is absent', async () => {
+      await request(app)
+        .get(FOLLOW_UP_URL)
+        .set('Cookie', ['lang=en'])
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(res.text).toContain('Follow up on an existing message');
+        });
+    });
+
     it.each([
       [QualifyingQuestionTypeOption.GA_OFFLINE, 'Make an application to the court'],
     ])('should return CHANGE_CASE information for %s', async (questionType, expectedText) => {

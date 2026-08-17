@@ -69,6 +69,20 @@ describe('Response - Check answers', () => {
       expect(bulletPoints[0].textContent?.trim()).toBe(TASK_DESCRIPTION);
     });
 
+    it('should use the session user id and the language from the query string', async () => {
+      app.request.session = {user: {id: 'user-id'}};
+      mockOutstandingTasksFromCase.mockImplementation(() => []);
+
+      await request(app)
+        .get(respondentIncompleteSubmissionUrl)
+        .query({lang: 'cy'})
+        .expect((res: Response) => {
+          expect(res.status).toBe(200);
+        });
+      expect(mockGetCaseDataFromStore).toHaveBeenCalledWith('user-id');
+      app.request.session = undefined;
+    });
+
     it('should return status 500 when error thrown', async () => {
       mockGetCaseDataFromStore.mockImplementation(() => {
         throw new Error(TestMessages.REDIS_FAILURE);
