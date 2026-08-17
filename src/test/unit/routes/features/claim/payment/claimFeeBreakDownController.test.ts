@@ -305,7 +305,9 @@ describe('on POST', () => {
     claim.claimDetails = new ClaimDetails();
     claim.claimDetails.claimFeePayment = {paymentReference: 'RC-1234-1234-1234-1234'};
     (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+    (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
     jest.spyOn(feePaymentServiceModule, 'getFeePaymentStatus').mockResolvedValueOnce({status: 'Pending'});
+    jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation').mockResolvedValueOnce(undefined);
     await request(app)
       .post(CLAIM_FEE_BREAKUP).expect((res) => {
         expect(res.status).toBe(302);
@@ -331,7 +333,9 @@ describe('on POST', () => {
     claim.claimDetails = new ClaimDetails();
     claim.claimDetails.claimFeePayment = {paymentReference: 'RC-1234-1234-1234-1234'};
     (getCaseDataFromStore as jest.Mock).mockResolvedValue(claim);
+    (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
     jest.spyOn(feePaymentServiceModule, 'getFeePaymentStatus').mockResolvedValueOnce(undefined);
+    jest.spyOn(CivilServiceClient.prototype, 'getFeePaymentRedirectInformation').mockResolvedValueOnce(undefined);
     await request(app)
       .post(CLAIM_FEE_BREAKUP).expect((res) => {
         expect(res.status).toBe(302);

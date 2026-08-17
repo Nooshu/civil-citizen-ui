@@ -2,7 +2,6 @@ import request from 'supertest';
 import nock from 'nock';
 import config from 'config';
 import {RedisStore} from 'connect-redis';
-import {createClient} from 'redis';
 import {app} from '../../../../../main/app';
 import {CITIZEN_CONTACT_THEM_URL} from 'routes/urls';
 import {
@@ -30,9 +29,7 @@ describe('Claimant details', () => {
     nock(idamUrl)
       .post('/o/token')
       .reply(200, {id_token: citizenRoleToken});
-    (getRedisStoreForSession as jest.Mock).mockReturnValueOnce(new RedisStore({
-      client: createClient(),
-    }));
+    (getRedisStoreForSession as jest.Mock).mockReturnValueOnce({} as RedisStore);
   });
   describe('on GET', () => {
     it('should return contact claimant details from claim', async () => {

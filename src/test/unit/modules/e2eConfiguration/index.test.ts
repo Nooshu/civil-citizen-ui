@@ -1,5 +1,5 @@
 import {Application} from 'express';
-import session from 'express-session';
+import RedisStore from 'connect-redis';
 import {LoggerInstance} from 'winston';
 import {DraftStoreCliente2e, getRedisStoreForSessione2e} from 'modules/e2eConfiguration';
 
@@ -40,10 +40,10 @@ describe('e2eConfiguration', () => {
   });
 
   describe('getRedisStoreForSessione2e', () => {
-    it('returns an in-memory session store for e2e', () => {
+    it('returns a Redis-backed session store for e2e', () => {
       const store = getRedisStoreForSessione2e();
 
-      expect(store).toBeInstanceOf(session.MemoryStore);
+      expect(store).toBeInstanceOf(RedisStore);
     });
   });
 });
