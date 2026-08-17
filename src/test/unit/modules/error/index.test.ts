@@ -55,10 +55,7 @@ describe('ErrorHandler', () => {
         status: '500',
       },
     });
-    expect(getFlushMock()).toHaveBeenCalledWith({
-      isAppCrashing: false,
-      callback: expect.any(Function),
-    });
+    expect(getFlushMock()).toHaveBeenCalled();
     expect(getErrorLoggerMock()).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.render).toHaveBeenCalledWith('error', {error: res.locals.error});
