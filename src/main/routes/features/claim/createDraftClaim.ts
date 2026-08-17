@@ -3,7 +3,7 @@ import { NextFunction, Request, RequestHandler, Response, Router } from 'express
 import { CLAIM_CHECK_ANSWERS_URL, TESTING_SUPPORT_URL } from 'routes/urls';
 import { saveDraftClaimToCache } from 'modules/draft-store/draftClaimCache';
 const createDraftViewPath = 'features/claim/create-draft';
-import jwt_decode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import {isCarmEnabledForCase} from '../../../app/auth/launchdarkly/launchDarklyClient';
 import {Claim} from 'models/claim';
 import {createDraftClaimInStoreWithExpiryTime} from 'modules/draft-store/draftStoreService';
@@ -39,7 +39,7 @@ createDraftClaimController.post(TESTING_SUPPORT_URL, (async (req: Request, res: 
     const caseData = req.body?.caseData ? JSON.parse(req.body?.caseData) : undefined;
 
     if (req.body?.idToken) {
-      const jwt: IdTokenJwtPayload = jwt_decode(req.body?.idToken);
+      const jwt: IdTokenJwtPayload = jwtDecode(req.body?.idToken);
       userId = jwt?.uid;
     }
 
