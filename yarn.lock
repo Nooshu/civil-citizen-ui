@@ -6752,7 +6752,7 @@ __metadata:
     glob: "npm:13.0.6"
     globals: "npm:17.9.0"
     govuk-frontend: "npm:6.2.0"
-    helmet: "npm:^7.0.0"
+    helmet: "npm:8.3.0"
     html-webpack-plugin: "npm:^5.5.0"
     html_codesniffer: "npm:^2.5.1"
     i18next: "npm:^22.4.6"
@@ -9265,10 +9265,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:^7.0.0":
-  version: 7.2.0
-  resolution: "helmet@npm:7.2.0"
-  checksum: 10/37419351755a66f48af0f7c1f25b8e55ceaf2087efb1309ab29d6f664ea72f3a6fecbbcc0c9231e45b9e2f7079d3403eb35040463a45293c876e776d0574b538
+"helmet@npm:8.3.0":
+  version: 8.3.0
+  resolution: "helmet@npm:8.3.0"
+  checksum: 10/077db98df8f8ea749aeab0f56eabe1f37d0ca2ae475c095bc30adf850fe714ea67469dc94b6a6e1b786cde25a40452784e20b728e59c63baa2b18ba12518a6fe
   languageName: node
   linkType: hard
 
