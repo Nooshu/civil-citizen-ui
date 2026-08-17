@@ -44,10 +44,8 @@ export class ErrorHandler {
             status: status.toString(),
           },
         });
-        appInsightsClient?.flush({
-          isAppCrashing: false,
-          callback: (): void => undefined,
-        });
+        // SDK 3.x flush() returns a Promise (no callback / isAppCrashing options).
+        void appInsightsClient?.flush()?.catch(() => undefined);
       }
 
       // set locals, only providing error in development
