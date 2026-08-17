@@ -1,0 +1,14 @@
+diff --git a/index.js b/index.js
+index c2b75819978415beaef91796d86a853a7d592268..823d94f444774944f0a550db1c2cbe914d652e2a 100644
+--- a/index.js
++++ b/index.js
+@@ -1,6 +1,8 @@
+ 'use strict';
+ 
+-const flatten = require('flat');
++const flat = require('flat');
++// flat@6 exports { flatten, unflatten }; flat@5 exported flatten as the module itself.
++const flatten = typeof flat === 'function' ? flat : flat.flatten;
+ const camelcase = require('camelcase');
+ const decamelize = require('decamelize');
+ const isPlainObj = require('is-plain-obj');
