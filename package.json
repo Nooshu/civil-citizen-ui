@@ -183,7 +183,7 @@
     "sass": "^1.57.1",
     "sass-loader": "17.0.0",
     "sonar-scanner": "^3.1.0",
-    "style-loader": "^3.3.1",
+    "style-loader": "4.0.0",
     "supertest": "^7.1.4",
     "supertest-session": "^4.1.0",
     "totp-generator": "^0.0.14",
