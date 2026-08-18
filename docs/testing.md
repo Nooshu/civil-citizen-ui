@@ -109,4 +109,4 @@ Also run when relevant:
 - `yarn wiremock:validate` and `yarn test:wiremock-contracts` after chart mappings change
 - `yarn build` after webpack, SCSS, or client JS changes
 
-Server TypeScript changes should not be left with `tsc` / Jest transform errors (`.cursor/rules/verify-ts-build-after-server-changes.mdc`).
+Server TypeScript changes should not be left with `tsc` / Jest transform errors (`AGENTS.md` Testing and coverage).

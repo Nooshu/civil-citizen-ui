@@ -34,4 +34,4 @@ Dockerfile runtime stage copies `src/main` from the build image and **deletes** 
 
 ## After GOV.UK upgrades
 
-Rebuild + `yarn test:govuk-fixtures` (`.cursor/rules/govuk-frontend-upgrade-tests.mdc`).
+Rebuild + `yarn test:govuk-fixtures` (`AGENTS.md` GOV.UK Frontend upgrade checklist).

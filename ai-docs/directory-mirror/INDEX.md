@@ -30,7 +30,7 @@ AI-oriented notes for each area of the tree. Human map: [`docs/directory-structu
 | --- | --- |
 | [`config/`](config.md) | node-config YAML + env mapping |
 | [`webpack/`](webpack.md) + `webpack.config.js` | Asset pipeline → `src/main/public/` (generated) |
-| [Root files](root-files.md) | `package.json`, tsconfig, Jest, ESLint, Docker, Jenkinsfiles |
+| [Root files](root-files.md) | `package.json`, tsconfig, Jest, ESLint, Docker, Jenkinsfiles, `KEYCHANGES.md` |
 
 ## Deploy, local stacks, helpers
 
@@ -41,7 +41,7 @@ AI-oriented notes for each area of the tree. Human map: [`docs/directory-structu
 | [`bin/`](charts-compose-bin.md#bin) | Shell helpers; `bin/shared/` is pulled |
 | [`infrastructure/`](infrastructure.md) | Terraform (Key Vault, Redis, App Insights) |
 | [`playwright/`](playwright.md) | API security specs |
-| [`.github/`, Jenkins, `.semgrep/`, `.cursor/`](github-ci-cursor.md) | CI, PII scan, agent rules |
+| [`.github/`, Jenkins, `.semgrep/`](github-ci.md) | CI, PII scan; agent conventions live in `AGENTS.md` |
 | [Generated / gitignored](generated-and-ignored.md) | Do not treat as source |
 
 ## Journey folder names (keep them aligned)

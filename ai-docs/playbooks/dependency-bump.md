@@ -1,6 +1,6 @@
 # Playbook: dependency bump
 
-Canonical: `.cursor/rules/dependency-pinning.mdc` and `AGENTS.md`.
+Canonical: [`AGENTS.md`](../../AGENTS.md) — Dependencies.
 
 1. Confirm the version has been on npm **≥ 7 days** (security fixes may skip).
 2. Prefer **patch/minor** unless the user asked for major.

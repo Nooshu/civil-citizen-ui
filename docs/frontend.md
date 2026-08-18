@@ -12,11 +12,11 @@ Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandato
 
 Typography and layout utilities (`govuk-heading-l`, `govuk-grid-row`, `govuk-!-margin-top-6`, …) are allowed for page composition.
 
-Canonical rules:
+Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend.
 
-- `.cursor/rules/govuk-frontend-ui.mdc`
-- `.cursor/rules/prefer-govuk-over-axe.mdc` — if axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup
-- `.cursor/rules/reuse-nunjucks-partials.mdc` — extract shared journey chrome instead of copying HTML
+- Official Nunjucks macros for Design System components
+- If axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup
+- Extract shared journey chrome instead of copying HTML
 
 MoJ Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where this service already depends on it. Do not jump major versions without a dedicated UI migration.
 
@@ -59,7 +59,7 @@ Cookie configuration is a second webpack entry (`modules/cookie/cookieConfig.ts`
 
 ## CSS / Sass
 
-`src/main/assets/scss/main.scss` imports GOV.UK Frontend. Theme overrides stay in app SCSS (`.cursor/rules/govuk-frontend-theming-overrides.mdc`). `sass-loader` is configured with `loadPaths` so `@import 'node_modules/…'` still resolves after sass-loader 17 (see `webpack/scss.js`).
+`src/main/assets/scss/main.scss` imports GOV.UK Frontend. Theme overrides stay in app SCSS (`AGENTS.md` GOV.UK Frontend). `sass-loader` is configured with `loadPaths` so `@import 'node_modules/…'` still resolves after sass-loader 17 (see `webpack/scss.js`).
 
 ## Webpack
 
@@ -80,7 +80,7 @@ yarn build
 yarn test:govuk-fixtures
 ```
 
-The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders official macros through this app’s Nunjucks environment and compares HTML to the package’s `fixtures.json`. **Do not merge if fixtures fail.** See `.cursor/rules/govuk-frontend-upgrade-tests.mdc`.
+The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders official macros through this app’s Nunjucks environment and compares HTML to the package’s `fixtures.json`. **Do not merge if fixtures fail.** See `AGENTS.md` GOV.UK Frontend (upgrade checklist).
 
 ## Accessibility
 

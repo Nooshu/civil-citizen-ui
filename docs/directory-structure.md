@@ -14,12 +14,12 @@ This is a map of the repository as it exists on `master`. Paths are relative to 
 | `compose/` | Local Docker Compose (Redis draft store, UI Preview) |
 | `bin/` | Shell helpers: CCD/Camunda import, WireMock, preview, shared civil-service scripts |
 | `docs/` | This documentation |
+| `ai-docs/` | Agent-oriented directory mirror and playbooks (not a human product guide) |
 | `playwright/` | Playwright security specs |
 | `infrastructure/` | Supporting infra scripts (if present for the pipeline) |
 | `.github/workflows/` | GitHub Actions (CI lint/build, stale bots, README table refresh) |
 | `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Main and nightly pipelines |
-| `AGENTS.md` | Agent coding rules (`AGENT.md` is a symlink) |
-| `.cursor/rules/` | Canonical Cursor rules |
+| `AGENTS.md` | Canonical standing conventions for any coding agent (`AGENT.md` is a symlink) |
 | `catalog-info.yaml` | Backstage component |
 | `docker-compose.yml` / `Dockerfile` | Container build for CUI |
 | `Dockerfile.ui-preview` | Image used by UI Preview |

@@ -4,7 +4,7 @@ Follow this before editing application code. Skip only if the user explicitly fo
 
 ## 1. Sync upstream
 
-See `.cursor/rules/project-standards.mdc`.
+See [`AGENTS.md`](../AGENTS.md) — Before changing code.
 
 - If the working tree is **not clean**, ask before syncing, or work on a branch.
 - Add remote if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
@@ -37,16 +37,16 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 
 ## 4. Apply stack and UI constraints
 
-- Express + TypeScript under `src/main/` only — `.cursor/rules/prefer-express-typescript-stack.mdc`
-- GOV.UK **macros** for components — `.cursor/rules/govuk-frontend-ui.mdc`
+- Express + TypeScript under `src/main/` only — `AGENTS.md` Server / application stack
+- GOV.UK **macros** for components — `AGENTS.md` GOV.UK Frontend
 - App JS in `src/main/assets/js/` only — never `node_modules/govuk-frontend`
 - App SCSS in `src/main/assets/scss/` only
-- Reuse Nunjucks partials — `.cursor/rules/reuse-nunjucks-partials.mdc`
-- axe does not override GOV.UK — `.cursor/rules/prefer-govuk-over-axe.mdc`
+- Reuse Nunjucks partials — `AGENTS.md` GOV.UK Frontend
+- axe does not override GOV.UK — `AGENTS.md` GOV.UK Frontend
 
 ## 5. Comments and docs
 
-`.cursor/rules/docs-and-comments.mdc`:
+`AGENTS.md` — Documentation and code comments:
 
 - TSDoc `/** */`, summary first, `@param name - description` with **no `{Type}` braces**
 - No `@module`, `@requires`, `@class`, `@function`, `@async`
@@ -57,14 +57,14 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 
 | You changed | Minimum verification |
 | --- | --- |
-| Server TypeScript | Focused Jest on the module + fix compile errors (`.cursor/rules/verify-ts-build-after-server-changes.mdc`) |
+| Server TypeScript | Focused Jest on the module + fix compile errors (`AGENTS.md` Testing and coverage) |
 | Routes / middleware | `yarn test:integration` as well as unit tests |
 | Nunjucks / GOV.UK / macros | `yarn test:govuk-fixtures` after Frontend or Nunjucks-env changes; `yarn build` if webpack entries/SCSS/JS changed |
 | Chart WireMock mappings | `yarn wiremock:validate` and `yarn test:wiremock-contracts` |
-| Dependencies | `yarn test:coverage` after all bumps (`.cursor/rules/dependency-pinning.mdc`) |
+| Dependencies | `yarn test:coverage` after all bumps (`AGENTS.md` Dependencies) |
 | Logging | No PII; see `docs/pii-logging-check.md` and `.semgrep/` |
 
-Long Jest: background the command (`block_until_ms: 0`) and poll ≤ 60s — `.cursor/rules/shell-wait-limits.mdc`.
+Long Jest: run in the background and poll until complete — `AGENTS.md` Long-running commands.
 
 Jest **SIGSEGV**: re-run the **one** failed file. If it passes, stop. Do not re-run full coverage. Keep `--no-sparkplug` on Jest scripts; never put that V8 flag in `NODE_OPTIONS`.
 
@@ -73,8 +73,8 @@ Jest **SIGSEGV**: re-run the **one** failed file. If it passes, stop. Do not re-
 - No commit unless asked
 - No push unless asked (exception: package-only auto-push rule in `AGENTS.md`)
 - No `git config` changes, no `-i`, no `--no-verify`
-- No `Co-Authored-By: Cursor` or agent author — `.cursor/rules/no-cursor-agent-commits.mdc`
-- No invented JIRA ids — `.cursor/rules/no-invented-jira-ids.mdc`
+- No `Co-Authored-By` trailers naming an AI agent or product — `AGENTS.md` Git and commits
+- No invented JIRA ids — `AGENTS.md` Git and commits
 
 ## 8. Summaries
 

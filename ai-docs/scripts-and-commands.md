@@ -1,6 +1,6 @@
 # Scripts and commands (agents)
 
-Prefer **Yarn 4** scripts from `package.json`. Cap agent shell waits at **60s**; background anything longer (`.cursor/rules/shell-wait-limits.mdc`).
+Prefer **Yarn 4** scripts from `package.json`. Do not block a single wait on long jobs (`yarn test:coverage`, large installs); background them and poll — `AGENTS.md` Long-running commands.
 
 Run `nvm use` first so Node matches `.nvmrc` (`>=24.18.0`).
 

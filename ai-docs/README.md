@@ -2,11 +2,11 @@
 
 **Audience: AI coding agents only.** Human-oriented project documentation is [`docs/README.md`](../docs/README.md). Developers: this folder is not a product manual; it exists so agents can inspect directory-level invariants before editing the codebase.
 
-If any instruction here conflicts with [`.cursor/rules/*.mdc`](../.cursor/rules/) or [`AGENTS.md`](../AGENTS.md), **the rule file wins**, then `AGENTS.md`. Fix this folder in the same change rather than improvising.
+If any instruction here conflicts with [`AGENTS.md`](../AGENTS.md), **`AGENTS.md` wins**. Fix this folder in the same change rather than improvising.
 
 ## Why this folder exists
 
-The human `docs/` tree explains architecture and journeys. This tree is a **directory mirror**: for every important path in the repo it records what lives there, what you must not break, which tests and scripts to run, which Cursor rules apply, and which neighbouring files usually change together.
+The human `docs/` tree explains architecture and journeys. This tree is a **directory mirror**: for every important path in the repo it records what lives there, what you must not break, which tests and scripts to run, which `AGENTS.md` conventions apply, and which neighbouring files usually change together.
 
 ## Read order before you change code
 
@@ -24,7 +24,7 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 | [pre-change-protocol.md](pre-change-protocol.md) | Every task that touches the working tree |
 | [do-not.md](do-not.md) | Hard prohibitions (stack, GOV.UK, git, secrets, WireMock) |
 | [scripts-and-commands.md](scripts-and-commands.md) | Yarn scripts, `bin/` helpers, what to run after which change |
-| [skills-and-rules.md](skills-and-rules.md) | Cursor rules, useful skills, when to invoke them |
+| [conventions.md](conventions.md) | Index of standing conventions (canonical: `AGENTS.md`) |
 | [path-aliases-and-imports.md](path-aliases-and-imports.md) | `tsconfig` / Jest path aliases (`common/`, `services/`, …) |
 | [change-impact-matrix.md](change-impact-matrix.md) | “I changed X → also update Y, run Z” |
 | [directory-mirror/INDEX.md](directory-mirror/INDEX.md) | Full directory map with links to per-area notes |
