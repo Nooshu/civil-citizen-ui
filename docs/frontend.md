@@ -12,7 +12,7 @@ Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandato
 
 Typography and layout utilities (`govuk-heading-l`, `govuk-grid-row`, `govuk-!-margin-top-6`, …) are allowed for page composition.
 
-Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend.
+Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assessment mapping (look like GOV.UK, fixture HTML, WCAG 2.2 AA): [service-assessment.md](service-assessment.md).
 
 - Official Nunjucks macros for Design System components
 - If axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup

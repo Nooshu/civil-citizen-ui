@@ -33,7 +33,7 @@ Register: import and invoke in `src/main/routes/routes.ts`.
 
 - `src/main/views/features/<journey>/….njk`
 - Extend `layout.njk`
-- GOV.UK macros only for components (`govukButton`, `govukInput`, `govukErrorSummary`, …)
+- GOV.UK macros only for components (`govukButton`, `govukInput`, `govukErrorSummary`, …) — Service Standard 4/13; see [`docs/service-assessment.md`](../../docs/service-assessment.md)
 - Reuse `views/macro/` and claim-details templates
 - CSRF include on POST forms
 - Client JS must bind to **macro-rendered** markup (`src/main/assets/js/`)

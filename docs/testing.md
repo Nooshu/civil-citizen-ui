@@ -16,7 +16,7 @@
 | Playwright security | Playwright | specs in `playwright/tests/` | Running CUI |
 | Smoke | `bin/run-smoke-tests.sh` | `yarn test:smoke` | Deployed env |
 
-`yarn test:a11y` is a **stub** that prints that a11y is enforced in GitHub Actions. The real local command is `yarn tests:a11y`.
+`yarn test:a11y` is a **stub** that prints that a11y is enforced in GitHub Actions. The real local command is `yarn tests:a11y`. The Service Standard bar is **WCAG 2.2 AA**; Pa11y is the scanner HMCTS documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
 
 ## Unit tests (Jest)
 

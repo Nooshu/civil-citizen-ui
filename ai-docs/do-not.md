@@ -4,7 +4,8 @@ Do not do these unless the user explicitly overrides in the same conversation.
 
 ## Stack
 
-- Do not introduce NestJS, Prisma, React, Vue, Angular, or a second template engine.
+- Do not introduce NestJS, Prisma, React, Vue, Angular, or a second template engine. HMCTS citizen apps are Express SSR ([service-assessment.md](service-assessment.md)).
+- Do not add generative AI as the user journey or an unexplained decision engine (Service Standard points 2, 6, 11, 14).
 - Do not invent a second HTTP client stack. Use `src/main/app/client/`.
 - Do not invent a new database. Redis draft store + session only (`src/main/modules/draft-store/`, `getRedisStoreForSession()`).
 - Do not add npm as the package manager or delete `yarn.lock`.

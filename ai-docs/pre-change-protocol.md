@@ -37,8 +37,8 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 
 ## 4. Apply stack and UI constraints
 
-- Express + TypeScript under `src/main/` only — `AGENTS.md` Server / application stack
-- GOV.UK **macros** for components — `AGENTS.md` GOV.UK Frontend
+- Express + TypeScript under `src/main/` only — `AGENTS.md` Server / application stack. Do not recommend a citizen SPA (HMCTS + Service Standard 11).
+- GOV.UK **macros** for components — `AGENTS.md` GOV.UK Frontend. Flag deviations: [`service-assessment.md`](service-assessment.md).
 - App JS in `src/main/assets/js/` only — never `node_modules/govuk-frontend`
 - App SCSS in `src/main/assets/scss/` only
 - Reuse Nunjucks partials — `AGENTS.md` GOV.UK Frontend

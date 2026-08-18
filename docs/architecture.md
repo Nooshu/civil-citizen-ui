@@ -14,6 +14,8 @@ CUI is a **server-rendered Express application**. A typical authenticated reques
 
 Client JavaScript (`src/main/index.js` → webpack bundle) only enhances pages that already have GOV.UK macro HTML.
 
+This Express SSR + Nunjucks + GOV.UK Frontend shape is the [HMCTS citizen frontend](https://hmcts.github.io/standards/technology-stack/), not an accident. Replacing it with a SPA would fail a service assessment. See [service-assessment.md](service-assessment.md).
+
 ```text
 Browser
   │  HTTPS (dev) / HTTP behind ingress (deployed)

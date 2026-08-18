@@ -13,8 +13,8 @@ This is a map of the repository as it exists on `master`. Paths are relative to 
 | `charts/civil-citizen-ui/` | Helm chart, values templates, packaged WireMock mappings |
 | `compose/` | Local Docker Compose (Redis draft store, UI Preview) |
 | `bin/` | Shell helpers: CCD/Camunda import, WireMock, preview, shared civil-service scripts |
-| `docs/` | This documentation |
-| `ai-docs/` | Agent-oriented directory mirror and playbooks (not a human product guide) |
+| `docs/` | This documentation, including [service-assessment.md](service-assessment.md) |
+| `ai-docs/` | Agent-oriented directory mirror, playbooks, and [service-assessment.md](../ai-docs/service-assessment.md) (not a human product guide) |
 | `playwright/` | Playwright security specs |
 | `infrastructure/` | Supporting infra scripts (if present for the pipeline) |
 | `.github/workflows/` | GitHub Actions (CI lint/build, stale bots, README table refresh) |

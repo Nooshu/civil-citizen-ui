@@ -33,6 +33,7 @@ Suggested first reads inside `ai-docs/`:
 - [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md)
 - [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md)
 - [`ai-docs/conventions.md`](ai-docs/conventions.md)
+- [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md) — Service Standard / TCoP / Design System deviation checklist
 
 ## Project overview
 
@@ -138,6 +139,16 @@ Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs whe
   8. Version notes in README / `docs/` / this file when they mention GOV.UK Frontend
   Dependabot/Renovate GOV.UK bumps are not complete until those checks pass (or a documented exception).
 
+## Service assessment (GOV.UK / HMCTS)
+
+CUI is a **transactional** citizen service. Code changes must not make a [service assessment](https://www.gov.uk/service-manual/service-assessments) harder to pass.
+
+- Human snapshot (what “passing” means, 14 Service Standard points, TCoP, HMCTS stack, Design System, fixture HTML): [`docs/service-assessment.md`](docs/service-assessment.md)
+- Agent checklist (deviations vs aligned recommendations): [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md)
+- Official pages remain canonical. If they disagree with those snapshots, believe the live page and update both files in the same change.
+- You **cannot** iterate away live **accessibility** (WCAG 2.2 AA), **security/privacy**, or **technology lock-in**. Do not introduce a citizen SPA, hand-written GOV.UK components, or unexplained AI decisioning.
+- Do not claim the service “passes” from git history alone. Do flag when a proposal **deviates** from the Service Standard, TCoP, [HMCTS way](https://hmcts.github.io/), or [GOV.UK Design System](https://design-system.service.gov.uk/).
+
 ## Performance and accessibility
 
 Treat **frontend performance**, **backend/API efficiency**, and **accessible UI** as top priorities on every change.
@@ -205,6 +216,8 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 |------|---------|
 | `ai-docs/README.md` | Agent directory mirror, playbooks, scripts, pre-change protocol |
 | `ai-docs/conventions.md` | Index of standing conventions (points here) |
+| `ai-docs/service-assessment.md` | Service Standard / TCoP / Design System — flag deviations |
+| `docs/service-assessment.md` | What passing a GOV.UK service assessment means (mapped to CUI) |
 | `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |
 | `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
 | `docs/contributing.md` | Human contributing guide (same conventions) |
