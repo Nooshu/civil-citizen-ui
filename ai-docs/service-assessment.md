@@ -1,8 +1,8 @@
 # Service assessment — agent checklist
 
-**Use this** whenever you recommend a stack change, a new UI pattern, a dependency, analytics, AI, or anything that would show up in a service assessment. Human explanation and full point-by-point mapping: [`docs/service-assessment.md`](../docs/service-assessment.md) (snapshot **18 August 2026**). Live pages win if they disagree; then update both files.
+**Use this** whenever you recommend a stack change, a new UI pattern, a dependency, analytics, Artificial Intelligence (AI), or anything that would show up in a service assessment. Human explanation and full point-by-point mapping: [`docs/service-assessment.md`](../docs/service-assessment.md) (snapshot **18 August 2026**). Live pages win if they disagree; then update both files.
 
-CUI is a **central-government transactional citizen service**. Assessors judge the **Service Standard**. Some failures **cannot be iterated away** once real users are on the service: **accessibility**, **security/privacy**, and **technology lock-in**. Acronyms: [`docs/glossary.md`](../docs/glossary.md).
+CUI is a **central-government transactional citizen service**. Assessors judge the **Service Standard (SS)**. Some failures **cannot be iterated away** once real users are on the service: **accessibility**, **security/privacy**, and **technology lock-in**. Acronyms: [`docs/glossary.md`](../docs/glossary.md).
 
 Do not claim the service “passes an assessment” from this repo alone. Do say, clearly, when a proposal **deviates** from the standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) stack, or Design System.
 
@@ -18,8 +18,8 @@ Flag as a **deviation** (and prefer not to do it unless the user explicitly acce
 | Build GOV.UK component markup in client JS | Progressive enhancement / Frontend JS docs; assistive tech |
 | Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |
 | Rewrite GOV.UK output to satisfy axe | Design System is the tested pattern; document the axe rule instead |
-| NestJS, Prisma, second HTTP client, new database | Lock-in and duplication (SS 8/11, TCoP 8/9); CUI already has Express, civil-service clients, Redis drafts |
-| Generative AI as the journey or an unexplained decision engine | SS 2 (do not design around AI), SS 6 (need someone who understands it), SS 11 (inclusion and reliability of decisions), SS 14 (monitor bias) |
+| NestJS, Prisma, second HTTP client, new database | Lock-in and duplication (Service Standard (SS) 8/11, TCoP 8/9); CUI already has Express, civil-service clients, Redis drafts |
+| Generative Artificial Intelligence (AI) as the journey or an unexplained decision engine | SS 2 (do not design around AI), SS 6 (need someone who understands it), SS 11 (inclusion and reliability of decisions), SS 14 (monitor bias) |
 | Ranges (`^`) on npm dependencies, unsigned/unchecksummed installs | SS 9 due diligence on third-party software; TCoP 6; this repo’s pin + SHA policy |
 | Personally identifiable information (PII) in logs, `unsafe-inline` Content Security Policy (CSP), skipped Cross-Site Request Forgery (CSRF) on new POSTs | SS 9; cannot iterate this away in live |
 | Secrets in git | SS 12 exception is credentials — they stay **out** of the public repo |

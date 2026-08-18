@@ -1,6 +1,6 @@
 # Configuration
 
-CUI uses [node-config](https://github.com/node-config/node-config). YAML files under `config/` are merged according to `NODE_ENV`, then environment variables from `config/custom-environment-variables.yaml` overlay them. Acronyms: [glossary](glossary.md).
+Civil Citizen UI (CUI) uses [node-config](https://github.com/node-config/node-config). YAML files under `config/` are merged according to `NODE_ENV`, then environment variables from `config/custom-environment-variables.yaml` overlay them. Acronyms: [glossary](glossary.md).
 
 Load order (simplified):
 

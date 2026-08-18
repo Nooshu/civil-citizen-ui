@@ -30,7 +30,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 
 ## Security, personally identifiable information (PII), secrets
 
-- Do not log names, addresses, emails, DOB, phones, claim amounts, fees, payments, interest, repayment figures, or wholesale case/party objects.
+- Do not log names, addresses, emails, date of birth (DOB), phones, claim amounts, fees, payments, interest, repayment figures, or wholesale case/party objects.
 - Do not commit `.env`, Key Vault values, Identity and Access Management (IDAM)/service-to-service (S2S)/Redis/Ordnance Survey (OS)/LaunchDarkly secrets.
 - Do not add `unsafe-inline` to Content Security Policy (CSP). Extend Helmet allowlists + nonces if you add a third-party script.
 - Do not skip Cross-Site Request Forgery (CSRF) on new POST routes without a documented exception (today: eligibility, first-contact, testing-support).

@@ -26,7 +26,7 @@ Update client + unit tests (`src/test/unit/app/client/`) + translators + Pact co
 
 | Path | Role |
 | --- | --- |
-| `auth/launchdarkly/launchDarklyClient.ts` | SDK init + flag helpers (`isGaForLipsEnabled`, shutter, dashboard, CARM, MINTI, QM, Welsh, NoC, NRO, judgment buffer, HMCTS Access, case events, …) |
+| `auth/launchdarkly/launchDarklyClient.ts` | Software development kit (SDK) init + flag helpers (`isGaForLipsEnabled`, shutter, dashboard, Civil Automated Referral to Mediation (CARM), Multi and Intermediate Track (MINTI), query management (QM), Welsh, Notice of Change (NoC), national roll-out (NRO), judgment buffer, His Majesty’s Courts and Tribunals Service (HMCTS) Access, case events, …) |
 | `auth/user/oidc` | Token exchange / user details used by `modules/oidc` |
 
 e2eTest: LaunchDarkly `TestData`; toggle via testing-support URL `TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`.

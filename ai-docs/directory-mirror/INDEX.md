@@ -1,6 +1,6 @@
 # Directory mirror — index
 
-AI-oriented notes for each area of the tree. Human map: [`docs/directory-structure.md`](../../docs/directory-structure.md). Acronyms: [`docs/glossary.md`](../../docs/glossary.md).
+Artificial Intelligence (AI)-oriented notes for each area of the tree. Human map: [`docs/directory-structure.md`](../../docs/directory-structure.md). Acronyms: [`docs/glossary.md`](../../docs/glossary.md).
 
 ## How to use
 

@@ -17,12 +17,12 @@ Human journey map: [`docs/citizen-journeys.md`](../../docs/citizen-journeys.md).
 | Prefix | Journey folder |
 | --- | --- |
 | `/claim` | `features/claim` — Redis draft, no case id yet |
-| `/eligibility`, `/first-contact` | `features/public` — CSRF skipped; OIDC public |
+| `/eligibility`, `/first-contact` | `features/public` — Cross-Site Request Forgery (CSRF) skipped; OpenID Connect (OIDC) public |
 | `/dashboard` | `features/dashboard` |
 | `/case/:id/response` | `features/response` |
 | `/case/:id/claimant-response` | `features/claimantResponse` |
 | `/case/:id/general-application` | `features/generalApplication` (applicant) |
-| `/case/:id/response/general-application/:appId` | GA respondent |
+| `/case/:id/response/general-application/:appId` | General application (GA) respondent |
 | `/case/:id/case-progression` | `features/caseProgression` |
 | `/case/:id/mediation` | `features/mediation` |
 | `/case/:id/directions-questionnaire` | `features/directionsQuestionnaire` |
@@ -34,7 +34,7 @@ Human journey map: [`docs/citizen-journeys.md`](../../docs/citizen-journeys.md).
 Thin: parse params/body → form validate → service → `res.render` / `res.redirect`.
 
 - Render Nunjucks names matching `views/` (no file extension in many `res.render` calls — follow neighbours).
-- Pass `t` / i18n as existing controllers do; do not hard-code user copy.
+- Pass `t` / internationalisation (i18n) as existing controllers do; do not hard-code user copy.
 - Include error summary data for GOV.UK `govukErrorSummary`.
 
 ## `features/` folders (keep names aligned with services/views)
@@ -43,13 +43,13 @@ Thin: parse params/body → form validate → service → `res.render` / `res.re
 
 ## `guards/`
 
-Express middleware. Path-prefix guards are attached in `app.ts` (e.g. `claimantIntentGuard` on claimant-response base, `statementOfMeansGuard`, `trialArrangementsGuard`, `isGAForLiPEnabled`, upload rate limit on QM/CP/mediation/GA uploads).
+Express middleware. Path-prefix guards are attached in `app.ts` (e.g. `claimantIntentGuard` on claimant-response base, `statementOfMeansGuard`, `trialArrangementsGuard`, `isGAForLiPEnabled`, upload rate limit on query management (QM) / case progression (CP) / mediation / general application (GA) uploads).
 
 | Guard (examples) | Protects |
 | --- | --- |
 | `claimIssueTaskListGuard` | Claim issue task jumping |
 | `claimantIntentGuard` | Claimant response |
-| `statementOfMeansGuard` | SoM nested routes |
+| `statementOfMeansGuard` | Statement of means (SoM) nested routes |
 | `allResponseTasksCompletedGuard` / CYA guards | Submit / CYA |
 | `claimFeePaymentGuard` | Fee payment |
 | `pcqGuard` / `pcqGuardClaim` | PCQ |
