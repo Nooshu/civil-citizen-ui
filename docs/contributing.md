@@ -35,6 +35,8 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 4. Reuse Nunjucks partials; do not duplicate claim-summary chrome.
 5. axe does not override GOV.UK.
 
+These UI rules exist so the service can meet the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Full mapping: [service-assessment.md](service-assessment.md).
+
 ## Dependencies
 
 - Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md).
@@ -65,6 +67,7 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 - [ ] `yarn lint` clean
 - [ ] Unit tests for new branches; integration tests if middleware/routes changed
 - [ ] Nunjucks uses macros; no duplicated journey HTML
+- [ ] Change does not deviate from the Service Standard / HMCTS citizen stack ([service-assessment.md](service-assessment.md)) — no SPA, no hand-rolled GOV.UK components
 - [ ] No PII in new `logger.*` calls
 - [ ] Config/env documented if you added keys
 - [ ] Chart WireMock still validates if you touched mappings

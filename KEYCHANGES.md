@@ -7,7 +7,7 @@
 - **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines** (1,044 suites / 8,995 tests). Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
 - **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **SDK 3**, Node 24 Jest without Sparkplug crashes.
 - **Smaller security surface** — `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
-- **People can find how the app works** — full human `docs/`, portable `AGENTS.md` (any coding agent), and an `ai-docs/` mirror (upstream has almost none of this).
+- **People can find how the app works** — full human `docs/` (including a Service Standard / TCoP / Design System snapshot), portable `AGENTS.md` (any coding agent), and an `ai-docs/` mirror (upstream has almost none of this).
 - **Upgrades that stick** — every direct dependency and resolution is an exact pin; `yarn.lock` SHA-512 checksums are verified on install and in CI; a 7-day npm age gate; `yarn test:coverage` after dependency changes.
 
 The product is unchanged: HMCTS Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
@@ -40,7 +40,7 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 | **Security / supply chain** | Helmet 8, `crypto-js` removed, `tar`/`flat`/`formidable` resolutions, GitHub Actions v7 | Fewer unmaintained or historically noisy packages; newer Actions and HTTP stack |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
 | **Local delivery** | **UI Preview** (`yarn preview`) | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
-| **Knowledge** | Human `docs/`, portable `AGENTS.md`, `ai-docs/` | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE |
+| **Knowledge** | Human `docs/` (including service-assessment), portable `AGENTS.md`, `ai-docs/` | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
 | **Dependency hygiene** | Exact pins on **all** direct deps and resolutions; lockfile SHA checksums; 7-day Yarn age gate; `yarn deps:check` in CI | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
 
 ---
@@ -58,6 +58,7 @@ New guides (not on upstream):
 - [docs/local-development.md](docs/local-development.md), [docs/configuration.md](docs/configuration.md)
 - [docs/citizen-journeys.md](docs/citizen-journeys.md), [docs/frontend.md](docs/frontend.md), [docs/integrations.md](docs/integrations.md)
 - [docs/security-and-privacy.md](docs/security-and-privacy.md), [docs/testing.md](docs/testing.md), [docs/ci-cd-and-deployment.md](docs/ci-cd-and-deployment.md), [docs/contributing.md](docs/contributing.md)
+- [docs/service-assessment.md](docs/service-assessment.md) — Service Standard, Technology Code of Practice, HMCTS stack, Design System (what passing an assessment means)
 - [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md)
 
 The root [README.md](README.md) now links this hub, and the Node prerequisite matches `engines` / `.nvmrc` (`>=24.18.0`) instead of an obsolete Node 14 line.
@@ -69,10 +70,19 @@ The root [README.md](README.md) now links this hub, and the Node prerequisite ma
 Upstream has **no** `AGENTS.md`. The fork adds vendor-neutral standing conventions so Copilot, Claude, Codex, Cursor, or a human can follow the same rules:
 
 - [AGENTS.md](AGENTS.md) (`AGENT.md` symlink) — **canonical** Yarn 4, GOV.UK macros, Express/TS stack, hmcts sync, Jest SIGSEGV, exact pins, 7-day cooldown, no invented ticket keys, no AI-agent git identity, long-command waits
-- [`ai-docs/`](ai-docs/README.md) — directory mirror, change-impact matrix, script catalogue, playbooks (add a screen, dependency bump, GOV.UK upgrade), and a **mandatory** keep-in-sync instruction so the mirror does not rot
+- [`ai-docs/`](ai-docs/README.md) — directory mirror, change-impact matrix, script catalogue, playbooks, **service-assessment deviation checklist**, and a **mandatory** keep-in-sync instruction so the mirror does not rot
 - Conventions are **not** stored as Cursor `.mdc` rule files. Editor leftovers under `.cursor/` (if present) only point at `AGENTS.md`; do not add IDE-specific rule packs
 
-**Benefit:** automated and human changes follow the same constraints (macros, not a second SPA; chart WireMock ≠ preview stubs; exact pins) **regardless of which editor or agent** is used. That reduces rework and inconsistent UI/HTTP patterns.
+**Benefit:** automated and human changes follow the same constraints (macros, not a second SPA; chart WireMock ≠ preview stubs; exact pins) **regardless of which editor or agent** is used. Agents also have a dated snapshot of the Service Standard, TCoP, HMCTS engineering stack, and GOV.UK Design System so they can recommend against deviations (citizen SPA, hand-rolled GOV.UK HTML, unexplained AI, WCAG regressions) instead of inventing a parallel UI.
+
+### Service assessment and government standards (fork-only snapshot)
+
+Upstream has no mapping of CUI to the assessment manuals. The fork adds:
+
+- [docs/service-assessment.md](docs/service-assessment.md) — what a **service assessment** is (green/amber/red; what you cannot iterate away), all **14 Service Standard** points, the **Technology Code of Practice**, [HMCTS way](https://hmcts.github.io/) citizen **Express SSR** stack, and GOV.UK Design System / Frontend **fixture HTML** tests — scraped 18 August 2026, with live URLs as canonical
+- [ai-docs/service-assessment.md](ai-docs/service-assessment.md) — operational deviation table for any coding agent
+
+**Benefit:** future stack or UI suggestions can be judged against the same bar assessors use, without depending on Cursor-only rules or an assessor being in the room.
 
 ---
 
@@ -358,5 +368,6 @@ Honest gaps, not hidden:
 
 1. This file (delta vs upstream)
 2. [docs/README.md](docs/README.md) — how the service works
-3. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular IDE)
-4. [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record
+3. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / TCoP / Design System mapped to this app
+4. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular IDE)
+5. [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record

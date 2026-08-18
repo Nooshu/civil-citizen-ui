@@ -14,7 +14,7 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 2. This index, then **[pre-change-protocol.md](pre-change-protocol.md)** and **[do-not.md](do-not.md)**.
 3. **[change-impact-matrix.md](change-impact-matrix.md)** — pick the row that matches your edit.
 4. The matching file under **[directory-mirror/INDEX.md](directory-mirror/INDEX.md)**.
-5. Human docs for the domain (`docs/architecture.md`, `docs/citizen-journeys.md`, …) if you need product context.
+5. Human docs for the domain (`docs/architecture.md`, `docs/citizen-journeys.md`, `docs/service-assessment.md`, …) if you need product or assessment context.
 6. The actual source files. Do not edit from this documentation alone.
 
 ## Contents
@@ -25,6 +25,7 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 | [do-not.md](do-not.md) | Hard prohibitions (stack, GOV.UK, git, secrets, WireMock) |
 | [scripts-and-commands.md](scripts-and-commands.md) | Yarn scripts, `bin/` helpers, what to run after which change |
 | [conventions.md](conventions.md) | Index of standing conventions (canonical: `AGENTS.md`) |
+| [service-assessment.md](service-assessment.md) | Service Standard / TCoP / HMCTS / Design System — flag deviations |
 | [path-aliases-and-imports.md](path-aliases-and-imports.md) | `tsconfig` / Jest path aliases (`common/`, `services/`, …) |
 | [change-impact-matrix.md](change-impact-matrix.md) | “I changed X → also update Y, run Z” |
 | [directory-mirror/INDEX.md](directory-mirror/INDEX.md) | Full directory map with links to per-area notes |

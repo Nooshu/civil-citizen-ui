@@ -17,7 +17,8 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 9. [Security and privacy](security-and-privacy.md) — CSRF, Helmet, OIDC, PII logging
 10. [Testing](testing.md) — Jest, fixtures, functional, Playwright, Pact, a11y
 11. [CI/CD and deployment](ci-cd-and-deployment.md) — Jenkins, Helm, GitHub Actions
-12. [Contributing](contributing.md) — coding standards and agent guidance
+12. [Service assessment](service-assessment.md) — Service Standard, TCoP, HMCTS stack, Design System (what “passing” means)
+13. [Contributing](contributing.md) — coding standards and agent guidance
 
 ## Specialised notes already in this folder
 

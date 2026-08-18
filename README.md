@@ -33,6 +33,7 @@ Start here: **[docs/README.md](docs/README.md)**.
 | [Security and privacy](docs/security-and-privacy.md) | CSRF, Helmet, OIDC, PII logging |
 | [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |
 | [CI/CD and deployment](docs/ci-cd-and-deployment.md) | Jenkins, Helm, GitHub Actions |
+| [Service assessment](docs/service-assessment.md) | Service Standard, TCoP, HMCTS stack, Design System |
 | [Contributing](docs/contributing.md) | Coding standards and review checklist |
 | [Key changes vs upstream](KEYCHANGES.md) | This fork compared with `hmcts/civil-citizen-ui` |
 
