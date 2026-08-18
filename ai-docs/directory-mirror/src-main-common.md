@@ -6,7 +6,7 @@ class-validator models for POST bodies. Prefer existing validators under `form/v
 
 - `form/models/` — page models (statement of means, cookies, case progression uploads, …)
 - `form/validators/` — shared constraints (`isFileSize`, date validators, “at least one row”, …)
-- `form/validationErrors/` — message keys (wire to i18n, do not hard-code English in validators if the pattern already uses keys)
+- `form/validationErrors/` — message keys (wire to internationalisation (i18n), do not hard-code English in validators if the pattern already uses keys)
 
 Controllers: parse body → construct form class → validate → service. Keep that pipeline.
 

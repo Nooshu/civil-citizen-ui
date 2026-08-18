@@ -26,7 +26,7 @@ Do not delete `yarn.lock`. Immutable installs are on (`.yarnrc.yml` `enableImmut
 
 Open [change-impact-matrix.md](change-impact-matrix.md) and the [directory mirror](directory-mirror/INDEX.md) for every path you will touch.
 
-Typical CUI change spans **four layers** that must stay aligned:
+Typical Civil Citizen UI (CUI) change spans **four layers** that must stay aligned:
 
 1. `src/main/routes/urls.ts` — canonical path
 2. Controller under `src/main/routes/features/<journey>/` registered in `src/main/routes/routes.ts`
@@ -37,8 +37,8 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 
 ## 4. Apply stack and UI constraints
 
-- Express + TypeScript under `src/main/` only — `AGENTS.md` Server / application stack. Do not recommend a citizen SPA (HMCTS + Service Standard 11).
-- GOV.UK **macros** for components — `AGENTS.md` GOV.UK Frontend. Flag deviations: [`service-assessment.md`](service-assessment.md).
+- Express + TypeScript under `src/main/` only — `AGENTS.md` Server / application stack. Do not recommend a citizen Single Page Application (SPA) (His Majesty’s Courts and Tribunals Service (HMCTS) + Service Standard 11).
+- GOV.UK **macros** for components — `AGENTS.md` GOV.UK Frontend. Flag deviations: [`service-assessment.md`](service-assessment.md). Acronyms: [`docs/glossary.md`](../docs/glossary.md).
 - App JS in `src/main/assets/js/` only — never `node_modules/govuk-frontend`
 - App SCSS in `src/main/assets/scss/` only
 - Reuse Nunjucks partials — `AGENTS.md` GOV.UK Frontend

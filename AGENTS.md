@@ -33,14 +33,14 @@ Suggested first reads inside `ai-docs/`:
 - [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md)
 - [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md)
 - [`ai-docs/conventions.md`](ai-docs/conventions.md)
-- [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md) — Service Standard / TCoP / Design System deviation checklist
+- [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md) — Service Standard / Technology Code of Practice (TCoP) / Design System deviation checklist
 
 ## Project overview
 
-- HMCTS **Civil Citizen UI (CUI)** — citizen-facing civil money claims web app
-- **Express 5** + **TypeScript** + **Nunjucks** + **GOV.UK Frontend** (not NestJS / not a SPA)
-- Server-side HTTP clients to civil-service, GA service, IDAM, DM store, etc.
-- Redis draft store (ioredis) / session (`connect-redis` + official `redis` client); LaunchDarkly feature flags; i18next (EN/CY)
+- His Majesty’s Courts and Tribunals Service (**HMCTS**) **Civil Citizen UI (CUI)** — citizen-facing civil money claims web app
+- **Express 5** + **TypeScript** + **Nunjucks** + **GOV.UK Frontend** (not NestJS / not a Single Page Application (SPA))
+- Server-side HTTP clients to civil-service, general application (GA) service, Identity and Access Management (IDAM), Document Management (DM) store, etc.
+- Redis draft store (ioredis) / session (`connect-redis` + official `redis` client); LaunchDarkly feature flags; i18next (English / Welsh)
 - Default branch: `master`
 - Upstream remote: `hmcts` (`hmcts/civil-citizen-ui`) — add if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
 - Push/pull default: `origin` (fork), unless doing an upstream sync
@@ -57,8 +57,8 @@ Suggested first reads inside `ai-docs/`:
 - Local default URL: **https://localhost:3001** (`yarn start:dev`) — HTTPS with self-signed cert in development
 - Redis draft store: `yarn start:redis` (Docker Compose `compose/draft-store.yml`, port `6379`)
 - Health: `https://localhost:3001/health`
-- **UI Preview (no IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
-  - Distinct from `yarn start:dev` (real Redis + OIDC)
+- **UI Preview (no Identity and Access Management, IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
+  - Distinct from `yarn start:dev` (real Redis + OpenID Connect (OIDC))
   - Fixture user id: `someID`; sample claim: `1645882162449409`
   - Preview-only WireMock stubs: `compose/ui-preview-mappings/` — keep them out of `charts/civil-citizen-ui/wiremock/mappings`, which is the validated reduced-stack contract set (`yarn wiremock:validate` forbids broad matchers)
   - Stop: `yarn start:ui-preview:down`
@@ -80,13 +80,13 @@ Suggested first reads inside `ai-docs/`:
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
 - After dependency update prompts: apply the bump, then run `yarn deps:check` and the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
-  - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
+  - **Segmentation violation (SIGSEGV) / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
   - Long coverage or install runs: do not block a single wait for many minutes — run in the background and poll until complete (see [Long-running commands](#long-running-commands))
 
 ### Why exact pins, SHA checksums, and a 7-day cooldown
 
 - **Pins:** a range (`^1.2.3`) lets a later `yarn install` on a clean machine pull a different patch or minor. That is how silent breaking changes, new network calls, and extra telemetry get into a citizen-facing service without a reviewed change. Exact pins make upgrades a deliberate diff.
-- **SHA checksums:** `yarn.lock` stores a SHA-512 checksum (`checksum: 10/<hex>`) for every resolved npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw`, so a swapped or truncated archive cannot install. `yarn deps:check` fails CI if a direct specifier is a range or a non-optional lockfile entry lacks a checksum. GitHub Actions also sets `YARN_ENABLE_HARDENED_MODE=1` so install re-checks lockfile resolutions against the registry (lockfile poisoning).
+- **SHA checksums:** `yarn.lock` stores a SHA-512 (Secure Hash Algorithm) checksum (`checksum: 10/<hex>`) for every resolved npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw`, so a swapped or truncated archive cannot install. `yarn deps:check` fails continuous integration (CI) if a direct specifier is a range or a non-optional lockfile entry lacks a checksum. GitHub Actions also sets `YARN_ENABLE_HARDENED_MODE=1` so install re-checks lockfile resolutions against the registry (lockfile poisoning).
 - **7-day cooldown:** newly published npm versions can still be unpublished, and malware in a hijacked maintainer account is often noticed within days, not minutes. Waiting a week is a simple, automated control (Yarn age gate + policy). It is not a substitute for `yarn npm audit`. Security patches may skip the wait as above.
 
 Reasons and CI wiring: [`docs/security-and-privacy.md`](docs/security-and-privacy.md). Command: `yarn deps:check`.
@@ -107,10 +107,10 @@ For server and application logic, use this repository’s platform stack — not
 - Prefer **Express** building blocks already in the app: routers/controllers under `src/main/routes/`, middleware/modules under `src/main/modules/`, guards under `src/main/routes/guards/`
 - Prefer **TypeScript** end-to-end: typed models, form classes, and service APIs — avoid untyped `any`-heavy helpers or plain JS server modules unless there is a clear, documented exception
 - Prefer **services** in `src/main/services/` for business logic and content builders; keep controllers thin (validate → call service → render/redirect)
-- Prefer existing **HTTP clients** in `src/main/app/client/` for civil-service / GA / PCQ / S2S — do not invent a second HTTP stack
+- Prefer existing **HTTP clients** in `src/main/app/client/` for civil-service / general application (GA) / Protected Characteristics Questionnaire (PCQ) / service-to-service (S2S) — do not invent a second HTTP stack
 - Prefer **Redis draft store / session** helpers in `src/main/modules/draft-store/` over ad-hoc persistence or inventing a new database layer unless explicitly required
 - Prefer **class-validator** form models under `src/main/common/form/` and existing validators over one-off validation
-- Reuse existing config (`config/`), logging, i18n, and error-handling patterns instead of new bespoke frameworks
+- Reuse existing config (`config/`), logging, internationalisation (i18n), and error-handling patterns instead of new bespoke frameworks
 - If choosing an alternative stack piece, document **why** in the change — do not bypass the CUI stack casually
 - Do **not** introduce NestJS, Prisma, React/Vue/Angular, or a second template engine unless the user explicitly requests it
 
@@ -146,7 +146,7 @@ CUI is a **transactional** citizen service. Code changes must not make a [servic
 - Human snapshot (what “passing” means, 14 Service Standard points, TCoP, HMCTS stack, Design System, fixture HTML): [`docs/service-assessment.md`](docs/service-assessment.md)
 - Agent checklist (deviations vs aligned recommendations): [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md)
 - Official pages remain canonical. If they disagree with those snapshots, believe the live page and update both files in the same change.
-- You **cannot** iterate away live **accessibility** (WCAG 2.2 AA), **security/privacy**, or **technology lock-in**. Do not introduce a citizen SPA, hand-written GOV.UK components, or unexplained AI decisioning.
+- You **cannot** iterate away live **accessibility** (Web Content Accessibility Guidelines (WCAG) 2.2 AA), **security/privacy**, or **technology lock-in**. Do not introduce a citizen SPA, hand-written GOV.UK components, or unexplained AI decisioning.
 - Do not claim the service “passes” from git history alone. Do flag when a proposal **deviates** from the Service Standard, TCoP, [HMCTS way](https://hmcts.github.io/), or [GOV.UK Design System](https://design-system.service.gov.uk/).
 
 ## Performance and accessibility
@@ -154,15 +154,16 @@ CUI is a **transactional** citizen service. Code changes must not make a [servic
 Treat **frontend performance**, **backend/API efficiency**, and **accessible UI** as top priorities on every change.
 
 - Frontend: avoid unnecessary JS/assets; prefer progressive enhancement on macros
-- Backend: avoid N+1 civil-service calls; reuse draft-store helpers; watch Redis TTL/key design
+- Backend: avoid N+1 civil-service calls; reuse draft-store helpers; watch Redis time to live (TTL)/key design
 - Accessibility: preserve GOV.UK focus, labels, error summaries, and skip-link behaviour; do not break GOV.UK to silence axe
-- Call out residual performance or a11y risks in summaries
+- Call out residual performance or accessibility (a11y) risks in summaries
 
 ## Documentation and code comments
 
 - Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change (README, `AGENTS.md`, changelogs, human `docs/`)
 - **Always update `ai-docs/` in the same change** when the project tree, scripts, or invariants change — see [Keep `ai-docs/` in sync](#keep-ai-docs-in-sync-mandatory)
 - Document **why** for non-obvious decisions; after dependency or GOV.UK upgrades, sync version notes
+- Expand acronyms **on first use in each document**: Full name (ACRONYM), for example Single Page Application (SPA). Canonical list: [`docs/glossary.md`](docs/glossary.md). **GOV.UK** is a brand name and is not expanded.
 - Use **TSDoc-compatible** `/** */` comments: summary first, `@remarks` for longer constraints, `{@link}` / `@see` / `@deprecated` when useful
 - **Do not** put TypeScript types in JSDoc braces (`@param {string} x` is wrong in `.ts`); use `@param x - Description`
 - **Do not** use `@module`, `@requires`, `@class`, `@function`, or `@async` tags
@@ -178,7 +179,7 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 
 ## Testing and coverage
 
-- Jest unit tests (`src/test/unit`), Jest integration (`src/integration-test`), CodeceptJS functional, Playwright security, Pact contracts, Pa11y a11y
+- Jest unit tests (`src/test/unit`), Jest integration (`src/integration-test`), CodeceptJS functional, Playwright security, Pact contracts, Pa11y accessibility (a11y)
 - After **server TypeScript** changes, run type-check/build and relevant tests and **fix compile errors** in the same change — prefer real types over `any` / `@ts-ignore`
 - Useful commands:
   - `yarn test` — Jest unit tests
@@ -216,6 +217,7 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 |------|---------|
 | `ai-docs/README.md` | Agent directory mirror, playbooks, scripts, pre-change protocol |
 | `ai-docs/conventions.md` | Index of standing conventions (points here) |
+| `docs/glossary.md` | Acronyms expanded on first use (HMCTS, LiP, IDAM, CCD, …) |
 | `ai-docs/service-assessment.md` | Service Standard / TCoP / Design System — flag deviations |
 | `docs/service-assessment.md` | What passing a GOV.UK service assessment means (mapped to CUI) |
 | `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |

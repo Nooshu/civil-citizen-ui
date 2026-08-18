@@ -3,20 +3,20 @@
 ## Transport and cookies
 
 - Development: HTTPS with a self-signed cert.
-- Deployed: HTTP to the pod; TLS at ingress. Session cookie `secure` follows `productionMode` in `app.ts`.
+- Deployed: HTTP to the pod; Transport Layer Security (TLS) at ingress. Session cookie `secure` follows `productionMode` in `app.ts`.
 - `SameSite=lax`, rolling sessions, `cookieMaxAge` from config (default 5_400_000 ms).
 - `x-powered-by` is disabled.
 - Default `Cache-Control`: `no-cache, max-age=0, must-revalidate, no-store`.
 
-## Helmet and CSP
+## Helmet and Content Security Policy (CSP)
 
-`src/main/modules/helmet` applies `helmet` plus a custom Content-Security-Policy: default `none`, with allowlists for GOV.UK analytics, Dynatrace, Google Tag Manager, 8x8 web chat, and `formAction` including IDAM, OCMC, and GOV.UK Pay.
+`src/main/modules/helmet` applies `helmet` plus a custom Content-Security-Policy: default `none`, with allowlists for GOV.UK analytics, Dynatrace, Google Tag Manager (GTM), 8x8 web chat, and `formAction` including Identity and Access Management (IDAM), Online Civil Money Claims (OCMC), and GOV.UK Pay.
 
 Script and style nonces come from cookies / `res.locals` (`nonceValue`, `nonceDataLayer`, web chat nonce). If you add a third-party script, you must extend CSP **and** keep nonce usage; do not add `unsafe-inline`.
 
 `referrerPolicy` must be present in config or Helmet setup throws.
 
-## CSRF
+## Cross-Site Request Forgery (CSRF)
 
 `modules/csrf` uses `@dr.pogodin/csurf`. Skipped for:
 
@@ -26,7 +26,7 @@ Script and style nonces come from cookies / `res.locals` (`nonceValue`, `nonceDa
 
 Enabled when `NODE_ENV !== 'test'`. Views that POST must include the CSRF token (`res.locals.csrf`).
 
-## OIDC
+## OpenID Connect (OIDC)
 
 See [Integrations](integrations.md). Additional points:
 
@@ -36,13 +36,13 @@ See [Integrations](integrations.md). Additional points:
 
 ## Upload rate limiting
 
-When `uploadRateLimit.enabled` is true, `createUploadRateLimitGuard` is applied to query-management, case-progression, mediation, and GA upload routes (Redis-backed via `rate-limit-redis`). Defaults: 20 requests / 60 seconds. Off in unit tests.
+When `uploadRateLimit.enabled` is true, `createUploadRateLimitGuard` is applied to query-management, case-progression, mediation, and general application (GA) upload routes (Redis-backed via `rate-limit-redis`). Defaults: 20 requests / 60 seconds. Off in unit tests.
 
 ## Service shutter
 
 If LaunchDarkly `shutter-cui-service` is on, `checkServiceAvailability` renders `service-unavailable` for non-test environments.
 
-## PII in logs
+## Personally identifiable information (PII) in logs
 
 Do not log:
 
@@ -50,11 +50,11 @@ Do not log:
 - claim amounts, fees, payments, interest, repayment figures
 - wholesale case / party / payment objects
 
-CCD references and operational ids are acceptable. Runtime redaction is installed first in `server.ts` (`src/main/common/logging/piiRedaction`). PR-time Semgrep: [PII logging PR check](pii-logging-check.md). Workflow: `.github/workflows/ci.yml` job `pii-log-check` (advisory warnings; invalid rules fail the job).
+Core Case Data (CCD) references and operational ids are acceptable. Runtime redaction is installed first in `server.ts` (`src/main/common/logging/piiRedaction`). Pull request (PR)-time Semgrep: [PII logging PR check](pii-logging-check.md). Workflow: `.github/workflows/ci.yml` job `pii-log-check` (advisory warnings; invalid rules fail the job).
 
 ## Secrets
 
-Never commit real IDAM, Redis, S2S, OS, or LaunchDarkly secrets. Helm injects Key Vault values. Local `default.yaml` placeholders are intentional.
+Never commit real IDAM, Redis, S2S, Ordnance Survey (OS), or LaunchDarkly secrets. Helm injects Key Vault values. Local `default.yaml` placeholders are intentional.
 
 Functional tests that need secrets use `src/test/secretsConfig.js` and environment-specific vault access — not files in git.
 
@@ -64,14 +64,14 @@ Playwright specs under `playwright/tests/api-security` exercise HTTP security pr
 
 ## Dependencies
 
-Exact pins, lockfile SHA checksums, and a 7-day publish cooldown are standing policy. See [`AGENTS.md`](../AGENTS.md) (Dependencies) for the agent-facing rules.
+Exact pins, lockfile Secure Hash Algorithm (SHA) checksums, and a 7-day publish cooldown are standing policy. See [`AGENTS.md`](../AGENTS.md) (Dependencies) for the agent-facing rules.
 
 ### What we require
 
 - **`package.json`:** every `dependencies`, `devDependencies`, and `resolutions` specifier is an **exact** version (`1.2.3`, optional pre-release suffix). No `^`, `~`, `>`, `<`, `*`, `x`, or `||`. Nested resolutions (`express/body-parser`) and npm aliases (`npm:@scope/pkg@1.2.3`) must still pin the version. Yarn `patch:` entries are the exception for local patches (the resolution *key* may still name the upstream range it intercepts).
 - **`yarn.lock`:** Yarn records a **SHA-512 checksum** of each resolved npm archive (`checksum: 10/<hex>`). `.yarnrc.yml` sets `checksumBehavior: throw` so `yarn install` refuses a tarball that does not match. Optional/os-cpu packages may omit a hash until that platform actually fetches them.
 - **Age gate:** `npmMinimalAgeGate: 10080` (7 days in minutes). Yarn will not **select** a version published fewer than 7 days ago when resolving (`yarn add` / `yarn up`). Versions already in the lockfile continue to install. Emergency security: `YARN_NPM_MINIMAL_AGE_GATE=0 yarn up <pkg>`.
-- **Checks:** `yarn deps:check` (`bin/check-dependency-pins.mjs`) fails if a specifier is a range or a non-optional lockfile package lacks a checksum. It runs in `yarn cichecks` and in `.github/workflows/ci.yml` after install. CI install also sets `YARN_ENABLE_HARDENED_MODE=1` (re-validate lockfile metadata against the registry).
+- **Checks:** `yarn deps:check` (`bin/check-dependency-pins.mjs`) fails if a specifier is a range or a non-optional lockfile package lacks a checksum. It runs in `yarn cichecks` and in `.github/workflows/ci.yml` after install. Continuous integration (CI) install also sets `YARN_ENABLE_HARDENED_MODE=1` (re-validate lockfile metadata against the registry).
 
 ### Why (security, privacy, npm)
 

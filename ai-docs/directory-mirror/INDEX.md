@@ -1,6 +1,6 @@
 # Directory mirror — index
 
-AI-oriented notes for each area of the tree. Human map: [`docs/directory-structure.md`](../../docs/directory-structure.md).
+AI-oriented notes for each area of the tree. Human map: [`docs/directory-structure.md`](../../docs/directory-structure.md). Acronyms: [`docs/glossary.md`](../../docs/glossary.md).
 
 ## How to use
 
@@ -12,11 +12,11 @@ AI-oriented notes for each area of the tree. Human map: [`docs/directory-structu
 
 | Path | AI notes |
 | --- | --- |
-| [`src/`](src.md) | Three trees: `main` (app), `test` (Jest/Codecept/Pact/a11y), `integration-test` |
+| [`src/`](src.md) | Three trees: `main` (app), `test` (Jest/Codecept/Pact/accessibility (a11y)), `integration-test` |
 | [`src/main/`](src-main.md) | Express process: `server.ts` → `app.ts` → routes |
-| [`src/main/app/`](src-main-app.md) | HTTP clients + LaunchDarkly + OIDC user helpers |
-| [`src/main/common/`](src-main-common.md) | Forms, domain models, PII logging, utils |
-| [`src/main/modules/`](src-main-modules.md) | Cross-cutting Express modules (OIDC, Nunjucks, Redis, Helmet, i18n) |
+| [`src/main/app/`](src-main-app.md) | HTTP clients + LaunchDarkly + OpenID Connect (OIDC) user helpers |
+| [`src/main/common/`](src-main-common.md) | Forms, domain models, personally identifiable information (PII) logging, utils |
+| [`src/main/modules/`](src-main-modules.md) | Cross-cutting Express modules (OIDC, Nunjucks, Redis, Helmet, internationalisation (i18n)) |
 | [`src/main/routes/`](src-main-routes.md) | Controllers, `urls.ts`, `routes.ts`, guards |
 | [`src/main/services/`](src-main-services.md) | Business logic + CCD translators |
 | [`src/main/views/`](src-main-views.md) | Nunjucks layouts, macros, journey templates |

@@ -12,13 +12,13 @@ Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandato
 
 Typography and layout utilities (`govuk-heading-l`, `govuk-grid-row`, `govuk-!-margin-top-6`, …) are allowed for page composition.
 
-Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assessment mapping (look like GOV.UK, fixture HTML, WCAG 2.2 AA): [service-assessment.md](service-assessment.md).
+Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assessment mapping (look like GOV.UK, fixture HTML, Web Content Accessibility Guidelines (WCAG) 2.2 AA): [service-assessment.md](service-assessment.md). Acronyms: [glossary](glossary.md).
 
 - Official Nunjucks macros for Design System components
 - If axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup
 - Extract shared journey chrome instead of copying HTML
 
-MoJ Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where this service already depends on it. Do not jump major versions without a dedicated UI migration.
+Ministry of Justice (MoJ) Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where this service already depends on it. Do not jump major versions without a dedicated user interface (UI) migration.
 
 ## Layouts and views
 
@@ -31,9 +31,9 @@ MoJ Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where 
 | `src/main/views/error.njk` / `not-found.njk` / `unauthorised.njk` | Error states |
 | `src/main/views/service-unavailable.njk` | LaunchDarkly shutter |
 
-Nunjucks is configured in `src/main/modules/nunjucks/index.ts`. Search paths include app `views/`, `govuk-frontend/dist`, and `@ministryofjustice/frontend`. Filters include currency, dates, and translation helpers. Dynatrace and GTM snippets are injected with CSP nonces.
+Nunjucks is configured in `src/main/modules/nunjucks/index.ts`. Search paths include app `views/`, `govuk-frontend/dist`, and `@ministryofjustice/frontend`. Filters include currency, dates, and translation helpers. Dynatrace and Google Tag Manager (GTM) snippets are injected with Content Security Policy (CSP) nonces.
 
-## i18n
+## Internationalisation (i18n)
 
 i18next loads `src/main/modules/i18n/locales/{{lng}}.json` (`en` and `cy`). Language is detected from query string `lang` and a cookie (`modules/i18n`, `setLanguage` middleware).
 
@@ -85,12 +85,12 @@ The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders of
 ## Accessibility
 
 - Keep skip link, labels, error summary, and focus behaviour from GOV.UK macros.
-- Pa11y: `yarn tests:a11y` (the `test:a11y` npm script is a stub explaining that CI runs a11y).
+- Pa11y: `yarn tests:a11y` (the `test:a11y` npm script is a stub explaining that continuous integration (CI) runs accessibility (a11y)).
 - Functional journeys should stay keyboard-usable; do not “fix” axe by breaking GOV.UK.
 
 ## Performance (UI)
 
 - Avoid extra bundles and blocking scripts.
-- Prefer server-rendered HTML (LCP).
+- Prefer server-rendered HTML (Largest Contentful Paint, LCP).
 - Watch layout shift from late CSS or injected banners.
 - Web chat and Dynatrace are third-party scripts; they are nonce’d in CSP and should stay optional via config.

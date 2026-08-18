@@ -2,7 +2,7 @@
 
 ## Ownership and scope
 
-The mappings under `charts/civil-citizen-ui/wiremock` are the authoritative test doubles for the reduced-stack CUI create-claim PoC and first migration batch. They are deliberately consumer-owned because they are packaged into the CUI preview chart and exercise a CUI-only Jenkins journey. The central `civil-wiremock-mappings` repository remains authoritative for shared full-stack journeys; these reduced-stack assets must not be copied there unless ownership is explicitly transferred.
+The mappings under `charts/civil-citizen-ui/wiremock` are the authoritative test doubles for the reduced-stack Civil Citizen UI (CUI) create-claim proof of concept (PoC) and first migration batch. They are deliberately consumer-owned because they are packaged into the CUI preview chart and exercise a CUI-only Jenkins journey. The central `civil-wiremock-mappings` repository remains authoritative for shared full-stack journeys; these reduced-stack assets must not be copied there unless ownership is explicitly transferred.
 
 Local UI Preview stubs are deliberately **not** part of this set. They live in `compose/ui-preview-mappings` and are mounted only by `compose/ui-preview.yml`, because preview browsing needs broader fixture-claim matchers than the validator here permits and must never be packaged into the preview chart.
 

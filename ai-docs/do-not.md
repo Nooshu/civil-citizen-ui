@@ -4,7 +4,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 
 ## Stack
 
-- Do not introduce NestJS, Prisma, React, Vue, Angular, or a second template engine. HMCTS citizen apps are Express SSR ([service-assessment.md](service-assessment.md)).
+- Do not introduce NestJS, Prisma, React, Vue, Angular, or a second template engine. His Majesty’s Courts and Tribunals Service (HMCTS) citizen apps are Express server-side rendering (SSR) ([service-assessment.md](service-assessment.md)).
 - Do not add generative AI as the user journey or an unexplained decision engine (Service Standard points 2, 6, 11, 14).
 - Do not invent a second HTTP client stack. Use `src/main/app/client/`.
 - Do not invent a new database. Redis draft store + session only (`src/main/modules/draft-store/`, `getRedisStoreForSession()`).
@@ -27,12 +27,12 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not loosen chart mapping matchers to make UI Preview work. Preview stubs are a separate set.
 - Do not combine GitHub labels `pr-values:reducedStack` and `pr-values:fullDeployment` in advice.
 
-## Security, PII, secrets
+## Security, personally identifiable information (PII), secrets
 
 - Do not log names, addresses, emails, DOB, phones, claim amounts, fees, payments, interest, repayment figures, or wholesale case/party objects.
-- Do not commit `.env`, Key Vault values, IDAM/S2S/Redis/OS/LaunchDarkly secrets.
-- Do not add `unsafe-inline` to CSP. Extend Helmet allowlists + nonces if you add a third-party script.
-- Do not skip CSRF on new POST routes without a documented exception (today: eligibility, first-contact, testing-support).
+- Do not commit `.env`, Key Vault values, Identity and Access Management (IDAM)/service-to-service (S2S)/Redis/Ordnance Survey (OS)/LaunchDarkly secrets.
+- Do not add `unsafe-inline` to Content Security Policy (CSP). Extend Helmet allowlists + nonces if you add a third-party script.
+- Do not skip Cross-Site Request Forgery (CSRF) on new POST routes without a documented exception (today: eligibility, first-contact, testing-support).
 
 ## Tests and Node 24
 

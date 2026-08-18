@@ -2,9 +2,9 @@
 
 **Use this** whenever you recommend a stack change, a new UI pattern, a dependency, analytics, AI, or anything that would show up in a service assessment. Human explanation and full point-by-point mapping: [`docs/service-assessment.md`](../docs/service-assessment.md) (snapshot **18 August 2026**). Live pages win if they disagree; then update both files.
 
-CUI is a **central-government transactional citizen service**. Assessors judge the **Service Standard**. Some failures **cannot be iterated away** once real users are on the service: **accessibility**, **security/privacy**, and **technology lock-in**.
+CUI is a **central-government transactional citizen service**. Assessors judge the **Service Standard**. Some failures **cannot be iterated away** once real users are on the service: **accessibility**, **security/privacy**, and **technology lock-in**. Acronyms: [`docs/glossary.md`](../docs/glossary.md).
 
-Do not claim the service “passes an assessment” from this repo alone. Do say, clearly, when a proposal **deviates** from the standard, TCoP, HMCTS stack, or Design System.
+Do not claim the service “passes an assessment” from this repo alone. Do say, clearly, when a proposal **deviates** from the standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) stack, or Design System.
 
 ## When a recommendation is a deviation
 
@@ -12,16 +12,16 @@ Flag as a **deviation** (and prefer not to do it unless the user explicitly acce
 
 | Proposal | Why it fails or weakens an assessment |
 | --- | --- |
-| React / Vue / Angular / SPA for CUI | HMCTS **citizen** frontends are Node **Express SSR**. Angular is for **professional** users. Service Standard 11 + [HMCTS stack](https://hmcts.github.io/standards/technology-stack/) |
+| React / Vue / Angular / Single Page Application (SPA) for Civil Citizen UI (CUI) | HMCTS **citizen** frontends are Node **Express server-side rendering (SSR)**. Angular is for **professional** users. Service Standard 11 + [HMCTS stack](https://hmcts.github.io/standards/technology-stack/) |
 | Hand-written `govuk-button` / error summary / header HTML | Service Standard 4 and 13; [look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk); [fixture HTML tests](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files) |
 | Fork `node_modules/govuk-frontend` or vendor CSS/JS | Same; upgrades and fixture tests become impossible |
 | Build GOV.UK component markup in client JS | Progressive enhancement / Frontend JS docs; assistive tech |
-| Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **WCAG 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |
+| Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |
 | Rewrite GOV.UK output to satisfy axe | Design System is the tested pattern; document the axe rule instead |
 | NestJS, Prisma, second HTTP client, new database | Lock-in and duplication (SS 8/11, TCoP 8/9); CUI already has Express, civil-service clients, Redis drafts |
 | Generative AI as the journey or an unexplained decision engine | SS 2 (do not design around AI), SS 6 (need someone who understands it), SS 11 (inclusion and reliability of decisions), SS 14 (monitor bias) |
 | Ranges (`^`) on npm dependencies, unsigned/unchecksummed installs | SS 9 due diligence on third-party software; TCoP 6; this repo’s pin + SHA policy |
-| PII in logs, `unsafe-inline` CSP, skipped CSRF on new POSTs | SS 9; cannot iterate this away in live |
+| Personally identifiable information (PII) in logs, `unsafe-inline` Content Security Policy (CSP), skipped Cross-Site Request Forgery (CSRF) on new POSTs | SS 9; cannot iterate this away in live |
 | Secrets in git | SS 12 exception is credentials — they stay **out** of the public repo |
 | Hiding phone/paper/help to force digital take-up | SS 3 |
 | New tracking/analytics without a privacy basis | SS 9 and 10 |

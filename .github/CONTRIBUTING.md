@@ -5,7 +5,7 @@ as we have some expectations related to the content and quality of change sets.
 
 ## What you should know about this application
 
-This project is a template Express application (http://expressjs.com/). It aims to speed up the creation of frontend applications in HMCTS,
+This project is a template Express application (http://expressjs.com/). It aims to speed up the creation of frontend applications in His Majesty’s Courts and Tribunals Service (HMCTS),
 by serving as the initial setup.
 
 ## Before contributing

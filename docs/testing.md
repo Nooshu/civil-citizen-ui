@@ -2,6 +2,8 @@
 
 ## Landscape
 
+Acronyms: [glossary](glossary.md).
+
 | Layer | Tool | Command | Needs running app? |
 | --- | --- | --- | --- |
 | Unit | Jest | `yarn test` | No |
@@ -9,14 +11,14 @@
 | GOV.UK HTML fixtures | Jest | `yarn test:govuk-fixtures` | No |
 | Route integration | Jest + Supertest | `yarn test:integration` | In-process `app` |
 | Pact | Jest | `yarn test:pact` | No (consumer) |
-| Accessibility | Pa11y / Mocha | `yarn tests:a11y` | Yes (or mocked a11y helper) |
-| Functional UI/API | CodeceptJS | `yarn test:functional` / groups | Preview/AAT stack |
+| Accessibility (a11y) | Pa11y / Mocha | `yarn tests:a11y` | Yes (or mocked a11y helper) |
+| Functional user interface (UI) / application programming interface (API) | CodeceptJS | `yarn test:functional` / groups | Preview / AAT (HMCTS acceptance) stack |
 | Mocked functional | CodeceptJS + WireMock | `yarn test:mocked-functional` | Local e2eTest + WireMock |
 | Cross-browser | CodeceptJS + Sauce Labs | `yarn test:crossbrowser` | Sauce + env |
-| Playwright security | Playwright | specs in `playwright/tests/` | Running CUI |
+| Playwright security | Playwright | specs in `playwright/tests/` | Running Civil Citizen UI (CUI) |
 | Smoke | `bin/run-smoke-tests.sh` | `yarn test:smoke` | Deployed env |
 
-`yarn test:a11y` is a **stub** that prints that a11y is enforced in GitHub Actions. The real local command is `yarn tests:a11y`. The Service Standard bar is **WCAG 2.2 AA**; Pa11y is the scanner HMCTS documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
+`yarn test:a11y` is a **stub** that prints that a11y is enforced in GitHub Actions. The real local command is `yarn tests:a11y`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y is the scanner His Majesty’s Courts and Tribunals Service (HMCTS) documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
 
 ## Unit tests (Jest)
 

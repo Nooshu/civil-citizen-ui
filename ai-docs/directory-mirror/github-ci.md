@@ -4,7 +4,7 @@
 
 | Path | Agent notes |
 | --- | --- |
-| `workflows/ci.yml` | Node 24: PII Semgrep on PRs, `yarn install` (`YARN_ENABLE_HARDENED_MODE=1`), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
+| `workflows/ci.yml` | Node 24: personally identifiable information (PII) Semgrep on pull requests (PRs), `yarn install` (`YARN_ENABLE_HARDENED_MODE=1`), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
 | `workflows/stale.yml` / `stale-branches.yml` | Hygiene bots |
 | `workflows/update-readme-e2e-tables.yml` | Auto-commit README E2E tables on `master` |
 | `workflows/update-readme-ftGroup-tables.yml` | Functional group tables |
@@ -14,7 +14,7 @@
 
 ## Jenkins (repo root)
 
-- `Jenkinsfile_CNP` — main pipeline (`nodejs`, product `civil`, component `citizen-ui`)
+- `Jenkinsfile_CNP` — main Cloud Native Platform (CNP) pipeline (`nodejs`, product `civil`, component `citizen-ui`)
 - `Jenkinsfile_nightly` — `@civil-citizen-nightly`
 
 Preview labels: `enable_keep_helm`, `pr-values:fullDeployment`, `pr-values:reducedStack`, `pr-values:skip-functional-tests`, `civilDefinitionBranch:`, `civilServicePr:`, `civilShared:`.

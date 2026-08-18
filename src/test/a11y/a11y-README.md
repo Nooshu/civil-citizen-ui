@@ -1,4 +1,4 @@
-# a11y Test with Mock
+# Accessibility (a11y) Test with Mock
 
 ### Contents:
 - [Ignoring a url](#ignoring-a-url)
