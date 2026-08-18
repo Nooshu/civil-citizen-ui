@@ -1,6 +1,6 @@
 # Functional test migration matrix
 
-This document records the agreed migration boundary for deterministic CUI browser journeys. It is the coverage ownership record for DTSCCI-5973; it must be updated when another scenario enters the batch or an assertion changes layer.
+This document records the agreed migration boundary for deterministic Civil Citizen UI (CUI) browser journeys. It is the coverage ownership record for DTSCCI-5973; it must be updated when another scenario enters the batch or an assertion changes layer.
 
 ## Suite selection
 
@@ -21,7 +21,7 @@ Current full-stack source: `src/test/functionalTests/tests/ui_tests/create-claim
 
 | Current purpose or assertion | Target layer | Coverage owner | Reason and dependency boundary |
 | --- | --- | --- | --- |
-| Navigate from a draft through the multi-page individual/no-interest/no-HWF claim journey | Reduced-stack browser | `tests/mocked/createClaim_tests.js` | Browser navigation, form state and session behaviour add value; downstream responses are deterministic. |
+| Navigate from a draft through the multi-page individual/no-interest/no-Help with Fees (HWF) claim journey | Reduced-stack browser | `tests/mocked/createClaim_tests.js` | Browser navigation, form state and session behaviour add value; downstream responses are deterministic. |
 | Submit through CUI and render the confirmation page and formatted claim reference | Reduced-stack browser | `tests/mocked/createClaim_tests.js` | Proves the public CUI journey reaches submission and renders the response. It does not claim that Civil Service completed a real workflow. |
 | Claim-submission request shape and response handling at the CUI/Civil Service boundary | Pact | `src/test/contract/consumers/CivilServiceCreateClaim.test.ts` | A consumer contract is stronger and more focused than inferring the service contract from a canned browser response. |
 | Submitted-claim dashboard content for no, standard and variable interest | In-process integration | `src/integration-test/routes/dashboard/claimIssueDashboard.integration.test.ts` | Controller routing and Nunjucks combinations do not need a browser. |
@@ -30,9 +30,9 @@ Current full-stack source: `src/test/functionalTests/tests/ui_tests/create-claim
 | Real fee payment | Full-stack | `IndividualvsIndividual_tests.js` | Depends on GovPay/service state and must not be represented as a canned success. |
 | Civil workflow completion and notification production | Full-stack | `IndividualvsIndividual_tests.js` | Depends on asynchronous processing and real service state transitions. |
 | Defendant assignment | Full-stack | `IndividualvsIndividual_tests.js` | Depends on real role-assignment/service wiring. |
-| Claimant and defendant general-application creation | Full-stack | `IndividualvsIndividual_tests.js` | GA is a separate cross-service workflow and is deliberately outside this mocked scenario. |
+| Claimant and defendant general-application creation | Full-stack | `IndividualvsIndividual_tests.js` | General application (GA) is a separate cross-service workflow and is deliberately outside this mocked scenario. |
 
-The reduced-stack scenario starts with CUI's public testing-support draft action and then uses browser-visible CUI behaviour. It does not call CCD, Camunda, Civil Service test-support APIs or assignment APIs. Its WireMock mappings are limited to postcode lookup, fee display, claim submission, claim lookup, user roles and the CUI dashboard notification request needed by this journey.
+The reduced-stack scenario starts with CUI's public testing-support draft action and then uses browser-visible CUI behaviour. It does not call Core Case Data (CCD), Camunda, Civil Service test-support APIs or assignment APIs. Its WireMock mappings are limited to postcode lookup, fee display, claim submission, claim lookup, user roles and the CUI dashboard notification request needed by this journey.
 
 ## Current scenario inventory
 
@@ -115,7 +115,7 @@ Do not remove duplicate PR execution until every required entry below is complet
 | Evidence | Required record | Status |
 | --- | --- | --- |
 | Baseline purpose, setup and assertions | Matrix above | Complete |
-| Dependencies and known failure modes | Reduced-stack uses preview CUI, IDAM and WireMock; full-stack additionally waits on workflow, payment, assignment and GA. Reduced-stack builds 2–11 averaged 604 seconds (range 477–1099 seconds) with no first-attempt failures. | Complete for reduced-stack; full-stack baseline pending |
+| Dependencies and known failure modes | Reduced-stack uses preview CUI, Identity and Access Management (IDAM) and WireMock; full-stack additionally waits on workflow, payment, assignment and GA. Reduced-stack builds 2–11 averaged 604 seconds (range 477–1099 seconds) with no first-attempt failures. | Complete for reduced-stack; full-stack baseline pending |
 | Same-revision old/new comparison | Jenkins URLs, commit SHA, outcomes, durations and Allure links for both suites | Pending |
 | Ten consecutive first-attempt reduced-stack runs | Ten rows in the run table below, all using one Jenkins revision | Complete |
 | WireMock request journal | Archived `test-results/functional/wiremock` link for each reduced-stack run; expected submission and lookup counts and zero unmatched requests | Complete; journals linked below |
@@ -139,7 +139,7 @@ Do not remove duplicate PR execution until every required entry below is complet
 
 ## QA-person involvement and approval
 
-This first migration batch requires a QA person. On the deployed preview, QA must complete the individual/no-interest/no-HWF create-claim journey once and compare it with the current full-stack behaviour. QA must check the page sequence, content, browser navigation, validation errors and final confirmation/reference, record screenshots or equivalent evidence, and add the approval reference to this matrix. QA must also confirm that payment, workflow completion, defendant assignment and both GA journeys remain owned by full-stack coverage and are not being claimed by WireMock. Product-owner approval is not required because no user-flow assertion is removed or materially changed; this batch changes only the technical execution layer.
+This first migration batch requires a quality assurance (QA) person. On the deployed preview, QA must complete the individual/no-interest/no-HWF create-claim journey once and compare it with the current full-stack behaviour. QA must check the page sequence, content, browser navigation, validation errors and final confirmation/reference, record screenshots or equivalent evidence, and add the approval reference to this matrix. QA must also confirm that payment, workflow completion, defendant assignment and both GA journeys remain owned by full-stack coverage and are not being claimed by WireMock. Product-owner approval is not required because no user-flow assertion is removed or materially changed; this batch changes only the technical execution layer.
 
 DTSCCI-6132 additionally requires QA-person approval of the complete classification. The QA person must:
 

@@ -2,7 +2,7 @@
 
 ## Shape of the application
 
-CUI is a **server-rendered Express application**. Acronyms: [glossary](glossary.md). A typical authenticated request:
+Civil Citizen UI (CUI) is a **server-rendered Express application**. Acronyms: [glossary](glossary.md). A typical authenticated request:
 
 1. Hits Node on port `3001` (`src/main/server.ts`).
 2. Passes cookie, language, session, Helmet, health, and (outside tests) Cross-Site Request Forgery (CSRF) and OpenID Connect (OIDC) middleware (`src/main/app.ts`).

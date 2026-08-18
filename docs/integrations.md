@@ -1,6 +1,6 @@
 # Integrations
 
-CUI is a backend-for-frontend (BFF) Express app: it does not persist claims in its own database. Case truth lives in **civil-service / Core Case Data (CCD)**. Redis holds drafts, session, and short-lived payment state.
+Civil Citizen UI (CUI) is a backend-for-frontend (BFF) Express app: it does not persist claims in its own database. Case truth lives in **civil-service / Core Case Data (CCD)**. Redis holds drafts, session, and short-lived payment state.
 
 ## civil-service
 

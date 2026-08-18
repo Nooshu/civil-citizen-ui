@@ -1,6 +1,6 @@
 # Citizen journeys
 
-CUI is organised around **journeys**. Each journey has controllers under `src/main/routes/features/<name>/`, services under `src/main/services/features/<name>/`, and Nunjucks under `src/main/views/features/<name>/`. URL constants are centralised in `src/main/routes/urls.ts`. Acronyms: [glossary](glossary.md).
+Civil Citizen UI (CUI) is organised around **journeys**. Each journey has controllers under `src/main/routes/features/<name>/`, services under `src/main/services/features/<name>/`, and Nunjucks under `src/main/views/features/<name>/`. URL constants are centralised in `src/main/routes/urls.ts`. Acronyms: [glossary](glossary.md).
 
 This page describes what each journey is for, not every screen. For exhaustive scenario lists, use the generated tables in the root [README.md](../README.md).
 
@@ -32,7 +32,7 @@ Dashboard **scenarios** (what the citizen should do next) are created/updated th
 
 After assignment (`/assignclaim`) the defendant:
 
-1. Confirms details, DOB, phone
+1. Confirms details, date of birth (DOB), phone
 2. Chooses response type: full admission, part admission, or defence
 3. For admissions: payment option (immediately / by date / instalments), statement of means
 4. For defence: why you disagree, timeline, evidence
@@ -68,7 +68,7 @@ Enabled for litigants in person (LiPs) via `GaForLips`. `isGAForLiPEnabled` guar
 
 ## Query management
 
-Citizen queries on a case (`QM_*` URLs in `urls.ts`). Gated by `cui-query-management`. Upload endpoints may be rate-limited (`uploadRateLimit`).
+Citizen queries on a case (query management (`QM_*`) URLs in `urls.ts`). Gated by `cui-query-management`. Upload endpoints may be rate-limited (`uploadRateLimit`).
 
 ## Payments and help with fees
 

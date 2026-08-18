@@ -1,6 +1,6 @@
-# `src/main/services/` — business logic and CCD mapping
+# `src/main/services/` — business logic and Core Case Data (CCD) mapping
 
-Controllers must stay thin. **Rules, CYA builders, task lists, fee maths, and CCD mapping live here.**
+Controllers must stay thin. **Rules, check-your-answers (CYA) builders, task lists, fee maths, and CCD mapping live here.**
 
 ## Layout
 
@@ -20,13 +20,13 @@ services/
 | Folder | Typical contents |
 | --- | --- |
 | `claim/` | Draft claim, interest, check answers, payment confirmation |
-| `response/` | Response type, admissions, SoM, defence, submit confirmation |
-| `claimantResponse/` | Intent, CCJ, settlement, task list, confirmation |
-| `caseProgression/` | Evidence upload, trial arrangements, hearing fee, bundles, RFR |
-| `directionsQuestionnaire/` | Experts, witnesses, FRC, MINTI disclosure |
-| `mediation/` | CARM / telephone mediation, document upload |
-| `generalApplication/` | Types, hearings, N245, fees, COSC, respondent, written reps |
-| `queryManagement/` | Create query, CYA |
+| `response/` | Response type, admissions, statement of means (SoM), defence, submit confirmation |
+| `claimantResponse/` | Intent, County Court Judgment (CCJ), settlement, task list, confirmation |
+| `caseProgression/` | Evidence upload, trial arrangements, hearing fee, bundles, request for reconsideration (RFR) |
+| `directionsQuestionnaire/` | Experts, witnesses, fixed recoverable costs (FRC), Multi and Intermediate Track (MINTI) disclosure |
+| `mediation/` | Civil Automated Referral to Mediation (CARM) / telephone mediation, document upload |
+| `generalApplication/` | Types, hearings, N245, fees, Certificate of Satisfaction or Cancellation (COSC), respondent, written reps |
+| `queryManagement/` | Create query, check your answers (CYA) |
 | `dashboard/` | Claim summary / latest update **content builders** |
 | `helpWithFees/`, `judgmentOnline/`, `settlementAgreement/`, `document/`, `eligibility/`, `feePayment/`, `uiPreview/` | Catalogue + fixture claim IDs for `yarn preview`. Extra claims: `uiPreviewRedisData.json` + `compose/ui-preview-mappings/`. Admit Redis fixtures need `claimantResponse` (getClaimById reads Redis first) and an INSTALMENTS `repaymentPlan` for **How they want to pay**. |
 
@@ -34,7 +34,7 @@ Content builders return objects for Nunjucks (summary rows, task lists). Reuse `
 
 ### `translation/`
 
-**Load path:** CCD JSON → CUI models (`convertToCUI/`, plus claim/response/GA/mediation/judgmentOnline/caseProgression folders).
+**Load path:** CCD JSON → Civil Citizen UI (CUI) models (`convertToCUI/`, plus claim/response/general application (GA)/mediation/judgmentOnline/caseProgression folders).
 
 **Submit path:** CUI models → CCD (`convertToCCD*` under `translation/response`, `claim`, `claimantResponse`, `generalApplication`, …).
 

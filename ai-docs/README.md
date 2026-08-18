@@ -1,4 +1,4 @@
-# AI-only documentation (`ai-docs/`)
+# Artificial Intelligence (AI)-only documentation (`ai-docs/`)
 
 **Audience: AI coding agents only.** Human-oriented project documentation is [`docs/README.md`](../docs/README.md). Expand acronyms on first use (Full name (ACRONYM)); list: [`docs/glossary.md`](../docs/glossary.md).
 
