@@ -1,7 +1,18 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "./address.njk" import addressForm %}
 {% set govukVisuallyHidden = 'govuk-!-display-none' %}
 {% set govukVisuallyHiddenForAnchor = '' %}
+{#
+  Postcode lookup. Client JS (`postcode-lookup.js`) binds to:
+  `.postcode-container`, `.postcode-val`, `.govuk-error-message`, the Find address
+  `button`, and the manual-address `a`. Keep those hooks when changing this macro.
+  Find address uses the official button default (`type="submit"`). The lookup
+  script calls preventDefault only when JS runs, so it cannot block a no-JS
+  submit. Without JS, users enter the address manually (the lookup API returns
+  JSON, not a HTML results page).
+#}
 {% macro postcodeLookupAndAddressForm(t,params) %}
   {% if params.addressType === 'primaryAddress' and params.party.model.primaryAddress %}
     {% if params.party.hasFieldError('primaryAddress') %}
@@ -21,17 +32,30 @@
       {% set govukVisuallyHiddenForAnchor = '' %}
     {% endif %}
   {% endif %}
-  <div class="govuk-form-group postcode-container">
-    <label class="govuk-label" for="{{ params.addressType + "Postcode" }}">
-      {{ t('COMMON.POSTCODE.UK_POSTCODE') }}
-    </label>
+  <div class="postcode-container">
+    {{ govukInput({
+      id: params.addressType + 'Postcode',
+      name: params.addressType + "Postcode",
+      classes: "govuk-input--width-10 postcode-val",
+      type: "text",
+      autocomplete: "postal-code",
+      label: {
+        text: t('COMMON.POSTCODE.UK_POSTCODE')
+      },
+      attributes: {
+        title: t('COMMON.POSTCODE.UK_POSTCODE')
+      },
+      formGroup: {
+        classes: "govuk-!-margin-bottom-2"
+      }
+    }) }}
     <div class="govuk-!-display-none govuk-error-message" aria-hidden="true">
       {{ t('ERRORS.ADDRESS_NOT_FOUND') + t('ERRORS.TRY_AGAIN') }}
     </div>
-    <input id="{{ params.addressType + 'Postcode' }}" class="govuk-input govuk-input--width-10 postcode-val" title="{{ t('COMMON.POSTCODE.UK_POSTCODE') }}" name="{{ params.addressType + "Postcode" }}" type="text" autocomplete="postal-code"/>
-    <button href="#" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-      {{ t('COMMON.POSTCODE.FIND_ADDRESS') }}
-    </button>
+    {{ govukButton({
+      text: t('COMMON.POSTCODE.FIND_ADDRESS'),
+      classes: "govuk-button--secondary"
+    }) }}
 
     {{ govukSelect({
       id: params.addressType + 'postcodeAddress',

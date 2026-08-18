@@ -111,5 +111,5 @@ Files land in `bin/shared/`. Preview pipelines can override the branch with the 
 - **Port 3001 or 1111 in use** — UI Preview tries to free them; locally, stop the other Node/WireMock process.
 - **Lockfile YN0028** — an install wanted to change `yarn.lock` while immutable installs were on. For intentional bumps use `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install`.
 - **Jest worker SIGSEGV** — re-run the failed file alone. If it passes, treat it as the known V8 crash, not a product bug.
-- **Need a claim without IDAM** — use UI Preview. Start from `/ui-preview`: awaiting-defendant `1645882162449409`, full admit `1645882162449601`, part admit `1645882162449602`, case progression `1645882162449603`, general application `1645882162449604`.
+- **Need a claim without IDAM** — use UI Preview. Start from `/ui-preview`: awaiting-defendant `1645882162449409`, full admit by instalments `1645882162449601`, part admit by instalments `1645882162449602`, case progression `1645882162449603`, general application `1645882162449604`.
 - **Claimant-response task list “something went wrong”** — Preview loads the claim from Redis first (`uiPreviewRedisData.json`). Admit fixtures must include `case_data.claimantResponse`. After changing that file or `src/main/common/models/claim.ts`, rebuild with `yarn preview` (the image copies `src/` at build time).

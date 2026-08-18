@@ -26,6 +26,7 @@ import {
   CLAIMANT_TASK_LIST_URL,
   CLAIMANT_RESPONSE_TASK_LIST_URL,
   CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL,
+  CLAIMANT_RESPONSE_ACCEPT_REPAYMENT_PLAN_URL,
   UPLOAD_YOUR_DOCUMENTS_URL,
 } from 'routes/urls';
 
@@ -167,35 +168,47 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
   },
   {
     title: 'Full admission (claimant response)',
-    description: `Fixture claim ${UI_PREVIEW_FULL_ADMIT_CLAIM_ID} — defendant admitted the full amount and pays immediately; claimant role.`,
+    description: `Fixture claim ${UI_PREVIEW_FULL_ADMIT_CLAIM_ID} — defendant admitted the full amount and offered £100 a month; claimant role.`,
     pages: [
       {
         title: 'Claimant response task list',
         path: withClaimId(CLAIMANT_RESPONSE_TASK_LIST_URL, UI_PREVIEW_FULL_ADMIT_CLAIM_ID),
         status: 'ready',
-        notes: 'AWAITING_APPLICANT_INTENTION + FULL_ADMISSION',
+        notes: 'AWAITING_APPLICANT_INTENTION + FULL_ADMISSION + INSTALMENTS',
       },
       {
         title: 'Review defendant\'s response',
         path: withClaimId(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL, UI_PREVIEW_FULL_ADMIT_CLAIM_ID),
         status: 'ready',
       },
+      {
+        title: 'How they want to pay',
+        path: withClaimId(CLAIMANT_RESPONSE_ACCEPT_REPAYMENT_PLAN_URL, UI_PREVIEW_FULL_ADMIT_CLAIM_ID),
+        status: 'ready',
+        notes: 'Needs repaymentPlan on the Redis seed (amount, frequency, firstRepaymentDate).',
+      },
     ],
   },
   {
     title: 'Part admission (claimant response)',
-    description: `Fixture claim ${UI_PREVIEW_PART_ADMIT_CLAIM_ID} — defendant admits £400 of £1,000, not already paid; claimant role.`,
+    description: `Fixture claim ${UI_PREVIEW_PART_ADMIT_CLAIM_ID} — defendant admits £400 of £1,000, not already paid, £100 a month; claimant role.`,
     pages: [
       {
         title: 'Claimant response task list',
         path: withClaimId(CLAIMANT_RESPONSE_TASK_LIST_URL, UI_PREVIEW_PART_ADMIT_CLAIM_ID),
         status: 'ready',
-        notes: 'AWAITING_APPLICANT_INTENTION + PART_ADMISSION',
+        notes: 'AWAITING_APPLICANT_INTENTION + PART_ADMISSION + INSTALMENTS',
       },
       {
         title: 'Review defendant\'s response',
         path: withClaimId(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL, UI_PREVIEW_PART_ADMIT_CLAIM_ID),
         status: 'ready',
+      },
+      {
+        title: 'How they want to pay',
+        path: withClaimId(CLAIMANT_RESPONSE_ACCEPT_REPAYMENT_PLAN_URL, UI_PREVIEW_PART_ADMIT_CLAIM_ID),
+        status: 'ready',
+        notes: 'Needs repaymentPlan on the Redis seed (amount, frequency, firstRepaymentDate).',
       },
     ],
   },

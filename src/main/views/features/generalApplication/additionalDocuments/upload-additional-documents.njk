@@ -62,32 +62,37 @@
         {% if formattedSummary.summaryList.rows.length > 0 %}
             <h2 class="govuk-heading-m">{{ t('PAGES.UPLOAD_DOCUMENTS.UPLOADED_FILES') }}</h2>
             <div class="govuk-section-break--s govuk-section-break--visible"></div>
+            {% set additionalDocRows = [] %}
             {% for row in formattedSummary.summaryList.rows %}
-                <dl class="govuk-summary-list govuk-!-margin-bottom-0">
-                    {% if row.value.html %}
-                     <div class="govuk-summary-list__row ">
-                        <dt class="govuk-summary-list__key">
-                            {{ row.key.text }}
-                        </dt>
-                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">{{row.value.html}}</p>
-                          </dd>
-                        </div>
-                        {% else %}
-                        <div class="govuk-summary-list__row ">
-                        <dt class="govuk-summary-list__key">
-                           <p class="govuk-body govuk-!-margin-bottom-0"> {{ row.key.text }}</p>
-                        </dt>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="{{ row.actions.items[0].href }}">
-                                {{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.REMOVE_DOC') }}<span class="govuk-visually-hidden">
-                                    {{ row.key.text }}</span>
-                            </a>
-                        </dd>
-                        </div>
-                     {% endif %}
-                </dl>
+                {% if row.value.html %}
+                    {% set valueHtml %}
+                      <p class="govuk-body">{{ row.value.html }}</p>
+                    {% endset %}
+                    {% set additionalDocRows = (additionalDocRows.push({
+                      key: { text: row.key.text },
+                      value: { html: valueHtml }
+                    }), additionalDocRows) %}
+                {% else %}
+                    {% set keyHtml %}
+                      <p class="govuk-body govuk-!-margin-bottom-0">{{ row.key.text }}</p>
+                    {% endset %}
+                    {% set additionalDocRows = (additionalDocRows.push({
+                      key: { html: keyHtml },
+                      value: { text: "" },
+                      actions: {
+                        items: [{
+                          href: row.actions.items[0].href,
+                          text: t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.REMOVE_DOC'),
+                          visuallyHiddenText: row.key.text
+                        }]
+                      }
+                    }), additionalDocRows) %}
+                {% endif %}
             {% endfor %}
+            {{ govukSummaryList({
+              classes: "govuk-!-margin-bottom-0",
+              rows: additionalDocRows
+            }) }}
         {% endif %}
         <div class="govuk-button-group govuk-!-margin-top-8">
             {{ addButton(t, 'CONTINUE', cancelUrl) }}

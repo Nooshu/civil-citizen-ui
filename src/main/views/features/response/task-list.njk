@@ -2,6 +2,7 @@
 {% from "../../macro/about-claim-widget.njk" import aboutClaimWidget %}
 {% from "../../macro/time-remaining.njk" import timeRemaining %}
 {% from "../../macro/page-title.njk" import setPageTitle %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set totalClaimAmount ='£'+ claim.totalClaimAmount %}
 {% set responseDeadLineExpression = t('PAGES.CLAIM_SUMMARY.DEADLINE_AT', {responseDeadline: responseDeadline}) %}
@@ -51,9 +52,13 @@
                         {{ t(task.description) }}
                       {% endif %}
                     </span>
-                    <strong class="govuk-tag app-task-list__tag {{ 'govuk-tag--grey' if task.status==="INCOMPLETE"}}" aria-label="{{ t('PAGES.TASK_LIST.' + task.status) }}">
-                      {{ t('PAGES.TASK_LIST.' + task.status) }}
-                    </strong>
+                    {{ govukTag({
+                      text: t('PAGES.TASK_LIST.' + task.status),
+                      classes: 'app-task-list__tag govuk-tag--grey' if task.status==="INCOMPLETE" else 'app-task-list__tag',
+                      attributes: {
+                        'aria-label': t('PAGES.TASK_LIST.' + task.status)
+                      }
+                    }) }}
                   </li>
                 {% endfor %}
               </ol>

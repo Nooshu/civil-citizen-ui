@@ -59,7 +59,17 @@
       },
       "fullAdmission": {
         "paymentIntention": {
-          "paymentOption": "IMMEDIATELY"
+          "paymentOption": "INSTALMENTS",
+          "repaymentPlan": {
+            "paymentAmount": 100,
+            "repaymentFrequency": "MONTH",
+            "firstRepaymentDate": "2026-09-18T00:00:00.000Z"
+          }
+        }
+      },
+      "statementOfMeans": {
+        "explanation": {
+          "text": "I cannot afford to pay the full amount at once."
         }
       },
       "claimantResponse": {
@@ -139,7 +149,17 @@
           "text": "I only owe part of the amount claimed."
         },
         "paymentIntention": {
-          "paymentOption": "IMMEDIATELY"
+          "paymentOption": "INSTALMENTS",
+          "repaymentPlan": {
+            "paymentAmount": 100,
+            "repaymentFrequency": "MONTH",
+            "firstRepaymentDate": "2026-09-18T00:00:00.000Z"
+          }
+        }
+      },
+      "statementOfMeans": {
+        "explanation": {
+          "text": "I cannot afford to pay the full amount at once."
         }
       },
       "claimantResponse": {

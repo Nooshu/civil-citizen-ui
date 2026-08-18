@@ -12,7 +12,7 @@ This page describes what each journey is for, not every screen. For exhaustive s
 | Cookies, privacy, T&Cs, accessibility, contact | `/cookies`, `/privacy-policy`, … | Allowlisted in OpenID Connect (OIDC) middleware |
 | Eligibility | `/eligibility/…` | “Can I use this service?” — Cross-Site Request Forgery (CSRF) skipped |
 | First contact | `/first-contact/…` | Claim reference + PIN before full login — CSRF skipped |
-| UI Preview index | `/ui-preview` | `e2eTest` / `yarn preview` catalogue. Ready fixtures: awaiting defendant, full admit, part admit, case progression, GA |
+| UI Preview index | `/ui-preview` | `e2eTest` / `yarn preview` catalogue. Ready fixtures: awaiting defendant, full/part admit by instalments, case progression, GA |
 
 ## Claim issue (`/claim`)
 

@@ -21,11 +21,11 @@ New pages: `{% extends "layout.njk" %}` (or the layout neighbours use). Import m
 
 ## `macro/` — app macros (reuse)
 
-Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode, task list, cookie banner, contact-us, statement of truth, timeline rows, GA macros under `macro/generalApplication/`, etc.
+Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode (`postcode-address-form.njk` — keep `.postcode-container` / `.postcode-val` for `postcode-lookup.js`), uploaded files (`uploaded-files-summary.njk`), query message cards (`query-message-card.njk`), task list, cookie banner, contact-us, statement of truth, timeline rows, GA macros under `macro/generalApplication/`, etc.
 
 If the same block appears on two pages, **extract** here or under `features/common/`.
 
-Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`.
+Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`, `govukTabs`, `govukSummaryList`, `govukTag`, `govukInput`.
 
 ## `features/`
 

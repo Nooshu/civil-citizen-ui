@@ -2,7 +2,7 @@
 
 ## Source of truth: GOV.UK Frontend
 
-Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandatory for Design System components. Do not hand-write `govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, footer, skip link, or breadcrumbs when a macro exists.
+Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandatory for Design System components. Do not hand-write `govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, `govuk-tabs`, `govuk-summary-list`, `govuk-tag`, footer, skip link, or breadcrumbs when a macro exists.
 
 ```njk
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -14,7 +14,7 @@ Typography and layout utilities (`govuk-heading-l`, `govuk-grid-row`, `govuk-!-m
 
 Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assessment mapping (look like GOV.UK, fixture HTML, Web Content Accessibility Guidelines (WCAG) 2.2 AA): [service-assessment.md](service-assessment.md). Acronyms: [glossary](glossary.md).
 
-- Official Nunjucks macros for Design System components (including header, table, inset text, and buttons)
+- Official Nunjucks macros for Design System components (including header, table, inset text, buttons, tabs, summary list, and tags)
 - If axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup
 - Extract shared journey chrome instead of copying HTML
 

@@ -13,7 +13,7 @@ Flag as a **deviation** (and prefer not to do it unless the user explicitly acce
 | Proposal | Why it fails or weakens an assessment |
 | --- | --- |
 | React / Vue / Angular / Single Page Application (SPA) for Civil Citizen UI (CUI) | HMCTS **citizen** frontends are Node **Express server-side rendering (SSR)**. Angular is for **professional** users. Service Standard 11 + [HMCTS stack](https://hmcts.github.io/standards/technology-stack/) |
-| Hand-written `govuk-button` / error summary / header / table / inset-text HTML | Service Standard 4 and 13; [look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk); [fixture HTML tests](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files). App chrome (`macro/header.njk`, dashboard tables, inset wrappers) now uses official macros. |
+| Hand-written `govuk-button` / error summary / header / table / inset-text / tabs / summary-list / tag HTML | Service Standard 4 and 13; [look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk); [fixture HTML tests](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files). App chrome (`macro/header.njk`, dashboard tables, inset wrappers, claim-summary tabs, upload summary lists) now uses official macros. |
 | Fork `node_modules/govuk-frontend` or vendor CSS/JS | Same; upgrades and fixture tests become impossible |
 | Build GOV.UK component markup in client JS | Progressive enhancement / Frontend JS docs; assistive tech |
 | Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |

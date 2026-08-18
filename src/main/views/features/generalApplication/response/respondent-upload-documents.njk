@@ -5,6 +5,7 @@
 {% from "../../../macro/heading-with-caption.njk" import headingWithCaption %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% from "../../../macro/button.njk" import addButton %}
+{% from "../../../macro/uploaded-files-summary.njk" import uploadedFilesSummary %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
@@ -47,21 +48,7 @@
           {{ govukInsetText({ html: respondentUploadHtml }) }}
           {% if formattedSummary.summaryList.rows.length > 0 %}
             <h2 class="govuk-heading-m">{{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.LIST_TITLE') }}</h2>
-            {% for row in formattedSummary.summaryList.rows  %}
-              <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      {{ row.key.text }}
-                    </dt>
-                  <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="{{ row.actions.items[0].href }}">
-                        {{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.REMOVE_DOC') }}<span class="govuk-visually-hidden">
-                      {{ row.key.text }}</span>
-                    </a>
-                  </dd>
-                </div>
-              </dl>
-            {% endfor %}
+            {{ uploadedFilesSummary(formattedSummary.summaryList.rows, t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.REMOVE_DOC')) }}
           {% endif %}
           <div class="govuk-button-group govuk-!-margin-top-8">
           {{ addButton(t, 'CONTINUE', cancelUrl) }}

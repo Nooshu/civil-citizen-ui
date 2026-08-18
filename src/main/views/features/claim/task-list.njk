@@ -1,6 +1,7 @@
 {% extends "claim-details-tpl.njk" %}
 {% from "../../macro/page-title.njk" import setPageTitle %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, 'PAGES.CLAIM_TASK_LIST.PAGE_TITLE') }}
@@ -38,9 +39,10 @@
                     <span class="app-task-list__task-name">
                       <a class="govuk-link" href={{task.url}}>{{ t(task.description) }}</a>
                     </span>
-                    <strong class="govuk-tag app-task-list__tag {{ 'govuk-tag--grey' if task.status==="INCOMPLETE"}}">
-                      {{ t('PAGES.TASK_LIST.' + task.status) }}
-                    </strong>
+                    {{ govukTag({
+                      text: t('PAGES.TASK_LIST.' + task.status),
+                      classes: 'app-task-list__tag govuk-tag--grey' if task.status==="INCOMPLETE" else 'app-task-list__tag'
+                    }) }}
                   </li>
                 {% endfor %}
               </ol>

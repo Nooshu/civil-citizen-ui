@@ -1,0 +1,58 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{#
+  Uploaded-file rows as a GOV.UK summary list.
+
+  @remarks
+  General application screens pass `formattedSummary.summaryList.rows` with
+  `key.text` and a Remove `actions.items[0].href`. Query management uses a
+  submit button (`name="action"`) instead of a link, so that path uses
+  `uploadedFilesSummaryWithSubmitRemove` — official summary-list actions are
+  always `<a>` elements.
+#}
+
+{% macro uploadedFilesSummary(rows, removeText) %}
+  {% set summaryRows = [] %}
+  {% for row in rows %}
+    {% set summaryRows = (summaryRows.push({
+      key: { text: row.key.text },
+      value: { text: "" },
+      actions: {
+        items: [{
+          href: row.actions.items[0].href,
+          text: removeText,
+          visuallyHiddenText: row.key.text
+        }]
+      }
+    }), summaryRows) %}
+  {% endfor %}
+  {{ govukSummaryList({
+    classes: "govuk-!-margin-bottom-0",
+    rows: summaryRows
+  }) }}
+{% endmacro %}
+
+{% macro uploadedFilesSummaryWithSubmitRemove(rows, removeText) %}
+  {% set summaryRows = [] %}
+  {% for row in rows %}
+    {% set keyHtml %}
+      <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-font-weight-bold">{{ row.key.text }}</p>
+    {% endset %}
+    {% set removeHtml %}
+      <button type="submit"
+              class="link-button"
+              name="action"
+              value="[{{ row.value.html }}][deleteFile]">
+        {{ removeText }}<span class="govuk-visually-hidden">{{ row.key.text }}</span>
+      </button>
+    {% endset %}
+    {% set summaryRows = (summaryRows.push({
+      key: { html: keyHtml },
+      value: { html: removeHtml }
+    }), summaryRows) %}
+  {% endfor %}
+  {{ govukSummaryList({
+    classes: "govuk-!-margin-bottom-0",
+    rows: summaryRows
+  }) }}
+{% endmacro %}
