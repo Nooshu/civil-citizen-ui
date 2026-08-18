@@ -84,10 +84,12 @@ Then browse https://localhost:3001.
 | `yarn build` | webpack development-ish bundle |
 | `yarn build:prod` | `NODE_ENV=production` webpack |
 | `yarn test` | Jest unit tests |
-| `yarn test:coverage` | Jest with coverage (`--maxWorkers=8`) |
+| `yarn test:coverage` | Jest with coverage (`--maxWorkers=8`); all `src/main` TS/JS plus a global floor |
 | `yarn test:govuk-fixtures` | Official GOV.UK macro HTML vs `fixtures.json` |
 | `yarn test:integration` | Route integration tests (alias `test:routes`) |
-| `yarn cichecks` | install, deps:check, build, lint, WireMock validate + contracts, coverage, routes, a11y stub |
+| `yarn deps:check` | Exact pins + lockfile SHA checksums |
+| `yarn deps:audit` | `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean |
+| `yarn cichecks` | install, deps:check, deps:audit, build, lint, WireMock validate + contracts, coverage, routes |
 
 Jest unit/coverage scripts pass `--no-sparkplug` because Sparkplug + Jest’s `vm` module can SIGSEGV Node 24 workers. Do not move that flag into `NODE_OPTIONS` (Node rejects V8 flags there). Details: [AGENTS.md](../AGENTS.md) and [Testing](testing.md).
 

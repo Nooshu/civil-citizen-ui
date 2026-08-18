@@ -25,4 +25,34 @@ module.exports = {
     '^app/auth/(.*)$': '<rootDir>/src/main/app/auth/$1'
   },
   setupFilesAfterEnv: ['./jest.setup.redis-mock.js', './jest.setup.js'],
+  /**
+   * Count every application source file, not only those a test already imported.
+   * Webpack output, the vendored MoJ helper, and the webpack JS/SCSS entry are
+   * excluded so the report measures Civil Citizen UI (CUI) code we maintain.
+   */
+  collectCoverageFrom: [
+    'src/main/**/*.{ts,js}',
+    '!src/main/public/**',
+    '!src/main/index.js',
+    '!src/main/assets/js/mojAll.js',
+  ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/src/main/public/',
+  ],
+  coverageReporters: ['json', 'lcov', 'text', 'clover', 'json-summary'],
+  /**
+   * Global floor from the 18 August 2026 collectCoverageFrom run (statements
+   * 97.91%, branches 87.64%, functions 98.64%, lines 97.85%). About one
+   * percentage point of slack so machine noise does not fail CI, but a new
+   * untested controller of a few hundred lines will.
+   */
+  coverageThreshold: {
+    global: {
+      statements: 97,
+      branches: 86,
+      functions: 97,
+      lines: 97,
+    },
+  },
 };

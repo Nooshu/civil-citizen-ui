@@ -10,6 +10,7 @@ Run `nvm use` first so Node matches `.nvmrc` (`>=24.18.0`).
 | --- | --- | --- |
 | `yarn install` | Install with `yarn.lock` | Immutable by default; checksums must match (`checksumBehavior: throw`). Use `YARN_ENABLE_IMMUTABLE_INSTALLS=false` only when the lockfile is meant to change. Age gate: `npmMinimalAgeGate` 7 days on resolve |
 | `yarn deps:check` | Exact pins in `package.json` + SHA checksums in `yarn.lock` | `bin/check-dependency-pins.mjs`. Also runs in `cichecks` and GitHub `ci.yml` |
+| `yarn deps:audit` | `yarn npm audit --recursive` vs `yarn-audit-known-issues` | Production tree must be empty of advisories. `bin/check-yarn-audit.mjs`. Also in `cichecks` and `ci.yml` |
 | `yarn start:dev` | Redis (`compose/draft-store.yml`) + nodemon + `NODE_ENV=development` | **https://localhost:3001**, self-signed TLS. Needs IDAM/civil-service URLs in config |
 | `yarn start:redis` | Docker Redis on `6379` | |
 | `yarn start` | `ts-node` `src/main/server.ts`; `NODE_ENV` defaults to production | HTTP, not HTTPS |
@@ -35,7 +36,7 @@ All Jest npm scripts already pass `node --no-sparkplug ./node_modules/jest/bin/j
 | Command | Config / roots | Use |
 | --- | --- | --- |
 | `yarn test` | `jest.config.js`, `src/test/unit`, maxWorkers 75%, silent, `LOG_LEVEL=OFF` | Default unit |
-| `yarn test:coverage` | same + coverage, **maxWorkers=8** | After dependency bumps; Sonar `coverage/lcov.info` |
+| `yarn test:coverage` | same + coverage of all `src/main` TS/JS, **maxWorkers=8**, global `coverageThreshold` | After dependency bumps; Sonar `coverage/lcov.info` |
 | `yarn test:govuk-fixtures` | `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` | After GOV.UK / Nunjucks env changes — must pass |
 | `yarn test:routes` / `yarn test:integration` | `jest.functionaltest.config.js`, `src/integration-test`, `--runInBand` | Middleware/route wiring |
 | `yarn test:pact` | `jest.pact.config.js` | Consumer contracts |
@@ -48,9 +49,9 @@ Setup files: `jest.setup.redis-mock.js` (ioredis-mock + LaunchDarkly mock), `jes
 
 | Command | Reality |
 | --- | --- |
-| `yarn test:a11y` | **Stub** — prints that CI runs a11y |
+| `yarn test:a11y` | Alias of `yarn tests:a11y` |
 | `yarn tests:a11y` | Pa11y/Mocha `src/test/a11y/a11y.mock-test.ts` |
-| `yarn tests:a11y:parallel` | `src/test/a11y/run-parallel-a11y-tests.sh` |
+| `yarn tests:a11y:parallel` | `src/test/a11y/run-parallel-a11y-tests.sh` (Jenkins CNP) |
 
 ## CodeceptJS functional
 
@@ -98,7 +99,7 @@ GitHub workflows on `master` can auto-commit README refreshes.
 
 ## CI aggregate
 
-`yarn cichecks` = install + **deps:check** + build + lint + wiremock validate + wiremock contracts + coverage + routes + **a11y stub**. Windows: `yarn cichecks:win` (no wiremock steps).
+`yarn cichecks` = install + **deps:check** + **deps:audit** + build + lint + wiremock validate + wiremock contracts + coverage + routes. Accessibility is **not** included (use `yarn tests:a11y`; Jenkins runs `tests:a11y:parallel`). Windows: `yarn cichecks:win` (no wiremock steps).
 
 `yarn sonar-scan` — needs scanner credentials.
 
@@ -111,6 +112,7 @@ GitHub workflows on `master` can auto-commit README refreshes.
 | `bin/pull-latest-civil-shared.sh` | Sparse-checkout helpers into `bin/shared/` from civil-service |
 | `bin/validate-wiremock-mappings.js` | Reduced-stack contract quality |
 | `bin/check-dependency-pins.mjs` | Exact `package.json` pins + `yarn.lock` SHA checksums (`yarn deps:check`) |
+| `bin/check-yarn-audit.mjs` | `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean (`yarn deps:audit`) |
 | `bin/test-wiremock-contracts.sh` | Contract tests against chart mappings |
 | `bin/run-mocked-functional-tests.sh` | Local reduced-stack CodeceptJS |
 | `bin/run-preview-playwright-tests.sh` | Playwright against preview |

@@ -43,7 +43,7 @@ These user interface (UI) rules exist so the service can meet the [Service Stand
 
 - Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md).
 - Patch/minor preferred; 7-day publish cooldown for routine bumps (`npmMinimalAgeGate` in `.yarnrc.yml`).
-- After dependency pull requests (PRs): `yarn deps:check` then `yarn test:coverage`. On a segmentation violation (SIGSEGV), re-run the one suite.
+- After dependency pull requests (PRs): `yarn deps:check`, `yarn deps:audit`, then `yarn test:coverage`. On a segmentation violation (SIGSEGV), re-run the one suite.
 - Do not invent a second HTTP client or database.
 
 ## Git hygiene

@@ -39,7 +39,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not remove `--no-sparkplug` from Jest npm scripts.
 - Do not put V8 flags in `NODE_OPTIONS` (Node rejects them).
 - Do not treat a SIGSEGV that then passes on a solo re-run as a product bug.
-- Do not use `yarn test:a11y` as the real a11y suite — it is a stub. Use `yarn tests:a11y`.
+- Do not use `yarn cichecks` as proof that accessibility ran — Pa11y is `yarn tests:a11y` (Jenkins: `yarn tests:a11y:parallel`).
 - Do not re-run full `yarn test:coverage` after a SIGSEGV-only failure that passed in isolation.
 
 ## Git and identity

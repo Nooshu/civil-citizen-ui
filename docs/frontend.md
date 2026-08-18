@@ -85,7 +85,7 @@ The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders of
 ## Accessibility
 
 - Keep skip link, labels, error summary, and focus behaviour from GOV.UK macros.
-- Pa11y: `yarn tests:a11y` (the `test:a11y` npm script is a stub explaining that continuous integration (CI) runs accessibility (a11y)).
+- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks`.
 - Functional journeys should stay keyboard-usable; do not “fix” axe by breaking GOV.UK.
 
 ## Performance (UI)

@@ -14,7 +14,7 @@ Never edit `node_modules/govuk-frontend`. Conventions: [`AGENTS.md`](../../AGENT
 | `language-toggle.js` | EN/CY |
 | `cookies-controller.js` | Cookie banner behaviour |
 | `disable-submit.js` | Prevent double POST |
-| `mojAll.js` | MoJ frontend init helper — **ESLint-ignored**; do not dump new logic here |
+| `mojAll.js` | MoJ frontend init helper — **ESLint-ignored**; do not dump new logic here. Excluded from Jest `collectCoverageFrom` |
 
 After adding a file, **import it from `src/main/index.js`** or it will not ship in `main`.
 

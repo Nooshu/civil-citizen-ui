@@ -2,7 +2,7 @@
 
 | File | Do this |
 | --- | --- |
-| `package.json` | Scripts + `engines.node >=24.18.0`. **All** deps/devDeps/resolutions exact pins. `yarn deps:check`. Do not add npm scripts that invoke Jest **without** `--no-sparkplug`. |
+| `package.json` | Scripts + `engines.node >=24.18.0`. **All** deps/devDeps/resolutions exact pins. `yarn deps:check`, `yarn deps:audit`. Do not add npm scripts that invoke Jest **without** `--no-sparkplug`. |
 | `yarn.lock` | Keep integrity; every non-optional npm package must have a SHA-512 (Secure Hash Algorithm) `checksum:` |
 | `.yarnrc.yml` | Yarn 4.10.3 path, immutable installs, `checksumBehavior: throw`, `npmMinimalAgeGate: 10080`, `nodeLinker: node-modules` |
 | `.nvmrc` | `v24.18.0` |
@@ -13,7 +13,7 @@
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |
 | `tsconfig.jest.json` / `tsconfig.jest.integration.json` | Jest TS 6 `rootDir: "."`, `isolatedModules` |
-| `jest.config.js` | Unit; ESM transformIgnore for uuid/jsdom; path mappers |
+| `jest.config.js` | Unit; ESM transformIgnore for uuid/jsdom; path mappers; `collectCoverageFrom` `src/main/**/*.{ts,js}` (exclude `public/`, `index.js`, `mojAll.js`); `coverageThreshold` global floor |
 | `jest.functionaltest.config.js` | Integration |
 | `jest.pact.config.js` | Pact |
 | `jest.routes.config.js` / `jest.a11y.config.js` / `jest.smoketest.config.js` | Additional Jest entrypoints |
@@ -31,7 +31,7 @@
 | `Dockerfile` / `Dockerfile.ui-preview` / `docker-compose.yml` / `.dockerignore` | Node 24 Alpine; dockerignore is allowlist-style (`*` then `!` exceptions) |
 | `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Pipelines |
 | `sonar-project.properties` | `sonar.sources=src/main`, tests `src/test/`, lcov `coverage/lcov.info` |
-| `yarn-audit-known-issues` | Accepted audit noise — do not delete to go green |
+| `yarn-audit-known-issues` | Accepted **toolchain** audit lines — do not delete to go green; do not allowlist production-tree findings |
 | `LICENSE` | |
 | `steps.d.ts` | CodeceptJS step typings |
 | `__mocks__/otplib.js` | Jest mapper for `otplib` |

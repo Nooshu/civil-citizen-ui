@@ -79,7 +79,7 @@ Suggested first reads inside `ai-docs/`:
 - Refresh `yarn.lock` with `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install` after pin changes.
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
-- After dependency update prompts: apply the bump, then run `yarn deps:check` and the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
+- After dependency update prompts: apply the bump, then run `yarn deps:check`, `yarn deps:audit`, and the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
   - **Segmentation violation (SIGSEGV) / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
   - Long coverage or install runs: do not block a single wait for many minutes — run in the background and poll until complete (see [Long-running commands](#long-running-commands))
 
@@ -87,9 +87,9 @@ Suggested first reads inside `ai-docs/`:
 
 - **Pins:** a range (`^1.2.3`) lets a later `yarn install` on a clean machine pull a different patch or minor. That is how silent breaking changes, new network calls, and extra telemetry get into a citizen-facing service without a reviewed change. Exact pins make upgrades a deliberate diff.
 - **SHA checksums:** `yarn.lock` stores a SHA-512 (Secure Hash Algorithm) checksum (`checksum: 10/<hex>`) for every resolved npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw`, so a swapped or truncated archive cannot install. `yarn deps:check` fails continuous integration (CI) if a direct specifier is a range or a non-optional lockfile entry lacks a checksum. GitHub Actions also sets `YARN_ENABLE_HARDENED_MODE=1` so install re-checks lockfile resolutions against the registry (lockfile poisoning).
-- **7-day cooldown:** newly published npm versions can still be unpublished, and malware in a hijacked maintainer account is often noticed within days, not minutes. Waiting a week is a simple, automated control (Yarn age gate + policy). It is not a substitute for `yarn npm audit`. Security patches may skip the wait as above.
+- **7-day cooldown:** newly published npm versions can still be unpublished, and malware in a hijacked maintainer account is often noticed within days, not minutes. Waiting a week is a simple, automated control (Yarn age gate + policy). It is not a substitute for `yarn deps:audit` (`yarn npm audit`). Security patches may skip the wait as above.
 
-Reasons and CI wiring: [`docs/security-and-privacy.md`](docs/security-and-privacy.md). Command: `yarn deps:check`.
+Reasons and CI wiring: [`docs/security-and-privacy.md`](docs/security-and-privacy.md). Commands: `yarn deps:check`, `yarn deps:audit`.
 
 ## Package-only updates (auto origin sync)
 
@@ -184,12 +184,14 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 - Useful commands:
   - `yarn test` — Jest unit tests
   - `yarn test:govuk-fixtures` — GOV.UK Frontend macro HTML vs release fixtures.json
-  - `yarn test:coverage` — Jest with coverage
+  - `yarn test:coverage` — Jest with coverage of all `src/main` TypeScript/JavaScript (not only imported files); `coverageThreshold` fails the run if the global floor drops
   - `yarn test:integration` / `yarn test:routes` — route integration tests
   - `yarn build` — webpack assets
   - `yarn lint` — ESLint 10 flat config (`eslint.config.mjs`) + stylelint; Windows: `yarn lint:win`
+  - `yarn deps:check` — exact pins + lockfile SHA checksums
+  - `yarn deps:audit` — `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean
   - `yarn test:functional` — CodeceptJS functional (needs env)
-  - `yarn tests:a11y` — Pa11y accessibility
+  - `yarn tests:a11y` — Pa11y accessibility (Jenkins runs `tests:a11y:parallel`; not part of `yarn cichecks`)
   - Playwright security specs under `playwright/tests/`
 - All Jest entry points run through `node --no-sparkplug ./node_modules/jest/bin/jest.js`. Sparkplug plus the `vm` module Jest uses to execute test files triggers a V8 13.6 garbage-collector segfault in `ClearStaleLeftTrimmedPointerVisitor`, which kills a random worker mid-run ([nodejs/node#62393](https://github.com/nodejs/node/issues/62393), still present in Node 24.18.0). Jest forks workers with the parent's `execArgv`, so setting the flag on the entry point covers them. Keep the flag when editing test scripts, and do not move it into `NODE_OPTIONS` — Node rejects V8 flags there.
 

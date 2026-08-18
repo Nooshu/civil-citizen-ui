@@ -8,15 +8,15 @@ Workflows under `.github/workflows/`:
 
 | Workflow | Purpose |
 | --- | --- |
-| `ci.yml` | Pull request (PR)/push: personally identifiable information (PII) Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
+| `ci.yml` | Pull request (PR)/push: personally identifiable information (PII) Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn deps:audit`, `yarn build`, `yarn wiremock:pull` |
 | `stale.yml` | Marks stale issues/PRs (`actions/stale`) |
 | `stale-branches.yml` | Stale branch cleanup (`crs-k/stale-branches`) |
 | `update-readme-e2e-tables.yml` | Regenerates E2E tables in README on `master` |
 | `update-readme-ftGroup-tables.yml` | Regenerates functional-group tables |
 
-`ci.yml` uses Node 24. After install it runs `yarn deps:check` (exact pins + lockfile SHA checksums) with `YARN_ENABLE_HARDENED_MODE=1` on the install step. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md) and [Dependencies](security-and-privacy.md).
+`ci.yml` uses Node 24. After install it runs `yarn deps:check` (exact pins + lockfile SHA checksums) and `yarn deps:audit` (`yarn npm audit`, production tree must be clean) with `YARN_ENABLE_HARDENED_MODE=1` on the install step. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md) and [Dependencies](security-and-privacy.md).
 
-A11y is described in `package.json` `test:a11y` as running through GitHub Actions as a mandatory step.
+Accessibility (a11y) is **not** part of GitHub Actions `ci.yml` or `yarn cichecks`. The real Pa11y suite is `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`.
 
 ## Jenkins
 
