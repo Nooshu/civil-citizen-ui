@@ -112,6 +112,7 @@ describe('Dashboard page', () => {
         .expect((res: Response) => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('Claims made against you');
+          expect(res.text).toContain('govuk-table__caption');
         });
     });
 

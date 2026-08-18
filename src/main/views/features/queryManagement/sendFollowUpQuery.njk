@@ -7,6 +7,7 @@
 {% from "../../macro/button.njk" import addButton %}
 {% from "../../macro/error-summary.njk" import errorSummary %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, pageHeaders.pageTitle) }}
@@ -46,7 +47,7 @@
         } if form.errorFor('messageDetails')
       }) }}
 
-      <div class="govuk-inset-text">
+      {% set followUpUploadHtml %}
         <h2 class="govuk-heading-s">{{ t('PAGES.QM.FOLLOW_UP_QUERY.DOCUMENTS_TITLE') }}</h2>
         {{ govukFileUpload({
           id: idValue,
@@ -70,7 +71,8 @@
           text: t('COMMON.SAVE_FILE'),
           classes: "govuk-button--secondary govuk-!-margin-bottom-0"
         }) }}
-      </div>
+      {% endset %}
+      {{ govukInsetText({ html: followUpUploadHtml }) }}
 
       {% if formattedSummary.summaryList.rows.length > 0 %}
         <h2 class="govuk-heading-m">{{ t('COMMON.UPLOADED_FILES') }}</h2>

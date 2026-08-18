@@ -25,10 +25,9 @@ export const IGNORED_URLS = [
   urls.HEARING_FEE_PAYMENT_CONFIRMATION_URL_WITH_UNIQUE_ID,
   urls.REQUEST_FOR_RECONSIDERATION_CANCEL_URL,
 
-  //Currently failing on accessibility or pending to review
-  urls.CITIZEN_DETAILS_URL,
-  urls.DASHBOARD_URL,
-  urls.DASHBOARD_CLAIMANT_URL,
+  // Currently failing on accessibility, no captured mock, or pending to review.
+  // Core GET pages now scanned: DASHBOARD_URL, CITIZEN_DETAILS_URL, MAKE_CLAIM.
+  urls.DASHBOARD_CLAIMANT_URL, // /dashboard/:id/claimantNewDesign — no matching fixture (legacy mock is /claimant)
   urls.DASHBOARD_NOTIFICATION_REDIRECT,
   urls.DASHBOARD_NOTIFICATION_REDIRECT_DOCUMENT,
 
@@ -53,7 +52,6 @@ export const IGNORED_URLS = [
   urls.MEDIATION_UNAVAILABLE_SELECT_DATES_URL,
   urls.MEDIATION_SERVICE_EXTERNAL,
   urls.MEDIATION_UPLOAD_DOCUMENTS,
-  urls.MAKE_CLAIM,
   urls.CLAIM_FEE_BREAKUP,
   urls.CLAIM_FEE_CHANGE_URL,
   urls.CLAIM_FEE_URL,

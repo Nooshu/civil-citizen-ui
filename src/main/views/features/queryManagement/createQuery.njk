@@ -10,6 +10,7 @@
 {% from "../../macro/button.njk" import addButton %}
 {% from "../../macro/error-summary.njk" import errorSummary %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, pageHeaders.pageTitle) }}
@@ -131,7 +132,7 @@
                 text: t(form.errorFor('isHearingRelated'))
               } if form.errorFor('isHearingRelated')
             }) }}
-      <div class="govuk-inset-text">
+      {% set queryUploadHtml %}
         <h2 class="govuk-heading-s">{{ t('PAGES.QM.QUERY_FORM.DOCUMENTS_TITLE') }}</h2>
         {{ govukFileUpload({
           id: idValue,
@@ -155,7 +156,8 @@
           text: t('COMMON.SAVE_FILE'),
           classes: "govuk-button--secondary govuk-!-margin-bottom-0"
         }) }}
-      </div>
+      {% endset %}
+      {{ govukInsetText({ html: queryUploadHtml }) }}
 
       {% if formattedSummary.summaryList.rows.length > 0 %}
         <h2 class="govuk-heading-m">{{ t('COMMON.UPLOADED_FILES') }}</h2>

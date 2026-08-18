@@ -1127,8 +1127,12 @@ export class Claim {
     }
   }
 
+  /**
+   * Claimant's suggested repayment option, if they have proposed one.
+   * `claimantResponse` is absent until the claimant starts that journey.
+   */
   getSuggestedPaymentIntentionOptionFromClaimant() : PaymentOptionType {
-    return this.claimantResponse.suggestedPaymentIntention?.paymentOption;
+    return this.claimantResponse?.suggestedPaymentIntention?.paymentOption;
   }
 
   getHowToProceed() : ChooseHowProceed {

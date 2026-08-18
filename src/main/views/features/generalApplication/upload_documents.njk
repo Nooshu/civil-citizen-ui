@@ -6,6 +6,7 @@
 {% from "../../macro/csrf.njk" import csrfProtection %}
 {% from "../../macro/heading-with-caption.njk" import headingWithCaption %}
 {% from "../../macro/button.njk" import addButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, 'PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.TITLE') }}
@@ -24,7 +25,7 @@
       <p class="govuk-body">{{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.DOCUMENT_TYPE_SIZE_WITH_SAVE_FILE') }}</p>
       <form method="post" action="{{ currentUrl }}&_csrf={{ csrf }}" enctype='multipart/form-data' novalidate>
         {{ csrfProtection(csrf) }}
-        <div class="govuk-inset-text" >
+        {% set gaUploadHtml %}
         {{govukFileUpload({
           id: idValue,
           name: "selectedFile",
@@ -40,7 +41,8 @@
           text: t('COMMON.SAVE_FILE'),
           classes: "govuk-button--secondary govuk-!-margin-bottom-0"
         }) }}
-        </div>
+        {% endset %}
+        {{ govukInsetText({ html: gaUploadHtml }) }}
         {% if formattedSummary.summaryList.rows.length > 0 %}
           <h2 class="govuk-heading-m">{{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.LIST_TITLE') }}</h2>
           <div class="govuk-section-break--s govuk-section-break--visible"></div>

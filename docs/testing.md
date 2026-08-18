@@ -20,6 +20,8 @@ Acronyms: [glossary](glossary.md).
 
 `yarn test:a11y` is an alias of `yarn tests:a11y` (Pa11y against HTML fixtures). It is **not** part of `yarn cichecks`. Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y is the scanner His Majesty’s Courts and Tribunals Service (HMCTS) documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
 
+The harness in `src/test/a11y/a11y.mock-test.ts` serves HTML from `src/test/utils/mocks/a11y/` (filename from the URL). `src/test/a11y/ignored-urls.ts` skips routes that have no view, are unfinished, are external, or still fail. Core GET pages **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** are scanned. Do not ignore a new citizen page without a reason, and do not un-ignore a URL without a matching mock.
+
 ## Unit tests (Jest)
 
 - Root: `src/test/unit/`

@@ -5,6 +5,7 @@
 {% from "../../macro/heading-with-caption.njk" import headingWithCaption %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block nestedContent %}
   {% set errors = "" %}
@@ -22,7 +23,7 @@
   {% endfor %}
   <form method="post" action="{{ currentUrl }}?_csrf={{ csrf }}" enctype='multipart/form-data' novalidate>
     {{ csrfProtection(csrf) }}
-    <div class="govuk-inset-text">
+    {% set n245UploadHtml %}
       {{ govukFileUpload({
                   id: idValue,
                   name: "selectedFile",
@@ -40,7 +41,8 @@
                           text:  t('COMMON.SAVE_FILE'),
                            classes: "govuk-button--secondary govuk-!-margin-bottom-0"
                 }) }}
-    </div>
+    {% endset %}
+    {{ govukInsetText({ html: n245UploadHtml }) }}
     {% if documentName %}
       <h2 class="govuk-heading-m">{{t('PAGES.GENERAL_APPLICATION.UPLOAD_N245_FORM.UPLOADED_FILES')}}</h2>
       <div class="govuk-section-break--s govuk-section-break--visible"></div>

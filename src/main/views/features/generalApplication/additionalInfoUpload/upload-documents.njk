@@ -6,6 +6,7 @@
 {% from "../../../macro/csrf.njk" import csrfProtection %}
 {% from "../../../macro/heading-with-caption.njk" import headingWithCaption %}
 {% from "../../../macro/button.njk" import addButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {{ setPageTitle(t, 'PAGES.GENERAL_APPLICATION.UPLOAD_MORE_INFO_DOCUMENTS.PAGE_TITLE_TO_UPLOAD') }}
 
@@ -21,7 +22,7 @@
   <p class="govuk-body">{{ t('PAGES.GENERAL_APPLICATION.UPLOAD_DOCUMENTS.DOCUMENT_TYPE_SIZE_WITH_SAVE_FILE') }}</p>
   <form method="post" action="{{ currentUrl }}?_csrf={{ csrf }}" enctype='multipart/form-data' novalidate>
     {{ csrfProtection(csrf) }}
-    <div class="govuk-inset-text" >
+    {% set additionalInfoUploadHtml %}
       {{govukFileUpload({
         id: idValue,
         name: "selectedFile",
@@ -37,7 +38,8 @@
         text: t('COMMON.SAVE_FILE'),
         classes: "govuk-button--secondary govuk-!-margin-bottom-0"
       }) }}
-    </div>
+    {% endset %}
+    {{ govukInsetText({ html: additionalInfoUploadHtml }) }}
     {% if formattedSummary.summaryList.rows.length > 0 %}
       <h2 class="govuk-heading-m">{{ t('PAGES.UPLOAD_DOCUMENTS.UPLOADED_FILES_2') }}</h2>
       <div class="govuk-section-break--s govuk-section-break--visible"></div>
