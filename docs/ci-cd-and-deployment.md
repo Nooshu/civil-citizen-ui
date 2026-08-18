@@ -1,0 +1,98 @@
+# CI/CD and deployment
+
+## GitHub Actions
+
+Workflows under `.github/workflows/`:
+
+| Workflow | Purpose |
+| --- | --- |
+| `ci.yml` | PR/push: PII Semgrep (PRs), `yarn install`, `yarn build`, `yarn wiremock:pull` |
+| `stale.yml` | Marks stale issues/PRs (`actions/stale`) |
+| `stale-branches.yml` | Stale branch cleanup (`crs-k/stale-branches`) |
+| `update-readme-e2e-tables.yml` | Regenerates E2E tables in README on `master` |
+| `update-readme-ftGroup-tables.yml` | Regenerates functional-group tables |
+
+`ci.yml` uses Node 24. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md).
+
+A11y is described in `package.json` `test:a11y` as running through GitHub Actions as a mandatory step.
+
+## Jenkins
+
+- `Jenkinsfile_CNP` — Continuous deployment pipeline (`type = nodejs`, `product = civil`, `component = citizen-ui`). Uses HMCTS `Infrastructure` library `2.4.4`.
+- `Jenkinsfile_nightly` — Nightly functional (`@civil-citizen-nightly`).
+
+Preview and AAT behaviour is controlled with **GitHub labels** (also documented in the root README):
+
+| Label | Effect |
+| --- | --- |
+| `enable_keep_helm` | Keep the preview namespace after the pipeline |
+| `pr-values:fullDeployment` | Real downstream components (hearings, Elasticsearch, …). Without it, most calls are mocked. |
+| `pr-values:reducedStack` | CUI + WireMock only; civil-service/WA/buses off. Uses `values.reducedStack.preview.template.yaml`. |
+| `pr-values:skip-functional-tests` | Skip functional stage for non-functional changes |
+| `civilDefinitionBranch:????` | CCD definition branch to import |
+| `civilServicePr:????` | Deploy `civil/service:pr-N` and import Camunda from that PR |
+| `civilShared:????` | civil-service shared scripts branch |
+
+Do not combine `pr-values:reducedStack` with `pr-values:fullDeployment`.
+
+Functional failures: start with `test-results/functional/functional-failure-summary.json`. See [functional-test-diagnostics.md](functional-test-diagnostics.md).
+
+## Helm
+
+Chart: `charts/civil-citizen-ui`.
+
+Dependencies (from `Chart.yaml`):
+
+- `nodejs` (always)
+- `wiremock` (condition)
+- `civil-service` (condition)
+- `servicebus` / `wa` (conditions; full preview)
+
+Values templates:
+
+- `values.yaml` — base
+- `values.preview.template.yaml` — default PR preview (mocked-leaning)
+- `values.fullDeployment.preview.template.yaml` — full stack
+- `values.reducedStack.preview.template.yaml` — CUI + WireMock PoC
+- `values.aat.template.yaml` — AAT
+
+Image is built from `Dockerfile`. UI Preview locally uses `Dockerfile.ui-preview`.
+
+## WireMock in CI versus laptop
+
+| Set | Path | Used by |
+| --- | --- | --- |
+| Reduced-stack contracts | `charts/civil-citizen-ui/wiremock/mappings` | Preview chart, `yarn test:mocked-functional`, `yarn wiremock:validate` |
+| UI Preview stubs | `compose/ui-preview-mappings/` | `yarn preview` only |
+
+`yarn wiremock:pull` refreshes mappings used by some local/CI jobs (`bin/pull-latest-wiremock-mappings.sh`). Do not replace chart contracts with broad preview matchers.
+
+## SonarQube
+
+`sonar-project.properties`:
+
+- `sonar.sources=src/main`
+- `sonar.tests=src/test/`
+- `sonar.javascript.lcov.reportPaths=coverage/lcov.info`
+- Organisation `hmcts`
+
+Coverage exclusions exist for specific files (see the properties file). `yarn sonar-scan` runs `sonar-scanner` when credentials are available.
+
+## Backstage
+
+`catalog-info.yaml` registers the component for the HMCTS portal (`dts_civil`, Jenkins slug annotation).
+
+## Environments (logical)
+
+| Env | Typical use |
+| --- | --- |
+| PR preview | Feature validation; mocked or full depending on labels |
+| AAT | Integration against AAT civil-service / IDAM |
+| Demo / preview long-lived | Stakeholder demos (`enable_keep_helm`) |
+| Production | Live citizens |
+
+Exact URLs and Key Vault names live in Helm values and the platform, not in this git repo’s application code.
+
+## Keep-alive versus ingress
+
+`server.ts` sets `keepAliveTimeout = 185000` so Node does not RST connections that Traefik still holds. Changing ingress idle timeouts without revisiting this value can bring back intermittent 502s.

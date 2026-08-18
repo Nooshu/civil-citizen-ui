@@ -7,10 +7,35 @@
 [![codecov](https://codecov.io/gh/hmcts/civil-citizen-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/hmcts/civil-citizen-ui)
 
 ## Contents
+- [Documentation](#documentation)
+- [Getting Started](#getting-started)
 - [UI Test Documentation](#ui-test-documentation)
 - [API Test Documentation](#api-test-documentation)
 - [Functional Test Group Documentation (UI)](#functional-test-group-documentation-ui)
 - [Functional Test Group Documentation (API)](#functional-test-group-documentation-api)
+
+## Documentation
+
+The full project guide is in [`docs/`](docs/README.md). It covers architecture, directory layout, local development, configuration, citizen journeys, frontend (GOV.UK Frontend / Nunjucks), integrations, security, testing, CI/CD, and contributing.
+
+Start here: **[docs/README.md](docs/README.md)**.
+
+| Guide | Topic |
+| --- | --- |
+| [Project overview](docs/project-overview.md) | What CUI is, runtime, ownership |
+| [Architecture](docs/architecture.md) | Request lifecycle, layers, feature flags |
+| [Directory structure](docs/directory-structure.md) | Map of the repository |
+| [Local development](docs/local-development.md) | Install, `yarn start:dev`, UI Preview |
+| [Configuration](docs/configuration.md) | `node-config`, env vars, Redis TTLs |
+| [Citizen journeys](docs/citizen-journeys.md) | Claim, response, GA, and related flows |
+| [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend, assets, i18n |
+| [Integrations](docs/integrations.md) | civil-service, IDAM, Redis, payments |
+| [Security and privacy](docs/security-and-privacy.md) | CSRF, Helmet, OIDC, PII logging |
+| [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |
+| [CI/CD and deployment](docs/ci-cd-and-deployment.md) | Jenkins, Helm, GitHub Actions |
+| [Contributing](docs/contributing.md) | Coding standards and review checklist |
+
+Specialised notes (WireMock contracts, functional-test diagnostics, PII Semgrep, dependency logs) are listed from the [docs index](docs/README.md). Agent coding rules remain in [AGENTS.md](AGENTS.md).
 
 ## Getting Started
 
@@ -18,8 +43,8 @@
 
 Running the application requires the following tools to be installed in your environment:
 
-  * [Node.js](https://nodejs.org/) v14.0.0 or later
-  * [yarn](https://yarnpkg.com/)
+  * [Node.js](https://nodejs.org/) matching `.nvmrc` and `package.json` `engines` (currently `>=24.18.0`)
+  * [Yarn 4](https://yarnpkg.com/) (`yarn.lock`, `.yarnrc.yml` — not npm)
   * [Docker](https://www.docker.com)
 
 ### Local Setup
@@ -116,7 +141,9 @@ $ yarn lint --fix
 
 ### Running the tests
 
-This template app uses [Jest](https://jestjs.io//) as the test engine. You can run unit tests by executing
+For the full testing landscape (Jest, GOV.UK fixtures, CodeceptJS, Playwright, Pact, a11y, and what to run before a PR), see [docs/testing.md](docs/testing.md).
+
+This app uses [Jest](https://jestjs.io/) as the unit test engine. You can run unit tests by executing
 the following command:
 
 ```bash
