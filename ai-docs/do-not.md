@@ -14,7 +14,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 
 ## GOV.UK Frontend and UI
 
-- Do not hand-write GOV.UK component HTML (`govuk-button`, `govuk-error-summary`, header, footer, skip link, breadcrumbs) when a Nunjucks macro exists.
+- Do not hand-write GOV.UK component HTML (`govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, footer, skip link, breadcrumbs) when a Nunjucks macro exists.
 - Do not edit `node_modules/govuk-frontend` or vendor-copied GOV.UK JS/CSS.
 - Do not rebuild GOV.UK component markup in client JavaScript; show/hide or populate **macro-rendered** DOM.
 - Do not fork GOV.UK CSS; theme in `src/main/assets/scss/` only.

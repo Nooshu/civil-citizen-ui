@@ -42,33 +42,35 @@
     <h2 class="govuk-heading-m">{{ group.title }}</h2>
     <p class="govuk-body">{{ group.description }}</p>
 
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Page</th>
-          <th scope="col" class="govuk-table__header">Status</th>
-          <th scope="col" class="govuk-table__header">Notes</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        {% for page in group.pages %}
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">
-              <a class="govuk-link" href="{{ page.path }}">{{ page.title }}</a>
-              <br>
-              <span class="govuk-hint govuk-!-font-size-16">{{ page.path }}</span>
-            </td>
-            <td class="govuk-table__cell">
-              {% if page.status == 'ready' %}
-                {{ govukTag({ text: "Ready", classes: "govuk-tag--green" }) }}
-              {% else %}
-                {{ govukTag({ text: "Stub", classes: "govuk-tag--grey" }) }}
-              {% endif %}
-            </td>
-            <td class="govuk-table__cell">{{ page.notes or "—" }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% set pageRows = [] %}
+    {% for page in group.pages %}
+      {% set pageCell %}
+        <a class="govuk-link" href="{{ page.path }}">{{ page.title }}</a>
+        <br>
+        <span class="govuk-hint govuk-!-font-size-16">{{ page.path }}</span>
+      {% endset %}
+      {% set statusCell %}
+        {% if page.status == 'ready' %}
+          {{ govukTag({ text: "Ready", classes: "govuk-tag--green" }) }}
+        {% else %}
+          {{ govukTag({ text: "Stub", classes: "govuk-tag--grey" }) }}
+        {% endif %}
+      {% endset %}
+      {% set pageRows = (pageRows.push([
+        {html: pageCell},
+        {html: statusCell},
+        {text: page.notes or "—"}
+      ]), pageRows) %}
+    {% endfor %}
+    {{ govukTable({
+      caption: group.title,
+      captionClasses: "govuk-visually-hidden",
+      head: [
+        {text: "Page"},
+        {text: "Status"},
+        {text: "Notes"}
+      ],
+      rows: pageRows
+    }) }}
   {% endfor %}
 {% endblock %}

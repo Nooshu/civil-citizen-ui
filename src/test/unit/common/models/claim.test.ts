@@ -2537,3 +2537,18 @@ describe('isCcjCompleteForJo', () => {
     expect(result).toBe(false);
   });
 });
+
+describe('Claim getSuggestedPaymentIntentionOptionFromClaimant', () => {
+  it('should return undefined when claimantResponse is missing', () => {
+    const claim = new Claim();
+    expect(claim.getSuggestedPaymentIntentionOptionFromClaimant()).toBeUndefined();
+  });
+
+  it('should return the claimant suggested payment option', () => {
+    const claim = new Claim();
+    claim.claimantResponse = new ClaimantResponse();
+    claim.claimantResponse.suggestedPaymentIntention = new PaymentIntention();
+    claim.claimantResponse.suggestedPaymentIntention.paymentOption = PaymentOptionType.BY_SET_DATE;
+    expect(claim.getSuggestedPaymentIntentionOptionFromClaimant()).toBe(PaymentOptionType.BY_SET_DATE);
+  });
+});

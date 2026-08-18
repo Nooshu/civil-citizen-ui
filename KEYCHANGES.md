@@ -157,6 +157,7 @@ The fork adds a **self-contained UI Preview** environment:
   - `1645882162449602` — part admission (claimant response)
   - `1645882162449603` — case progression
   - `1645882162449604` — general application
+- Admit Redis seeds include `claimantResponse` (even empty) because `getClaimById` reads Redis first; the claimant-response task list used to 500 when that object was missing.
 - Commands: `yarn preview` / `yarn start:ui-preview` / `yarn start:ui-preview:down`
 - Supporting files: `bin/ui-preview.sh`, `Dockerfile.ui-preview`, `/ui-preview` catalogue (`uiPreviewController`, `pageCatalog`), Redis extras in `src/main/modules/e2eConfiguration/uiPreviewRedisData.json`
 - OIDC allowlist for `/ui-preview` so the catalogue is reachable in `e2eTest`
@@ -285,6 +286,10 @@ Upstream `yarn test:a11y` (and this repo’s `cichecks` until this change) only 
 
 Pinned **6.2.0 → 6.4.0**. Combined with fixture tests, the service tracks a current Frontend release rather than freezing on an older patch line.
 
+App chrome now uses official macros where it previously diverged: `macro/header.njk` is `govukHeader` plus `govukServiceNavigation` (not a hand-written `govuk-header`); dashboard / amount / timeline tables use `govukTable`; inset wrappers and new-tab actions use `govukInsetText` / `govukButton`. Pa11y now scans **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** (fixtures under `src/test/utils/mocks/a11y/`). Remaining `ignored-urls.ts` entries are no-view routes, external URLs, unfinished journeys, or pages that still fail.
+
+**Benefit:** Service Standard 4/13 assessors see Design System components from the official macros. A green Pa11y mock run is still not a full WCAG audit.
+
 ### Pa11y and functional tooling versions
 
 - `pa11y` **8 → 9.1.1**
@@ -402,7 +407,7 @@ Standing rules remain: patch/minor preferred, full `yarn test:coverage` after de
 
 Standing conventions in [`AGENTS.md`](AGENTS.md) (not present upstream) require:
 
-- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header when a macro exists
+- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header / table / inset text when a macro exists. App chrome uses `govukHeader` + service navigation, `govukTable` on the claims dashboard, and `govukButton` for new-tab actions.
 - App JS only in `src/main/assets/js/`; app theme only in `src/main/assets/scss/`
 - Prefer GOV.UK over axe when they conflict
 - Reuse Nunjucks partials instead of copying journey chrome

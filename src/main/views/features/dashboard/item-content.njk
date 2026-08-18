@@ -119,9 +119,14 @@
   {% endif %}
 
   {% if content.type === ClaimSummaryType.NEW_TAB_BUTTON %}
-    <a target="_blank" role="button" draggable="false" class="govuk-button" data-module="govuk-button" href="{{ content.data.href }}">
-      {{ t(content.data.text) }}
-    </a>
+    {{ govukButton({
+      href: content.data.href,
+      text: t(content.data.text),
+      attributes: {
+        target: "_blank",
+        rel: "noreferrer noopener"
+      }
+    }) }}
   {% endif %}
 
   {% if content.type === ClaimSummaryType.LINK %}
@@ -281,7 +286,7 @@
   {% if content.type === ClaimSummaryType.UPLOAD_ARRAY %}
     <div id={{content.data.category+'['+content.data.index+']['+content.data.field+'][size]'}} ></div>
     <div id={{content.data.category+'['+content.data.index+']['+content.data.field+'][mimetype]'}} ></div>
-     <div class="govuk-inset-text">
+    {% set uploadArrayHtml %}
        {{ govukFileUpload({
            id: content.data.category+'['+content.data.index+']['+content.data.field+']',
            name: content.data.category+'['+content.data.index+']['+content.data.field+']',
@@ -306,7 +311,8 @@
            text: t('COMMON.SAVE_FILE'),
            classes: "govuk-button--secondary govuk-!-margin-bottom-0"
          }) }}
-    </div>
+    {% endset %}
+    {{ govukInsetText({ html: uploadArrayHtml }) }}
     {{ govukInput({
        id: content.data.category+'['+content.data.index+'][caseDocument]',
        name: content.data.category+'['+content.data.index+'][caseDocument]',
@@ -324,7 +330,7 @@
   {% endif %}
 
   {% if content.type === ClaimSummaryType.UPLOAD %}
-    <div class="govuk-inset-text">
+    {% set uploadHtml %}
       {{ govukFileUpload({
            id: content.data.id,
            name: content.data.name,
@@ -332,7 +338,8 @@
              html: '<strong>'+t(content.data.text)+'</strong><hr class="govuk-section-break--s govuk-section-break--visible">'+t(content.data.html)+'</br></br>'
            }
         }) }}
-    </div>
+    {% endset %}
+    {{ govukInsetText({ html: uploadHtml }) }}
   {% endif %}
 
   {% if content.type === ClaimSummaryType.DATE %}

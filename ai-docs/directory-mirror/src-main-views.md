@@ -10,6 +10,7 @@ Human guide: [`docs/frontend.md`](../../docs/frontend.md).
 | --- | --- |
 | `govukTemplate.njk` | GOV.UK page shell |
 | `layout.njk` | App layout: header, footer, phase banner, language — **macros**, not hand-rolled header/footer |
+| `macro/header.njk` | Logo-only `govukHeader` + `govukServiceNavigation` (Design System pattern). Do not hand-write `govuk-header`. |
 | `service-unavailable.njk` + `service-unavailable-layout.njk` | LaunchDarkly shutter |
 | `error.njk`, `not-found.njk`, `unauthorised.njk` | Error states |
 | `home.njk` | Home |
@@ -24,7 +25,7 @@ Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode, t
 
 If the same block appears on two pages, **extract** here or under `features/common/`.
 
-Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not.
+Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`.
 
 ## `features/`
 
