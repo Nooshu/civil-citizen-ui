@@ -4,7 +4,7 @@ Expand acronyms **on first use in each document**: write the full name, then the
 
 This page is the onboarding list for people who have not worked in government or on this service before. Official GOV.UK / HMCTS pages remain canonical if a term moves.
 
-**Do not expand** the brand **GOV.UK**. Product names such as Yarn, Jest, Nunjucks, Redis, WireMock, Pa11y, Playwright, and Helm stay as names.
+**Do not expand** the brand **GOV.UK**. Product names such as Yarn, Jest, Nunjucks, Redis, WireMock, Pa11y, Playwright, Helm, and Renovate stay as names.
 
 ## This service and HMCTS
 

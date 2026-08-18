@@ -8,13 +8,15 @@ Workflows under `.github/workflows/`:
 
 | Workflow | Purpose |
 | --- | --- |
-| `ci.yml` | Pull request (PR)/push: personally identifiable information (PII) Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn deps:audit`, `yarn build`, `yarn wiremock:pull` |
+| `ci.yml` | Pull request (PR)/push: personally identifiable information (PII) Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn deps:audit`, `yarn build`, `yarn wiremock:pull`. Renovate PRs also run `yarn test:coverage`. |
 | `stale.yml` | Marks stale issues/PRs (`actions/stale`) |
 | `stale-branches.yml` | Stale branch cleanup (`crs-k/stale-branches`) |
 | `update-readme-e2e-tables.yml` | Regenerates E2E tables in README on `master` |
 | `update-readme-ftGroup-tables.yml` | Regenerates functional-group tables |
 
-`ci.yml` uses Node 24. After install it runs `yarn deps:check` (exact pins + lockfile SHA checksums) and `yarn deps:audit` (`yarn npm audit`, production tree must be clean) with `YARN_ENABLE_HARDENED_MODE=1` on the install step. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md) and [Dependencies](security-and-privacy.md).
+`ci.yml` uses Node 24. After install it runs `yarn deps:check` (exact pins + lockfile SHA checksums) and `yarn deps:audit` (`yarn npm audit`, production tree must be clean) with `YARN_ENABLE_HARDENED_MODE=1` on the install step. Pull requests from Renovate (`renovate/*` branches or `renovate[bot]`) also run `yarn test:coverage` so an automerge cannot land a bump that fails the coverage floor. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md) and [Dependencies](security-and-privacy.md).
+
+Renovate (`.github/renovate.json`) extends the HMCTS base config plus **`automerge-minor`**, not `automerge-all`. It pins specifiers (`rangeStrategy: pin`), waits 7 days after publish, and does not automerge majors or `govuk-frontend`.
 
 Accessibility (a11y) is **not** part of GitHub Actions `ci.yml` or `yarn cichecks`. The real Pa11y suite is `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`.
 

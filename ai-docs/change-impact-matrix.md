@@ -89,6 +89,8 @@ Mirror production layout: `src/test/unit/<same path after src/main>/`. Route tes
 
 Exact pins for **all** direct deps and resolutions. 7-day cooldown unless security (`npmMinimalAgeGate` / `YARN_NPM_MINIMAL_AGE_GATE=0`). Then `yarn deps:check`, `yarn deps:audit`, and **one** `yarn test:coverage`. SIGSEGV → re-run that file only. Package-**only** changes may follow the origin auto-push rule in `AGENTS.md`.
 
+Renovate (`.github/renovate.json`) must keep `rangeStrategy: pin` and must not extend `automerge-all`. Changing that file without `deps:check` + coverage on `renovate/*` PRs re-opens ranged automerges.
+
 Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), `@ministryofjustice/frontend` v10, Babel 8 + Jest 30 coupled. See `docs/dependency-update-log-2026-08-18.md`.
 
 ## Infrastructure / charts
