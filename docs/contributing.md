@@ -7,7 +7,7 @@
   Add if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
 - Fork: `origin`
 
-Before changing application code, sync upstream (`.cursor/rules/project-standards.mdc`):
+Before changing application code, sync upstream (`AGENTS.md` — Before changing code):
 
 ```bash
 git fetch hmcts
@@ -23,9 +23,9 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 - **TypeScript** throughout server code. Avoid `any` and `@ts-ignore` unless documented.
 - **ESLint 10** flat config: `eslint.config.mjs` (Windows: `eslint.config.win.mjs`).
 - **stylelint** on SCSS.
-- Prefer existing Express patterns: `.cursor/rules/prefer-express-typescript-stack.mdc`.
+- Prefer existing Express patterns: [`AGENTS.md`](../AGENTS.md) — Server / application stack.
 - Form validation: class-validator models under `src/main/common/form/`.
-- Comments: TSDoc-compatible `/** */`, no `{Type}` braces on `@param` in `.ts` files (`.cursor/rules/docs-and-comments.mdc`).
+- Comments: TSDoc-compatible `/** */`, no `{Type}` braces on `@param` in `.ts` files (`AGENTS.md` — Documentation and code comments).
 
 ## UI rules (non-negotiable)
 
@@ -46,7 +46,7 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 
 - Conventional messages without a ticket prefix unless the user supplied a real key.
 - **Never invent JIRA ids** (`DTSCCI-####`, `CIV-####`, …).
-- Do not add `Co-Authored-By: Cursor` or similar trailers.
+- Do not add `Co-Authored-By` trailers naming an AI agent or product.
 - Do not commit unless asked, if you are an automation/agent — humans commit as usual.
 
 ## Documentation you must keep in sync
@@ -56,6 +56,7 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 - this `docs/` tree
 - [README.md](../README.md) getting-started bits if commands changed
 - [AGENTS.md](../AGENTS.md) if a standing agent convention changed
+- [`ai-docs/`](../ai-docs/README.md) if directories, scripts, or invariants changed (or confirm it is unaffected)
 - specialised docs (WireMock, PII, functional diagnostics) when those topics changed
 
 ## Review checklist (human PRs)
@@ -71,4 +72,4 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 
 ## Agent-oriented rules
 
-AI assistants should treat [AGENTS.md](../AGENTS.md) and `.cursor/rules/*.mdc` as canonical. Directory-level context, playbooks, and script catalogues live in [ai-docs/](../ai-docs/README.md). This contributing guide is for humans and agents alike; if a rule file and this page ever diverge, **the `.mdc` file wins** — then fix this page in the same change.
+AI assistants should treat [AGENTS.md](../AGENTS.md) as canonical (it is not tied to a particular IDE). Directory-level context, playbooks, and script catalogues live in [ai-docs/](../ai-docs/README.md). This contributing guide is for humans and agents alike; if `AGENTS.md` and this page ever diverge, **`AGENTS.md` wins** — then fix this page in the same change.

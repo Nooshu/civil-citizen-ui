@@ -130,7 +130,7 @@ In `e2eTest`, a LaunchDarkly `TestData` source is used so flags can be toggled w
 
 ## Performance constraints
 
-See `.cursor/rules/performance-and-accessibility.mdc`. In practice:
+See [`AGENTS.md`](../AGENTS.md) — Performance and accessibility. In practice:
 
 - Avoid N+1 civil-service calls in a single request.
 - Reuse draft-store helpers; do not read/write Redis repeatedly for the same key in one handler.

@@ -1,6 +1,6 @@
 # `src/main/assets/` — app JS and SCSS only
 
-Never edit `node_modules/govuk-frontend`. Rules: `govuk-frontend-js-overrides.mdc`, `govuk-frontend-theming-overrides.mdc`.
+Never edit `node_modules/govuk-frontend`. Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (app JS and app SCSS only).
 
 ## `js/` (webpack via `src/main/index.js`)
 
@@ -38,4 +38,4 @@ Sass `loadPaths` live in `webpack/scss.js` (needed after sass-loader 17). Prefer
 
 ## After changes
 
-`yarn build` (or rely on webpack-dev-middleware in `yarn start:dev`). Watch bundle size — `.cursor/rules/performance-and-accessibility.mdc`.
+`yarn build` (or rely on webpack-dev-middleware in `yarn start:dev`). Watch bundle size — `AGENTS.md` Performance and accessibility.

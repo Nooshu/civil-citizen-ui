@@ -43,7 +43,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 ## Git and identity
 
 - Do not invent JIRA / ticket ids.
-- Do not attach Cursor / agent identity to commits or pushes.
+- Do not attach AI coding-agent identity to commits or pushes.
 - Do not amend commits you did not just create, or that have been pushed, unless the user asked and the amend rules in the user git protocol are met.
 - Do not force-push `master`.
 

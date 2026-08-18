@@ -1,4 +1,4 @@
-# CI, Semgrep, GitHub, Cursor, Jenkins
+# CI, Semgrep, GitHub, Jenkins
 
 ## `.github/`
 
@@ -27,14 +27,9 @@ PII logging rules: `logging-pii.yml`, language-specific `logging-pii.ts` / `.jav
 
 Do not log PII even if redaction exists.
 
-## `.cursor/`
+## Agent conventions
 
-| Path | Role |
-| --- | --- |
-| `rules/*.mdc` | **Always-applied** agent rules — source of truth. `docs-and-comments.mdc` requires updating `ai-docs/` on every project change that the mirror describes. |
-| `skills/` | None in this repo today |
-
-Do not duplicate conflicting text in `ai-docs/`; link the `.mdc` file.
+Canonical standing conventions: [`AGENTS.md`](../../AGENTS.md). Directory-level notes: this `ai-docs/` tree. Do not add editor-specific rule packs. A leftover `.cursor/` folder is not the source of truth — see [`.cursor/README.md`](../../.cursor/README.md).
 
 ## `.yarn/`
 

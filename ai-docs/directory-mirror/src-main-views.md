@@ -1,6 +1,6 @@
 # `src/main/views/` — Nunjucks
 
-GOV.UK Frontend macros are mandatory for Design System components. Rules: `.cursor/rules/govuk-frontend-ui.mdc`, `reuse-nunjucks-partials.mdc`, `prefer-govuk-over-axe.mdc`.
+GOV.UK Frontend macros are mandatory for Design System components. Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros, partials, axe).
 
 Human guide: [`docs/frontend.md`](../../docs/frontend.md).
 
@@ -50,4 +50,4 @@ POST forms must include the CSRF token (see `macro/csrf.njk`). Eligibility/first
 
 ## Tests
 
-There is no full visual snapshot suite. GOV.UK **component** HTML: `yarn test:govuk-fixtures`. Route tests assert status and sometimes HTML strings. Pa11y: `yarn tests:a11y`. After GOV.UK upgrades follow `.cursor/rules/govuk-frontend-upgrade-tests.mdc`.
+There is no full visual snapshot suite. GOV.UK **component** HTML: `yarn test:govuk-fixtures`. Route tests assert status and sometimes HTML strings. Pa11y: `yarn tests:a11y`. After GOV.UK upgrades follow `AGENTS.md` GOV.UK Frontend (upgrade checklist).

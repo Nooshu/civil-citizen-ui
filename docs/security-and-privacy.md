@@ -65,5 +65,5 @@ Playwright specs under `playwright/tests/api-security` exercise HTTP security pr
 ## Dependencies
 
 - Prefer exact version pins for packages you change.
-- Wait 7 days after a release for routine bumps; security fixes may skip the wait (`.cursor/rules/dependency-pinning.mdc`).
+- Wait 7 days after a release for routine bumps; security fixes may skip the wait (`AGENTS.md` Dependencies).
 - `yarn-audit-known-issues` records accepted audit noise — do not delete it to “go green” without review.

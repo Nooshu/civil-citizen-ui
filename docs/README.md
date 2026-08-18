@@ -28,12 +28,14 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 | [PII logging PR check](pii-logging-check.md) | Semgrep rules for names, contact details, and financial values |
 | [Dependency update log 2026-08-18](dependency-update-log-2026-08-18.md) | Record of a bulk dependency pass (completed and blocked bumps) |
 
+See also the root [KEYCHANGES.md](../KEYCHANGES.md) for a fork-vs-upstream comparison (tooling, tests, security, documentation).
+
 ## Related files outside this folder
 
 | Path | Role |
 | --- | --- |
 | [README.md](../README.md) | Quick start, preview labels, generated test tables |
-| [AGENTS.md](../AGENTS.md) | Standing rules for AI coding agents (symlink: `AGENT.md`) |
+| [KEYCHANGES.md](../KEYCHANGES.md) | Fork vs `hmcts/civil-citizen-ui` `master` — tooling, tests, security, docs |
+| [AGENTS.md](../AGENTS.md) | Canonical standing conventions for any coding agent (symlink: `AGENT.md`) |
 | [ai-docs/README.md](../ai-docs/README.md) | **AI-only** directory mirror, playbooks, and scripts (not a human product guide) |
-| [.cursor/rules/](../.cursor/rules/) | Canonical Cursor rules (GOV.UK macros, Yarn 4, dependency pinning, and so on) |
 | [catalog-info.yaml](../catalog-info.yaml) | Backstage component metadata (`dts_civil`) |

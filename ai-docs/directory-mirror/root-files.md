@@ -6,8 +6,9 @@
 | `yarn.lock` | Keep integrity; Yarn 4 |
 | `.yarnrc.yml` | Yarn 4.10.3 path, immutable installs, `nodeLinker: node-modules` |
 | `.nvmrc` | `v24.18.0` |
-| `AGENTS.md` / `AGENT.md` | Standing agent rules; `AGENT.md` is a symlink |
+| `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
+| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). Update when a change would alter that comparison. |
 | `docs/` | Human documentation |
 | `ai-docs/` | This AI mirror |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |

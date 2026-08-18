@@ -1,6 +1,6 @@
 # Playbook: GOV.UK Frontend upgrade
 
-Canonical: `.cursor/rules/govuk-frontend-upgrade-tests.mdc`, `govuk-frontend-ui.mdc`.
+Canonical: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros + upgrade checklist).
 
 1. Pin `govuk-frontend` exact version (7-day cooldown unless asked).
 2. Do **not** patch `node_modules/govuk-frontend`.

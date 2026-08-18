@@ -1,14 +1,16 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in this repository.
+Guidance for **any** coding agent (or human) working in this repository. This file is the **canonical** standing convention set — it is not tied to a particular IDE or vendor.
 
-Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` files). Keep this document aligned with those rules when they change — prefer linking to `.mdc` files over conflicting duplicates.
+Do **not** add editor-specific rule packs (for example Cursor `.mdc` files). If a convention changes, update **this file** and the matching pages under [`docs/`](docs/README.md) and [`ai-docs/`](ai-docs/README.md). Older tooling may look for `AGENT.md`; that path is a symlink to this file.
+
+Directory-level context, scripts, and playbooks: [`ai-docs/README.md`](ai-docs/README.md). Human project guide: [`docs/README.md`](docs/README.md). If `ai-docs/` conflicts with this file, **this file wins** — then fix `ai-docs/` in the same change.
 
 ## AI directory mirror (read before changing code)
 
 Machine-oriented, directory-by-directory context for agents: **[`ai-docs/README.md`](ai-docs/README.md)**.
 
-That folder is **AI-targeted** (not a human product manual). Use it to inspect invariants, paired tests, scripts, and playbooks before editing. Human documentation remains [`docs/README.md`](docs/README.md). If `ai-docs/` conflicts with `.cursor/rules/*.mdc` or this file, **the rule file wins**, then this file — then fix `ai-docs/` in the same change.
+That folder is **AI-targeted** (not a human product manual). Use it to inspect invariants, paired tests, scripts, and playbooks before editing. Human documentation remains [`docs/README.md`](docs/README.md). If `ai-docs/` conflicts with this file, **this file wins** — then fix `ai-docs/` in the same change.
 
 ### Keep `ai-docs/` in sync (mandatory)
 
@@ -22,7 +24,7 @@ Whenever you change the project, in the **same change**:
 4. If you add or change a Yarn script or `bin/` helper, update `scripts-and-commands.md` (and the relevant mirror page).
 5. If nothing in `ai-docs/` is affected, say so briefly in the summary — do not skip the check.
 
-Do not finish a task with a stale `ai-docs/` tree. This is in addition to updating human `docs/` and this file when those topics change (`.cursor/rules/docs-and-comments.mdc`).
+Do not finish a task with a stale `ai-docs/` tree. This is in addition to updating human `docs/` and this file when those topics change.
 
 Suggested first reads inside `ai-docs/`:
 
@@ -30,7 +32,7 @@ Suggested first reads inside `ai-docs/`:
 - [`ai-docs/do-not.md`](ai-docs/do-not.md)
 - [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md)
 - [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md)
-- [`ai-docs/skills-and-rules.md`](ai-docs/skills-and-rules.md)
+- [`ai-docs/conventions.md`](ai-docs/conventions.md)
 
 ## Project overview
 
@@ -62,7 +64,7 @@ Suggested first reads inside `ai-docs/`:
 
 ## Before changing code
 
-1. Sync with upstream `hmcts` first (see `.cursor/rules/project-standards.mdc`):
+1. Sync with upstream `hmcts` first:
    - If the working tree is not clean, ask for confirmation (or create a branch) before syncing
    - `git fetch hmcts`
    - `git pull --rebase hmcts master`
@@ -71,13 +73,13 @@ Suggested first reads inside `ai-docs/`:
 ## Dependencies
 
 - Prefer **patch and minor** updates unless explicitly asked for latest/major
-- Prefer versions published at least **7 days** ago for routine updates (security fixes may skip the wait) — see `.cursor/rules/dependency-pinning.mdc`
+- Prefer versions published at least **7 days** ago for routine updates (security fixes may skip the wait)
 - When updating deps, prefer **exact pins** (no `^`, `~`, or ranges) for packages you touch; refresh `yarn.lock`
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
-- After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix — see `.cursor/rules/dependency-pinning.mdc`
+- After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
   - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
-  - Long coverage runs: background and poll with ≤1 minute waits — see `.cursor/rules/shell-wait-limits.mdc`
+  - Long coverage or install runs: do not block a single wait for many minutes — run in the background and poll until complete (see [Long-running commands](#long-running-commands))
 
 ## Package-only updates (auto origin sync)
 
@@ -89,30 +91,47 @@ If the change is **only** version bumps in `package.json` / `yarn.lock` (no othe
 
 ## Server / application stack
 
-- Prefer **Express**, **TypeScript**, and existing CUI patterns under `src/main/` — see `.cursor/rules/prefer-express-typescript-stack.mdc`
-- Keep controllers in `src/main/routes/`, business logic in `src/main/services/`, models/forms in `src/main/common/`, HTTP clients in `src/main/app/`
-- Prefer class-validator form models, existing draft-store helpers, and typed service APIs over ad-hoc untyped helpers
-- Do not introduce NestJS, Prisma, or a parallel SPA framework unless explicitly requested
+For server and application logic, use this repository’s platform stack — not one-off frameworks.
+
+- Keep application code under **`src/main/`** using existing conventions — do not invent a parallel runtime (NestJS apps, SPA frameworks, ad-hoc Node servers, etc.)
+- Prefer **Express** building blocks already in the app: routers/controllers under `src/main/routes/`, middleware/modules under `src/main/modules/`, guards under `src/main/routes/guards/`
+- Prefer **TypeScript** end-to-end: typed models, form classes, and service APIs — avoid untyped `any`-heavy helpers or plain JS server modules unless there is a clear, documented exception
+- Prefer **services** in `src/main/services/` for business logic and content builders; keep controllers thin (validate → call service → render/redirect)
+- Prefer existing **HTTP clients** in `src/main/app/client/` for civil-service / GA / PCQ / S2S — do not invent a second HTTP stack
+- Prefer **Redis draft store / session** helpers in `src/main/modules/draft-store/` over ad-hoc persistence or inventing a new database layer unless explicitly required
+- Prefer **class-validator** form models under `src/main/common/form/` and existing validators over one-off validation
+- Reuse existing config (`config/`), logging, i18n, and error-handling patterns instead of new bespoke frameworks
+- If choosing an alternative stack piece, document **why** in the change — do not bypass the CUI stack casually
+- Do **not** introduce NestJS, Prisma, React/Vue/Angular, or a second template engine unless the user explicitly requests it
 
 ## GOV.UK Frontend
 
 Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs when upgrading).
 
-- **GOV.UK Frontend is the single source of truth** for the user interface — see `.cursor/rules/govuk-frontend-ui.mdc`
+- **GOV.UK Frontend is the single source of truth** for the user interface
 - All GOV.UK Design System component HTML must come from official Nunjucks macros — do not hand-write component markup when a macro exists
 - Prefer `{% from "govuk/components/.../macro.njk" import ... %}`; layout chrome (skip link, header, footer, breadcrumbs, pagination) must use macros
 - Typography/layout utilities (`govuk-heading-*`, `govuk-body`, `govuk-grid-*`, `govuk-!-*-*`) are fine for composition; component structure still comes from macros
 - Client-side UI should show/hide or populate **macro-rendered** markup rather than building GOV.UK component HTML in JavaScript
-- Prefer GOV.UK Frontend HTML, CSS, and JS over **axe** / **axe-core** when they conflict (document/disable the scanner rule; do not rewrite GOV.UK) — see `.cursor/rules/prefer-govuk-over-axe.mdc`
-- Interactivity via **app JS overrides only** (`src/main/assets/js/`); keep GOV.UK Frontend init; do not edit `node_modules/govuk-frontend` — see `.cursor/rules/govuk-frontend-js-overrides.mdc`
-- Theming via **app SCSS/CSS overrides only** (`src/main/assets/scss/`); do not fork vendor CSS — see `.cursor/rules/govuk-frontend-theming-overrides.mdc`
-- Reuse Nunjucks partials and GOV.UK macros under `src/main/views/`; **do not duplicate shared journey markup** — extract shared partials instead — see `.cursor/rules/reuse-nunjucks-partials.mdc`
+- Prefer GOV.UK Frontend HTML, CSS, and JS over **axe** / **axe-core** when they conflict (document/disable the scanner rule; do not rewrite GOV.UK)
+- Interactivity via **app JS overrides only** (`src/main/assets/js/`); keep GOV.UK Frontend init; do not edit `node_modules/govuk-frontend`
+- Theming via **app SCSS/CSS overrides only** (`src/main/assets/scss/`); do not fork vendor CSS
+- Reuse Nunjucks partials and GOV.UK macros under `src/main/views/`; **do not duplicate shared journey markup** — extract shared partials instead
 - **HTML fixture accuracy:** every component’s official macros must match the release `fixtures.json` HTML ([GOV.UK docs](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)). Suite: `yarn test:govuk-fixtures` (`src/test/unit/govukFrontend/`)
-- After GOV.UK Frontend upgrades, rebuild webpack assets and run regression suites — see `.cursor/rules/govuk-frontend-upgrade-tests.mdc`
+- After GOV.UK Frontend upgrades, do not finish until:
+  1. Macros (not vendor forks) absorb HTML/CSS/JS fallout
+  2. `yarn build`
+  3. `yarn test:govuk-fixtures` (must pass)
+  4. `yarn test` and relevant focused Jest
+  5. `yarn tests:a11y` where practical
+  6. Broader functional / Playwright security when the upgrade is large and env allows
+  7. Spot-check home, claim issue, response, dashboard if automation misses a layout
+  8. Version notes in README / `docs/` / this file when they mention GOV.UK Frontend
+  Dependabot/Renovate GOV.UK bumps are not complete until those checks pass (or a documented exception).
 
 ## Performance and accessibility
 
-Treat **frontend performance**, **backend/API efficiency**, and **accessible UI** as top priorities on every change — see `.cursor/rules/performance-and-accessibility.mdc`
+Treat **frontend performance**, **backend/API efficiency**, and **accessible UI** as top priorities on every change.
 
 - Frontend: avoid unnecessary JS/assets; prefer progressive enhancement on macros
 - Backend: avoid N+1 civil-service calls; reuse draft-store helpers; watch Redis TTL/key design
@@ -120,8 +139,6 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 - Call out residual performance or a11y risks in summaries
 
 ## Documentation and code comments
-
-See `.cursor/rules/docs-and-comments.mdc`.
 
 - Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change (README, `AGENTS.md`, changelogs, human `docs/`)
 - **Always update `ai-docs/` in the same change** when the project tree, scripts, or invariants change — see [Keep `ai-docs/` in sync](#keep-ai-docs-in-sync-mandatory)
@@ -133,12 +150,16 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - Annotate Nunjucks where macros are composed or client scripts depend on macro-rendered markup
 - Explain **why** and constraints — not a line-by-line restatement of obvious code
 - When changing code, update nearby comments and related docs in the same change
-- Before finishing: docs confirmed (including `ai-docs/`), public APIs commented, and this file / `.cursor/rules` updated if a standing convention changed
+- Before finishing:
+  1. Human docs (`docs/`, README, this file) confirmed still accurate
+  2. **`ai-docs/` updated in the same change**, or explicitly confirmed unaffected
+  3. Public/complex APIs have up-to-date TSDoc-compatible comments (no typed `{Type}` braces)
+  4. This file updated if a standing convention changed
 
 ## Testing and coverage
 
 - Jest unit tests (`src/test/unit`), Jest integration (`src/integration-test`), CodeceptJS functional, Playwright security, Pact contracts, Pa11y a11y
-- After **server TypeScript** changes, run type-check/build and relevant tests and **fix compile errors** in the same change — prefer real types over `any` / `@ts-ignore` — see `.cursor/rules/verify-ts-build-after-server-changes.mdc`
+- After **server TypeScript** changes, run type-check/build and relevant tests and **fix compile errors** in the same change — prefer real types over `any` / `@ts-ignore`
 - Useful commands:
   - `yarn test` — Jest unit tests
   - `yarn test:govuk-fixtures` — GOV.UK Frontend macro HTML vs release fixtures.json
@@ -157,34 +178,24 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - Do **not** push unless the user asks, except the package-only auto-push rule above
 - Never update git config; avoid destructive git commands unless explicitly requested
 - Never use interactive git flags (`-i`)
-- Never attach Cursor agent / `cursoragent` identity to commits or pushes (including `Co-Authored-By`, author/committer spoofing, or hook-injected agent trailers) — see `.cursor/rules/no-cursor-agent-commits.mdc`
+- Never attach **AI coding-agent** identity to commits or pushes (no `Co-Authored-By` / `Co-authored-by` trailers naming an agent or product, no spoofed author/committer, no hook-injected agent trailers). Use only the user’s configured git identity. If a tool would add agent metadata, strip it before committing or pushing.
 - **Never invent JIRA / ticket IDs** (e.g. `DTSCCI-1234`, `CIV-999`) in commit messages, PR titles, branch names, or docs. Only include a ticket key when the user explicitly provides it. If none is given, write a normal message without a ticket prefix
+
+## Long-running commands
+
+Do not block a single wait on `yarn test:coverage`, large installs, or similar for many minutes. Start them in the background and poll until they finish (or fail). Prefer matching known output (for example `Test Suites:`) so a wait can end early. Short commands (git, focused Jest, lint smoke) may run in the foreground.
 
 ## Communication
 
 - Be direct and concise
 - Summaries must include **risks** and **unresolved issues**
 
-## Related rule files
+## Related files
 
 | File | Purpose |
 |------|---------|
-| `ai-docs/README.md` | AI-only directory mirror, playbooks, scripts, and pre-change protocol |
+| `ai-docs/README.md` | Agent directory mirror, playbooks, scripts, pre-change protocol |
+| `ai-docs/conventions.md` | Index of standing conventions (points here) |
+| `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |
 | `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
-| `.cursor/rules/project-standards.mdc` | Node/Yarn, hmcts/origin sync, tests after deps, summary risks |
-| `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity, full `yarn test:coverage` after bumps |
-| `.cursor/rules/shell-wait-limits.mdc` | Cap Shell/AwaitShell blocking waits at 1 minute; background long jobs and poll |
-| `.cursor/rules/prefer-express-typescript-stack.mdc` | Prefer Express/TS/CUI patterns over ad-hoc stacks |
-| `.cursor/rules/govuk-frontend-ui.mdc` | GOV.UK Frontend macros as UI source of truth |
-| `.cursor/rules/govuk-frontend-upgrade-tests.mdc` | After GOV.UK bumps: rebuild + regression tests |
-| `.cursor/rules/prefer-govuk-over-axe.mdc` | Prefer GOV.UK Frontend over axe when they conflict |
-| `.cursor/rules/govuk-frontend-js-overrides.mdc` | GOV.UK interactivity via app JS overrides only |
-| `.cursor/rules/govuk-frontend-theming-overrides.mdc` | GOV.UK theming via app SCSS/CSS overrides only |
-| `.cursor/rules/reuse-nunjucks-partials.mdc` | Reuse partials/macros; no duplicate shared markup |
-| `.cursor/rules/performance-and-accessibility.mdc` | Frontend/API performance + accessible UI priorities |
-| `.cursor/rules/verify-ts-build-after-server-changes.mdc` | After server TS changes, verify build/tests; fix compile errors |
-| `.cursor/rules/docs-and-comments.mdc` | Keep docs current; TSDoc-compatible comments (no typed `{Type}` braces); keep `ai-docs/` in sync |
-| `.cursor/rules/no-cursor-agent-commits.mdc` | Never attribute Cursor agent on commits/pushes |
-| `.cursor/rules/no-invented-jira-ids.mdc` | Never invent JIRA/ticket IDs in commits, PRs, or docs |
-
-Older tooling may look for `AGENT.md`; that path is a symlink to this file.
+| `docs/contributing.md` | Human contributing guide (same conventions) |
