@@ -6,8 +6,16 @@ const Redis = require('ioredis-mock');
 
 const REDIS_DATA = require('./redisData.json');
 const GA_REDIS_DATA = require('./gaRedisData.json');
+const UI_PREVIEW_REDIS_DATA = require('./uiPreviewRedisData.json');
 const ONE_DAY_IN_SECONDS = 86400;
 
+/**
+ * Seeds in-memory Redis for `NODE_ENV=e2eTest` (mocked functional tests and UI Preview).
+ *
+ * @remarks
+ * UI Preview extra claims live in `uiPreviewRedisData.json` and are keyed `{claimId}someID`.
+ * Do not copy those fixtures into Helm chart WireMock.
+ */
 export class DraftStoreCliente2e {
   public static REDIS_CONNECTION_SUCCESS = 'Connected to Redis instance successfully e2e tests';
 
@@ -31,6 +39,12 @@ export class DraftStoreCliente2e {
       GA_REDIS_DATA.forEach((element: any) => {
         client.set(element.id, JSON.stringify(element.value, null, 4)).then(() => {
           this.logger.info(`Mock data ${element.id} saved to Redis`);
+          return client.expire(element.id, ONE_DAY_IN_SECONDS);
+        });
+      });
+      UI_PREVIEW_REDIS_DATA.forEach((element: any) => {
+        client.set(element.id, JSON.stringify(element, null, 4)).then(() => {
+          this.logger.info(`UI Preview mock data ${element.id} saved to Redis`);
           return client.expire(element.id, ONE_DAY_IN_SECONDS);
         });
       });

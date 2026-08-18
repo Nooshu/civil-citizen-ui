@@ -116,7 +116,7 @@ See [Configuration](configuration.md). Files: `default.yaml`, `development.yaml`
 
 - `draft-store.yml` — Redis `6379` for `yarn start:redis`
 - `ui-preview.yml` — CUI + WireMock for `yarn preview`
-- `ui-preview-mappings/` — preview-only stubs (broader matchers; **must not** be copied into the chart mappings)
+- `ui-preview-mappings/` — preview-only stubs for dashboard, full admit, part admit, case progression, and general application (broader matchers; **must not** be copied into the chart mappings)
 
 ## `bin/`
 

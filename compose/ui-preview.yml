@@ -5,9 +5,10 @@ services:
       - "1111:8080"
     volumes:
       # WireMock loads mappings recursively, so preview-only stubs are the mappings root
-      # and the validated chart contracts are nested inside it. Preview stubs stay out of
-      # charts/ so they are never packaged into the Jenkins reduced-stack contract set,
-      # which forbids broad matchers (see docs/reduced-stack-wiremock-contracts.md).
+      # (dashboard + full admit / part admit / case progression / GA) and the validated
+      # chart contracts are nested inside it. Preview stubs stay out of charts/ so they
+      # are never packaged into the Jenkins reduced-stack contract set, which forbids
+      # broad matchers (see docs/reduced-stack-wiremock-contracts.md).
       # The nested mountpoint must already exist because the parent bind is read-only.
       - ./ui-preview-mappings:/home/wiremock/mappings:ro
       - ../charts/civil-citizen-ui/wiremock/mappings:/home/wiremock/mappings/reduced-stack:ro

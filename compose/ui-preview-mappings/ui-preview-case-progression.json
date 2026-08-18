@@ -1,0 +1,76 @@
+{
+  "mappings": [
+    {
+      "name": "ui-preview-case-progression-case-details",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449603"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "1645882162449603",
+          "state": "CASE_PROGRESSION",
+          "last_modified": "2022-03-01T13:29:24.971Z",
+          "case_data": {
+            "legacyCaseReference": "000MC603",
+            "totalClaimAmount": 1500,
+            "ccdState": "CASE_PROGRESSION",
+            "submittedDate": "2022-05-23T17:02:02.38407",
+            "claimIssuedDate": "2022-03-01T13:29:24.971Z",
+            "issueDate": "2023-06-03",
+            "responseClaimTrack": "SMALL_CLAIM",
+            "claimFee": {
+              "code": "FEE0205",
+              "version": "6",
+              "calculatedAmountInPence": "8000"
+            },
+            "applicant1": {
+              "type": "INDIVIDUAL",
+              "partyName": "Jane Claimant",
+              "individualTitle": "Ms",
+              "individualFirstName": "Jane",
+              "individualLastName": "Claimant",
+              "partyEmail": "claimant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "1 Claimant Road",
+                "PostTown": "London",
+                "PostCode": "SW1A 1AA"
+              }
+            },
+            "respondent1": {
+              "type": "INDIVIDUAL",
+              "partyName": "John Defendant",
+              "individualTitle": "Mr",
+              "individualFirstName": "John",
+              "individualLastName": "Defendant",
+              "partyEmail": "defendant@example.com",
+              "primaryAddress": {
+                "AddressLine1": "Defendant House",
+                "AddressLine2": "21",
+                "AddressLine3": "Church Road",
+                "PostTown": "Berkshire",
+                "PostCode": "RG4 7AD"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "ui-preview-case-progression-user-case-roles",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449603/userCaseRoles"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": ["[CLAIMANT]"]
+      }
+    }
+  ]
+}

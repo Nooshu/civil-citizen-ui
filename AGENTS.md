@@ -59,7 +59,8 @@ Suggested first reads inside `ai-docs/`:
 - Health: `https://localhost:3001/health`
 - **UI Preview (no Identity and Access Management, IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
   - Distinct from `yarn start:dev` (real Redis + OpenID Connect (OIDC))
-  - Fixture user id: `someID`; sample claim: `1645882162449409`
+  - Fixture user id: `someID`
+  - Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit), `1645882162449602` (part admit), `1645882162449603` (case progression), `1645882162449604` (general application)
   - Preview-only WireMock stubs: `compose/ui-preview-mappings/` — keep them out of `charts/civil-citizen-ui/wiremock/mappings`, which is the validated reduced-stack contract set (`yarn wiremock:validate` forbids broad matchers)
   - Stop: `yarn start:ui-preview:down`
 

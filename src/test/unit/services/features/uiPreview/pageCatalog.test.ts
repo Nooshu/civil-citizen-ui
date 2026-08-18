@@ -1,5 +1,22 @@
-import {getUiPreviewPageCatalog, UI_PREVIEW_FIXTURE_CLAIM_ID} from 'services/features/uiPreview/pageCatalog';
-import {PRIVACY_POLICY_URL, DEFENDANT_SUMMARY_URL} from 'routes/urls';
+import {readFileSync, readdirSync} from 'fs';
+import {join} from 'path';
+import {
+  getUiPreviewPageCatalog,
+  UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID,
+  UI_PREVIEW_FIXTURE_CLAIM_ID,
+  UI_PREVIEW_FULL_ADMIT_CLAIM_ID,
+  UI_PREVIEW_GA_CLAIM_ID,
+  UI_PREVIEW_PART_ADMIT_CLAIM_ID,
+} from 'services/features/uiPreview/pageCatalog';
+import {
+  APPLICATION_TYPE_URL,
+  CLAIM_AMOUNT_URL,
+  CLAIMANT_RESPONSE_TASK_LIST_URL,
+  CLAIMANT_TASK_LIST_URL,
+  DEFENDANT_SUMMARY_URL,
+  PRIVACY_POLICY_URL,
+  UPLOAD_YOUR_DOCUMENTS_URL,
+} from 'routes/urls';
 
 describe('UI Preview page catalog', () => {
   it('should include public ready pages and fixture claim links', () => {
@@ -15,10 +32,39 @@ describe('UI Preview page catalog', () => {
     expect(defendantSummary?.status).toBe('ready');
   });
 
-  it('should mark stub journeys distinctly from ready ones', () => {
-    const catalog = getUiPreviewPageCatalog();
-    const allPages = catalog.flatMap((group) => group.pages);
-    expect(allPages.some((page) => page.status === 'ready')).toBe(true);
-    expect(allPages.some((page) => page.status === 'stub')).toBe(true);
+  it('should mark claim issue, claimant response, case progression and GA as ready', () => {
+    const allPages = getUiPreviewPageCatalog().flatMap((group) => group.pages);
+
+    expect(allPages.find((page) => page.path === CLAIM_AMOUNT_URL)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === CLAIMANT_TASK_LIST_URL)?.status).toBe('ready');
+
+    const fullAdmitTaskList = CLAIMANT_RESPONSE_TASK_LIST_URL.replace(':id', UI_PREVIEW_FULL_ADMIT_CLAIM_ID);
+    const partAdmitTaskList = CLAIMANT_RESPONSE_TASK_LIST_URL.replace(':id', UI_PREVIEW_PART_ADMIT_CLAIM_ID);
+    const uploadDocuments = UPLOAD_YOUR_DOCUMENTS_URL.replace(':id', UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID);
+    const applicationType = APPLICATION_TYPE_URL.replace(':id', UI_PREVIEW_GA_CLAIM_ID);
+
+    expect(allPages.find((page) => page.path === fullAdmitTaskList)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === partAdmitTaskList)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === uploadDocuments)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === applicationType)?.status).toBe('ready');
+    expect(allPages.every((page) => page.status === 'ready')).toBe(true);
+  });
+
+  it('should have WireMock mappings for each extra fixture claim', () => {
+    const mappingsDir = join(__dirname, '../../../../../../compose/ui-preview-mappings');
+    const mappingJson = readdirSync(mappingsDir)
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => readFileSync(join(mappingsDir, name), 'utf8'))
+      .join('\n');
+
+    [
+      UI_PREVIEW_FIXTURE_CLAIM_ID,
+      UI_PREVIEW_FULL_ADMIT_CLAIM_ID,
+      UI_PREVIEW_PART_ADMIT_CLAIM_ID,
+      UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID,
+      UI_PREVIEW_GA_CLAIM_ID,
+    ].forEach((claimId) => {
+      expect(mappingJson).toContain(`/cases/${claimId}`);
+    });
   });
 });
