@@ -9,7 +9,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | Topic | Section in `AGENTS.md` |
 | --- | --- |
 | Sync `hmcts` before application changes; package-only origin push | Before changing code; Package-only updates |
-| Exact pins, 7-day cooldown, `yarn.lock`, full `yarn test:coverage` after dep bumps, SIGSEGV isolation | Dependencies |
+| Exact pins (all deps/resolutions), lockfile SHA checksums, 7-day `npmMinimalAgeGate`, `yarn deps:check`, full `yarn test:coverage` after dep bumps, SIGSEGV isolation | Dependencies |
 | Long coverage/install waits — background and poll | Long-running commands |
 | Express/TS under `src/main/`; no Nest/Prisma/SPA; existing HTTP clients and draft-store | Server / application stack |
 | GOV.UK macros only; app JS/SCSS only; axe does not override GOV.UK; reuse Nunjucks partials | GOV.UK Frontend |
@@ -38,4 +38,7 @@ yarn wiremock:validate && yarn test:wiremock-contracts
 
 # lint
 yarn lint
+
+# exact pins + yarn.lock SHA checksums
+yarn deps:check
 ```

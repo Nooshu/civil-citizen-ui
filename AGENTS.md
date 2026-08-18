@@ -72,14 +72,23 @@ Suggested first reads inside `ai-docs/`:
 
 ## Dependencies
 
+- **Every** `dependencies`, `devDependencies`, and `resolutions` entry must be an **exact version** (no `^`, `~`, `>`, `<`, `*`, `x`, or `||`). `engines.node` may stay a minimum range. Yarn `patch:` protocol is allowed for resolutions that apply a local patch.
 - Prefer **patch and minor** updates unless explicitly asked for latest/major
-- Prefer versions published at least **7 days** ago for routine updates (security fixes may skip the wait)
-- When updating deps, prefer **exact pins** (no `^`, `~`, or ranges) for packages you touch; refresh `yarn.lock`
+- Prefer versions published at least **7 days** ago for routine updates (security fixes may skip the wait). Yarn enforces this on resolve via `npmMinimalAgeGate: 10080` in `.yarnrc.yml` (7 × 24 × 60 minutes). To install a same-day security release, set `YARN_NPM_MINIMAL_AGE_GATE=0` for that command only.
+- Refresh `yarn.lock` with `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install` after pin changes.
 - Avoid introducing breaking changes; verify installs with `yarn install`
 - When updating **multiple** packages in one task: update all targets and refresh the lockfile, then run tests once
-- After dependency update prompts: apply the bump, then run the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
+- After dependency update prompts: apply the bump, then run `yarn deps:check` and the full coverage suite (`yarn test:coverage`); if anything breaks, tell the user first, then fix
   - **SIGSEGV / Jest worker crash:** re-run the failed suite alone; if it passes, the update is complete — do **not** re-run the full suite. Test scripts pass `--no-sparkplug` to avoid the known V8 GC crash (see Testing and coverage)
   - Long coverage or install runs: do not block a single wait for many minutes — run in the background and poll until complete (see [Long-running commands](#long-running-commands))
+
+### Why exact pins, SHA checksums, and a 7-day cooldown
+
+- **Pins:** a range (`^1.2.3`) lets a later `yarn install` on a clean machine pull a different patch or minor. That is how silent breaking changes, new network calls, and extra telemetry get into a citizen-facing service without a reviewed change. Exact pins make upgrades a deliberate diff.
+- **SHA checksums:** `yarn.lock` stores a SHA-512 checksum (`checksum: 10/<hex>`) for every resolved npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw`, so a swapped or truncated archive cannot install. `yarn deps:check` fails CI if a direct specifier is a range or a non-optional lockfile entry lacks a checksum. GitHub Actions also sets `YARN_ENABLE_HARDENED_MODE=1` so install re-checks lockfile resolutions against the registry (lockfile poisoning).
+- **7-day cooldown:** newly published npm versions can still be unpublished, and malware in a hijacked maintainer account is often noticed within days, not minutes. Waiting a week is a simple, automated control (Yarn age gate + policy). It is not a substitute for `yarn npm audit`. Security patches may skip the wait as above.
+
+Reasons and CI wiring: [`docs/security-and-privacy.md`](docs/security-and-privacy.md). Command: `yarn deps:check`.
 
 ## Package-only updates (auto origin sync)
 

@@ -64,6 +64,22 @@ Playwright specs under `playwright/tests/api-security` exercise HTTP security pr
 
 ## Dependencies
 
-- Prefer exact version pins for packages you change.
-- Wait 7 days after a release for routine bumps; security fixes may skip the wait (`AGENTS.md` Dependencies).
-- `yarn-audit-known-issues` records accepted audit noise — do not delete it to “go green” without review.
+Exact pins, lockfile SHA checksums, and a 7-day publish cooldown are standing policy. See [`AGENTS.md`](../AGENTS.md) (Dependencies) for the agent-facing rules.
+
+### What we require
+
+- **`package.json`:** every `dependencies`, `devDependencies`, and `resolutions` specifier is an **exact** version (`1.2.3`, optional pre-release suffix). No `^`, `~`, `>`, `<`, `*`, `x`, or `||`. Nested resolutions (`express/body-parser`) and npm aliases (`npm:@scope/pkg@1.2.3`) must still pin the version. Yarn `patch:` entries are the exception for local patches (the resolution *key* may still name the upstream range it intercepts).
+- **`yarn.lock`:** Yarn records a **SHA-512 checksum** of each resolved npm archive (`checksum: 10/<hex>`). `.yarnrc.yml` sets `checksumBehavior: throw` so `yarn install` refuses a tarball that does not match. Optional/os-cpu packages may omit a hash until that platform actually fetches them.
+- **Age gate:** `npmMinimalAgeGate: 10080` (7 days in minutes). Yarn will not **select** a version published fewer than 7 days ago when resolving (`yarn add` / `yarn up`). Versions already in the lockfile continue to install. Emergency security: `YARN_NPM_MINIMAL_AGE_GATE=0 yarn up <pkg>`.
+- **Checks:** `yarn deps:check` (`bin/check-dependency-pins.mjs`) fails if a specifier is a range or a non-optional lockfile package lacks a checksum. It runs in `yarn cichecks` and in `.github/workflows/ci.yml` after install. CI install also sets `YARN_ENABLE_HARDENED_MODE=1` (re-validate lockfile metadata against the registry).
+
+### Why (security, privacy, npm)
+
+npm’s default ranges are convenient and unsafe for a public justice service:
+
+- **Silent updates.** `^` and `~` mean two developers, or CI last week vs this week, can run different code without a `package.json` change. That has included breaking API changes, new `postinstall` scripts, and packages that later grew outbound telemetry.
+- **Account takeover and protestware.** Compromised maintainer credentials (or a malicious patch release) often land as a new version on an existing range. Pinning forces that version to show up as a reviewed diff. Checksums stop a **same-version** tarball swap on a mirror or poisoned lockfile from linking.
+- **Unpublish and discovery window.** The npm registry still allows some very new versions to be unpublished, and public reporting of a bad release typically takes hours to days. Yarn’s own docs note registry rules around packages less than three days old. **Seven days** is a conservative, automatable wait: long enough to outlast the common unpublish window and weekend discovery lag, short enough not to freeze patching. It is not a CVE scanner; keep using `yarn npm audit` / `yarn-audit-known-issues`.
+- **Privacy.** A new transitive can add analytics, error reporters, or unexpected HTTPS calls. Citizens’ claim data must not hitch a ride on an unreviewed upgrade. Exact pins + SHA checks mean the bits on disk are the bits we reviewed.
+
+`yarn-audit-known-issues` records accepted audit noise — do not delete it to “go green” without review.

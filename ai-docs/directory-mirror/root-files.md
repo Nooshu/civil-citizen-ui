@@ -2,9 +2,9 @@
 
 | File | Do this |
 | --- | --- |
-| `package.json` | Scripts + `engines.node >=24.18.0`. Exact pins for packages you touch. Do not add npm scripts that invoke Jest **without** `--no-sparkplug`. |
-| `yarn.lock` | Keep integrity; Yarn 4 |
-| `.yarnrc.yml` | Yarn 4.10.3 path, immutable installs, `nodeLinker: node-modules` |
+| `package.json` | Scripts + `engines.node >=24.18.0`. **All** deps/devDeps/resolutions exact pins. `yarn deps:check`. Do not add npm scripts that invoke Jest **without** `--no-sparkplug`. |
+| `yarn.lock` | Keep integrity; every non-optional npm package must have a SHA-512 `checksum:` |
+| `.yarnrc.yml` | Yarn 4.10.3 path, immutable installs, `checksumBehavior: throw`, `npmMinimalAgeGate: 10080`, `nodeLinker: node-modules` |
 | `.nvmrc` | `v24.18.0` |
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
