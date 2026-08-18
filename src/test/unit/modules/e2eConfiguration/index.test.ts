@@ -36,6 +36,10 @@ describe('e2eConfiguration', () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(logger.info).toHaveBeenCalledWith(expect.stringMatching(/Mock data .* saved to Redis/));
+      expect(logger.info).toHaveBeenCalledWith(expect.stringMatching(/UI Preview mock data .* saved to Redis/));
+
+      const seeded = await draftClient.get('1645882162449601someID');
+      expect(seeded).toContain('FULL_ADMISSION');
     });
   });
 

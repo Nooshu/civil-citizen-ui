@@ -151,13 +151,18 @@ The fork adds a **self-contained UI Preview** environment:
 
 - **No live backend.** HTTP calls are satisfied by **WireMock** stubs (`compose/ui-preview-mappings/`) plus **in-memory Redis** fixtures (`NODE_ENV=e2eTest`). There is no civil-service, CCD, or IDAM process to start.
 - **No VPN and no mirrord.** Preview does not tunnel into AAT, preview cluster, or a remote namespace. Docker Compose on the developer machine is sufficient (`compose/ui-preview.yml`).
-- **No IDAM login.** A fixture session user (`someID`) and sample claim (`1645882162449409`) are enough to render journeys.
+- **No IDAM login.** A fixture session user (`someID`) and seeded claims are enough to render journeys:
+  - `1645882162449409` — awaiting defendant response
+  - `1645882162449601` — full admission (claimant response)
+  - `1645882162449602` — part admission (claimant response)
+  - `1645882162449603` — case progression
+  - `1645882162449604` — general application
 - Commands: `yarn preview` / `yarn start:ui-preview` / `yarn start:ui-preview:down`
-- Supporting files: `bin/ui-preview.sh`, `Dockerfile.ui-preview`, `/ui-preview` catalogue (`uiPreviewController`, `pageCatalog`)
+- Supporting files: `bin/ui-preview.sh`, `Dockerfile.ui-preview`, `/ui-preview` catalogue (`uiPreviewController`, `pageCatalog`), Redis extras in `src/main/modules/e2eConfiguration/uiPreviewRedisData.json`
 - OIDC allowlist for `/ui-preview` so the catalogue is reachable in `e2eTest`
 - Header homepage link stays inside the preview app in `e2eTest` (does not dump the user onto gov.uk)
 
-Open **http://localhost:3001/ui-preview** when the stack is up.
+Open **http://localhost:3001/ui-preview** when the stack is up. The catalogue marks claim issue, claimant response (full and part admit), case progression, and general application as **Ready**. Nested screens past those entry points may still miss a WireMock stub.
 
 Preview stubs are **isolated** from Helm chart WireMock contracts. That preserves the reduced-stack validator’s “no broad matchers” rule while still allowing fixture browsing.
 

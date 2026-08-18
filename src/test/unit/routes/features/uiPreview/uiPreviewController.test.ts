@@ -15,6 +15,10 @@ describe('UI Preview controller', () => {
         expect(res.text).toContain('UI Preview');
         expect(res.text).toContain('Browse journeys');
         expect(res.text).toContain('Privacy policy');
+        expect(res.text).toContain('Full admission');
+        expect(res.text).toContain('Part admission');
+        expect(res.text).toContain('Case progression');
+        expect(res.text).toContain('General application');
       });
   });
 });

@@ -39,7 +39,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 | New draft key or TTL category | `ttlConfig.ts`, `config/default.yaml` (+ env map), `docs/configuration.md`, this matrix, PR summary (perf/ops) |
 | Read/write helpers | Prefer `draftStoreService.ts` / `redisWriteHelper.ts`; avoid extra get/set of the same key in one request |
 | Session cookie / store | `app.ts` + `modules/utilityService` `getRedisStoreForSession` — not ioredis drafts |
-| e2eTest fixtures | `modules/e2eConfiguration/` and `redisData.json` / `gaRedisData.json` |
+| e2eTest fixtures | `modules/e2eConfiguration/` and `redisData.json` / `gaRedisData.json` / `uiPreviewRedisData.json` |
 
 ## GOV.UK Frontend or Nunjucks env
 

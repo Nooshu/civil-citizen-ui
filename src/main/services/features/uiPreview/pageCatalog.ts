@@ -1,5 +1,6 @@
 import {
   ACCESSIBILITY_STATEMENT_URL,
+  APPLICATION_TYPE_URL,
   CLAIM_AMOUNT_URL,
   CLAIM_DETAILS_URL,
   CITIZEN_CONTACT_THEM_URL,
@@ -23,6 +24,9 @@ import {
   TESTING_SUPPORT_URL,
   CONTACT_US_URL,
   CLAIMANT_TASK_LIST_URL,
+  CLAIMANT_RESPONSE_TASK_LIST_URL,
+  CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL,
+  UPLOAD_YOUR_DOCUMENTS_URL,
 } from 'routes/urls';
 
 export type PreviewPageStatus = 'ready' | 'stub';
@@ -40,11 +44,18 @@ export type PreviewPageGroup = {
   pages: PreviewPageLink[];
 };
 
-/** Fixture claim IDs seeded in e2e Redis / WireMock for UI Preview. */
+/**
+ * Fixture claim IDs seeded in e2e Redis (`uiPreviewRedisData.json`) and WireMock
+ * (`compose/ui-preview-mappings/`) for UI Preview.
+ */
 export const UI_PREVIEW_FIXTURE_CLAIM_ID = '1645882162449409';
+export const UI_PREVIEW_FULL_ADMIT_CLAIM_ID = '1645882162449601';
+export const UI_PREVIEW_PART_ADMIT_CLAIM_ID = '1645882162449602';
+export const UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID = '1645882162449603';
+export const UI_PREVIEW_GA_CLAIM_ID = '1645882162449604';
 export const UI_PREVIEW_FIXTURE_USER_ID = 'someID';
 
-const withClaimId = (template: string, claimId: string = UI_PREVIEW_FIXTURE_CLAIM_ID): string =>
+const withClaimId = (template: string, claimId: string): string =>
   template.replace(':id', claimId);
 
 /**
@@ -84,7 +95,7 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
   },
   {
     title: 'Claim issue',
-    description: 'Create a draft claim via testing support, then continue the issue journey.',
+    description: 'Create a draft claim via testing support, then continue the issue journey. Redis already has a draft for the fixture user.',
     pages: [
       {
         title: 'Create draft claim (testing support)',
@@ -92,81 +103,122 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
         status: 'ready',
         notes: 'Uses WireMock fees/events. Preferred way to start a claim in preview.',
       },
-      {title: 'Claim amount', path: CLAIM_AMOUNT_URL, status: 'stub', notes: 'Needs an existing draft claim in Redis.'},
+      {
+        title: 'Claim amount',
+        path: CLAIM_AMOUNT_URL,
+        status: 'ready',
+        notes: `Draft for user ${UI_PREVIEW_FIXTURE_USER_ID} is seeded in e2e Redis.`,
+      },
       {
         title: 'Claimant task list',
         path: CLAIMANT_TASK_LIST_URL,
-        status: 'stub',
-        notes: 'Populate via create-draft-claim first.',
+        status: 'ready',
+        notes: 'Renders from the seeded draft; create-draft-claim can replace it.',
       },
     ],
   },
   {
-    title: 'Dashboard & response (fixture claim)',
-    description: `Uses fixture claim ${UI_PREVIEW_FIXTURE_CLAIM_ID} (user ${UI_PREVIEW_FIXTURE_USER_ID}) from e2e Redis + WireMock.`,
+    title: 'Dashboard & response (awaiting defendant)',
+    description: `Fixture claim ${UI_PREVIEW_FIXTURE_CLAIM_ID} (user ${UI_PREVIEW_FIXTURE_USER_ID}) — AWAITING_RESPONDENT_ACKNOWLEDGEMENT, defendant role.`,
     pages: [
       {title: 'Dashboard', path: DASHBOARD_URL, status: 'ready'},
       {
         title: 'Defendant claim summary',
-        path: withClaimId(DEFENDANT_SUMMARY_URL),
+        path: withClaimId(DEFENDANT_SUMMARY_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
-        notes: 'WireMock GET /cases/1645882162449409',
+        notes: `WireMock GET /cases/${UI_PREVIEW_FIXTURE_CLAIM_ID}`,
       },
       {
         title: 'Contact them',
-        path: withClaimId(CITIZEN_CONTACT_THEM_URL),
+        path: withClaimId(CITIZEN_CONTACT_THEM_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Response task list',
-        path: withClaimId(RESPONSE_TASK_LIST_URL),
+        path: withClaimId(RESPONSE_TASK_LIST_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Claim details (response)',
-        path: withClaimId(CLAIM_DETAILS_URL),
+        path: withClaimId(CLAIM_DETAILS_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Your details',
-        path: withClaimId(CITIZEN_DETAILS_URL),
+        path: withClaimId(CITIZEN_DETAILS_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Your date of birth',
-        path: withClaimId(DOB_URL),
+        path: withClaimId(DOB_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Your phone',
-        path: withClaimId(CITIZEN_PHONE_NUMBER_URL),
+        path: withClaimId(CITIZEN_PHONE_NUMBER_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
       {
         title: 'Response type',
-        path: withClaimId(CITIZEN_RESPONSE_TYPE_URL),
+        path: withClaimId(CITIZEN_RESPONSE_TYPE_URL, UI_PREVIEW_FIXTURE_CLAIM_ID),
         status: 'ready',
       },
     ],
   },
   {
-    title: 'Further journeys (stub)',
-    description: 'Linked for discovery; expect incomplete WireMock coverage until fixtures are extended.',
+    title: 'Full admission (claimant response)',
+    description: `Fixture claim ${UI_PREVIEW_FULL_ADMIT_CLAIM_ID} — defendant admitted the full amount and pays immediately; claimant role.`,
     pages: [
       {
-        title: 'Case progression upload documents',
-        path: `/case/${UI_PREVIEW_FIXTURE_CLAIM_ID}/case-progression/upload-your-documents`,
-        status: 'stub',
+        title: 'Claimant response task list',
+        path: withClaimId(CLAIMANT_RESPONSE_TASK_LIST_URL, UI_PREVIEW_FULL_ADMIT_CLAIM_ID),
+        status: 'ready',
+        notes: 'AWAITING_APPLICANT_INTENTION + FULL_ADMISSION',
       },
       {
-        title: 'General application application type',
-        path: `/case/${UI_PREVIEW_FIXTURE_CLAIM_ID}/general-application/application-type`,
-        status: 'stub',
+        title: 'Review defendant\'s response',
+        path: withClaimId(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL, UI_PREVIEW_FULL_ADMIT_CLAIM_ID),
+        status: 'ready',
       },
+    ],
+  },
+  {
+    title: 'Part admission (claimant response)',
+    description: `Fixture claim ${UI_PREVIEW_PART_ADMIT_CLAIM_ID} — defendant admits £400 of £1,000, not already paid; claimant role.`,
+    pages: [
       {
         title: 'Claimant response task list',
-        path: `/case/${UI_PREVIEW_FIXTURE_CLAIM_ID}/claimant-response/task-list`,
-        status: 'stub',
+        path: withClaimId(CLAIMANT_RESPONSE_TASK_LIST_URL, UI_PREVIEW_PART_ADMIT_CLAIM_ID),
+        status: 'ready',
+        notes: 'AWAITING_APPLICANT_INTENTION + PART_ADMISSION',
+      },
+      {
+        title: 'Review defendant\'s response',
+        path: withClaimId(CLAIMANT_RESPONSE_REVIEW_DEFENDANTS_RESPONSE_URL, UI_PREVIEW_PART_ADMIT_CLAIM_ID),
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    title: 'Case progression',
+    description: `Fixture claim ${UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID} — CASE_PROGRESSION, claimant role.`,
+    pages: [
+      {
+        title: 'Upload your documents',
+        path: withClaimId(UPLOAD_YOUR_DOCUMENTS_URL, UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID),
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    title: 'General application',
+    description: `Fixture claim ${UI_PREVIEW_GA_CLAIM_ID} — defendant role with a seeded general application so the GA guard allows the journey.`,
+    pages: [
+      {
+        title: 'Application type',
+        path: withClaimId(APPLICATION_TYPE_URL, UI_PREVIEW_GA_CLAIM_ID),
+        status: 'ready',
+        notes: 'Seeded generalApplications plus e2e GA Redis draft 1732194111758649.',
       },
     ],
   },
