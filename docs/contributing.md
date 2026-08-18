@@ -71,4 +71,4 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 
 ## Agent-oriented rules
 
-AI assistants should treat [AGENTS.md](../AGENTS.md) and `.cursor/rules/*.mdc` as canonical. This guide is for humans and agents alike; if a rule file and this page ever diverge, **the `.mdc` file wins** — then fix this page in the same change.
+AI assistants should treat [AGENTS.md](../AGENTS.md) and `.cursor/rules/*.mdc` as canonical. Directory-level context, playbooks, and script catalogues live in [ai-docs/](../ai-docs/README.md). This contributing guide is for humans and agents alike; if a rule file and this page ever diverge, **the `.mdc` file wins** — then fix this page in the same change.

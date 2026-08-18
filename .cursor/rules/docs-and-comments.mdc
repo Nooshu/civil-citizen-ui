@@ -9,6 +9,7 @@ alwaysApply: true
 
 - Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change.
 - Update the README, `AGENTS.md`, changelogs, and any feature-specific markdown in the same change set when those topics are affected — do not leave stale version numbers, Node ranges, or outdated guidance.
+- **Always update `ai-docs/` in the same change** when you change the project in a way that folder describes (directories, scripts, `bin/` helpers, config, routes/journeys, tests, CI, Cursor rules, playbooks). The AI mirror drifts if agents skip this. If no `ai-docs/` page is affected, confirm that in the summary — do not skip the check. Canonical instruction: `AGENTS.md` section “Keep `ai-docs/` in sync”.
 - Prefer linking to canonical docs (`AGENTS.md`, `.cursor/rules/*.mdc`) rather than duplicating conflicting instructions.
 - Document **why** a decision was made when it is non-obvious (for example Redis TTL choices, GOV.UK macro usage, civil-service mapping quirks).
 - After dependency or GOV.UK Frontend upgrades, sync version notes in README and docs.
@@ -44,6 +45,7 @@ Use `/** ... */` blocks that follow [TSDoc](https://tsdoc.org/) conventions and 
 
 When finishing a change:
 
-1. Docs touched or confirmed still accurate for that change
-2. Public/complex APIs have up-to-date TSDoc-compatible comments (no typed `{Type}` braces)
-3. `AGENTS.md` / `.cursor/rules` updated if a standing convention changed
+1. Human docs (`docs/`, README, `AGENTS.md`) touched or confirmed still accurate for that change
+2. **`ai-docs/` updated in the same change**, or explicitly confirmed unaffected (do not leave the AI directory mirror stale)
+3. Public/complex APIs have up-to-date TSDoc-compatible comments (no typed `{Type}` braces)
+4. `AGENTS.md` / `.cursor/rules` updated if a standing convention changed

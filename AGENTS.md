@@ -4,6 +4,34 @@ Guidance for AI coding agents working in this repository.
 
 Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` files). Keep this document aligned with those rules when they change — prefer linking to `.mdc` files over conflicting duplicates.
 
+## AI directory mirror (read before changing code)
+
+Machine-oriented, directory-by-directory context for agents: **[`ai-docs/README.md`](ai-docs/README.md)**.
+
+That folder is **AI-targeted** (not a human product manual). Use it to inspect invariants, paired tests, scripts, and playbooks before editing. Human documentation remains [`docs/README.md`](docs/README.md). If `ai-docs/` conflicts with `.cursor/rules/*.mdc` or this file, **the rule file wins**, then this file — then fix `ai-docs/` in the same change.
+
+### Keep `ai-docs/` in sync (mandatory)
+
+The AI mirror **will drift** if folders, scripts, or invariants change without an `ai-docs/` update. Agents **must** treat keeping it current as part of the change, not a follow-up.
+
+Whenever you change the project, in the **same change**:
+
+1. Check which `ai-docs/` pages describe what you touched (start from [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md), plus playbooks and [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md) if scripts or commands moved).
+2. Update those pages so they still match the tree (paths, invariants, paired tests, scripts, CODEOWNERS, `NODE_ENV` behaviour, and so on).
+3. If you add, rename, or remove a **top-level or major directory**, add/rename/remove the matching mirror page and an INDEX row.
+4. If you add or change a Yarn script or `bin/` helper, update `scripts-and-commands.md` (and the relevant mirror page).
+5. If nothing in `ai-docs/` is affected, say so briefly in the summary — do not skip the check.
+
+Do not finish a task with a stale `ai-docs/` tree. This is in addition to updating human `docs/` and this file when those topics change (`.cursor/rules/docs-and-comments.mdc`).
+
+Suggested first reads inside `ai-docs/`:
+
+- [`ai-docs/pre-change-protocol.md`](ai-docs/pre-change-protocol.md)
+- [`ai-docs/do-not.md`](ai-docs/do-not.md)
+- [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md)
+- [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md)
+- [`ai-docs/skills-and-rules.md`](ai-docs/skills-and-rules.md)
+
 ## Project overview
 
 - HMCTS **Civil Citizen UI (CUI)** — citizen-facing civil money claims web app
@@ -14,6 +42,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Upstream remote: `hmcts` (`hmcts/civil-citizen-ui`) — add if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
 - Push/pull default: `origin` (fork), unless doing an upstream sync
 - Human-oriented project documentation: [`docs/README.md`](docs/README.md)
+- AI-oriented directory mirror (read before code changes): [`ai-docs/README.md`](ai-docs/README.md)
 
 ## Runtime
 
@@ -94,7 +123,8 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 
 See `.cursor/rules/docs-and-comments.mdc`.
 
-- Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change (README, `AGENTS.md`, changelogs)
+- Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change (README, `AGENTS.md`, changelogs, human `docs/`)
+- **Always update `ai-docs/` in the same change** when the project tree, scripts, or invariants change — see [Keep `ai-docs/` in sync](#keep-ai-docs-in-sync-mandatory)
 - Document **why** for non-obvious decisions; after dependency or GOV.UK upgrades, sync version notes
 - Use **TSDoc-compatible** `/** */` comments: summary first, `@remarks` for longer constraints, `{@link}` / `@see` / `@deprecated` when useful
 - **Do not** put TypeScript types in JSDoc braces (`@param {string} x` is wrong in `.ts`); use `@param x - Description`
@@ -103,7 +133,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - Annotate Nunjucks where macros are composed or client scripts depend on macro-rendered markup
 - Explain **why** and constraints — not a line-by-line restatement of obvious code
 - When changing code, update nearby comments and related docs in the same change
-- Before finishing: docs confirmed, public APIs commented, and this file / `.cursor/rules` updated if a standing convention changed
+- Before finishing: docs confirmed (including `ai-docs/`), public APIs commented, and this file / `.cursor/rules` updated if a standing convention changed
 
 ## Testing and coverage
 
@@ -139,7 +169,8 @@ See `.cursor/rules/docs-and-comments.mdc`.
 
 | File | Purpose |
 |------|---------|
-| `docs/README.md` | Project documentation (architecture, journeys, testing, CI) |
+| `ai-docs/README.md` | AI-only directory mirror, playbooks, scripts, and pre-change protocol |
+| `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
 | `.cursor/rules/project-standards.mdc` | Node/Yarn, hmcts/origin sync, tests after deps, summary risks |
 | `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity, full `yarn test:coverage` after bumps |
 | `.cursor/rules/shell-wait-limits.mdc` | Cap Shell/AwaitShell blocking waits at 1 minute; background long jobs and poll |
@@ -152,7 +183,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | `.cursor/rules/reuse-nunjucks-partials.mdc` | Reuse partials/macros; no duplicate shared markup |
 | `.cursor/rules/performance-and-accessibility.mdc` | Frontend/API performance + accessible UI priorities |
 | `.cursor/rules/verify-ts-build-after-server-changes.mdc` | After server TS changes, verify build/tests; fix compile errors |
-| `.cursor/rules/docs-and-comments.mdc` | Keep docs current; TSDoc-compatible comments (no typed `{Type}` braces) |
+| `.cursor/rules/docs-and-comments.mdc` | Keep docs current; TSDoc-compatible comments (no typed `{Type}` braces); keep `ai-docs/` in sync |
 | `.cursor/rules/no-cursor-agent-commits.mdc` | Never attribute Cursor agent on commits/pushes |
 | `.cursor/rules/no-invented-jira-ids.mdc` | Never invent JIRA/ticket IDs in commits, PRs, or docs |
 

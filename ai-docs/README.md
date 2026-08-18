@@ -1,0 +1,40 @@
+# AI-only documentation (`ai-docs/`)
+
+**Audience: AI coding agents only.** Human-oriented project documentation is [`docs/README.md`](../docs/README.md). Developers: this folder is not a product manual; it exists so agents can inspect directory-level invariants before editing the codebase.
+
+If any instruction here conflicts with [`.cursor/rules/*.mdc`](../.cursor/rules/) or [`AGENTS.md`](../AGENTS.md), **the rule file wins**, then `AGENTS.md`. Fix this folder in the same change rather than improvising.
+
+## Why this folder exists
+
+The human `docs/` tree explains architecture and journeys. This tree is a **directory mirror**: for every important path in the repo it records what lives there, what you must not break, which tests and scripts to run, which Cursor rules apply, and which neighbouring files usually change together.
+
+## Read order before you change code
+
+1. [`AGENTS.md`](../AGENTS.md) — standing agent rules (Yarn 4, GOV.UK macros, no invented JIRA ids, no agent co-author trailers).
+2. This index, then **[pre-change-protocol.md](pre-change-protocol.md)** and **[do-not.md](do-not.md)**.
+3. **[change-impact-matrix.md](change-impact-matrix.md)** — pick the row that matches your edit.
+4. The matching file under **[directory-mirror/INDEX.md](directory-mirror/INDEX.md)**.
+5. Human docs for the domain (`docs/architecture.md`, `docs/citizen-journeys.md`, …) if you need product context.
+6. The actual source files. Do not edit from this documentation alone.
+
+## Contents
+
+| File | Use when |
+| --- | --- |
+| [pre-change-protocol.md](pre-change-protocol.md) | Every task that touches the working tree |
+| [do-not.md](do-not.md) | Hard prohibitions (stack, GOV.UK, git, secrets, WireMock) |
+| [scripts-and-commands.md](scripts-and-commands.md) | Yarn scripts, `bin/` helpers, what to run after which change |
+| [skills-and-rules.md](skills-and-rules.md) | Cursor rules, useful skills, when to invoke them |
+| [path-aliases-and-imports.md](path-aliases-and-imports.md) | `tsconfig` / Jest path aliases (`common/`, `services/`, …) |
+| [change-impact-matrix.md](change-impact-matrix.md) | “I changed X → also update Y, run Z” |
+| [directory-mirror/INDEX.md](directory-mirror/INDEX.md) | Full directory map with links to per-area notes |
+| [playbooks/add-a-screen.md](playbooks/add-a-screen.md) | Adding a citizen page |
+| [playbooks/dependency-bump.md](playbooks/dependency-bump.md) | Package.json / lockfile bumps |
+| [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md) | `govuk-frontend` version changes |
+
+## Authority and freshness
+
+- Runtime versions, Node range, GOV.UK pin, and Yarn version: `package.json`, `.nvmrc`, `AGENTS.md` are source of truth. If this folder disagrees, believe those files and update this folder.
+- Do not invent ticket keys (`DTSCCI-####`, `CIV-####`) in new text, commits, or branch names.
+- Do not commit unless the user asked.
+- **Mandatory:** whenever you change the project, update the matching pages in this folder in the **same change** (or confirm in the summary that nothing here is affected). Do not finish with a stale `ai-docs/` tree. Standing instruction: [`AGENTS.md` — Keep `ai-docs/` in sync](../AGENTS.md#keep-ai-docs-in-sync-mandatory).
