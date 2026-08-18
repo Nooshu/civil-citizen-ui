@@ -46,7 +46,7 @@ Full script list: [`scripts-and-commands.md`](../scripts-and-commands.md).
 
 ### Owned vs pulled
 
-- **Owned:** `ui-preview.sh`, WireMock validate/test, mocked-functional runner, SSL generator, import wrappers, `variables/*.sh`
+- **Owned:** `ui-preview.sh`, WireMock validate/test, mocked-functional runner, SSL generator, import wrappers, `variables/*.sh`, `check-dependency-pins.mjs`
 - **Pulled (do not patch):** `bin/shared/*` from civil-service via `pull-latest-civil-shared.sh` (`postinstall` with `|| true`)
 - **Pulled WireMock (root):** `wiremock/` from `pull-latest-wiremock-mappings.sh` — gitignored; **not** the chart folder
 

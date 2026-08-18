@@ -37,9 +37,9 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 
 ## Dependencies
 
-- Yarn 4; exact pins for packages you touch.
-- Patch/minor preferred; 7-day publish cooldown for routine bumps.
-- After dependency PRs: `yarn test:coverage`. On SIGSEGV, re-run the one suite.
+- Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md).
+- Patch/minor preferred; 7-day publish cooldown for routine bumps (`npmMinimalAgeGate` in `.yarnrc.yml`).
+- After dependency PRs: `yarn deps:check` then `yarn test:coverage`. On SIGSEGV, re-run the one suite.
 - Do not invent a second HTTP client or database.
 
 ## Git hygiene

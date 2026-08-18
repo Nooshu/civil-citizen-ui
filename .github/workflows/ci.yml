@@ -53,7 +53,12 @@ jobs:
         with:
           node-version: 24
       - name: Install
+        env:
+          # Re-check lockfile resolutions against the registry (lockfile poisoning).
+          YARN_ENABLE_HARDENED_MODE: '1'
         run: yarn install
+      - name: Check exact pins and lockfile SHA checksums
+        run: yarn deps:check
       - name: Build
         run: yarn build
       - name: Pull WireMock mappings

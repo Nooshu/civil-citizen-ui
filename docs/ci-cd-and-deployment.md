@@ -6,13 +6,13 @@ Workflows under `.github/workflows/`:
 
 | Workflow | Purpose |
 | --- | --- |
-| `ci.yml` | PR/push: PII Semgrep (PRs), `yarn install`, `yarn build`, `yarn wiremock:pull` |
+| `ci.yml` | PR/push: PII Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
 | `stale.yml` | Marks stale issues/PRs (`actions/stale`) |
 | `stale-branches.yml` | Stale branch cleanup (`crs-k/stale-branches`) |
 | `update-readme-e2e-tables.yml` | Regenerates E2E tables in README on `master` |
 | `update-readme-ftGroup-tables.yml` | Regenerates functional-group tables |
 
-`ci.yml` uses Node 24. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md).
+`ci.yml` uses Node 24. After install it runs `yarn deps:check` (exact pins + lockfile SHA checksums) with `YARN_ENABLE_HARDENED_MODE=1` on the install step. PII scan: Semgrep `1.136.0`, rules in `.semgrep/logging-pii.yml`, annotator `.semgrep/annotate.py`. See [PII logging PR check](pii-logging-check.md) and [Dependencies](security-and-privacy.md).
 
 A11y is described in `package.json` `test:a11y` as running through GitHub Actions as a mandatory step.
 

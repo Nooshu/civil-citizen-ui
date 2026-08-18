@@ -8,6 +8,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not invent a second HTTP client stack. Use `src/main/app/client/`.
 - Do not invent a new database. Redis draft store + session only (`src/main/modules/draft-store/`, `getRedisStoreForSession()`).
 - Do not add npm as the package manager or delete `yarn.lock`.
+- Do not add `^`, `~`, or other version ranges to `package.json` dependencies, devDependencies, or resolutions.
 - Do not “modernise” `tsconfig.json` (`strict: false`, `ignoreDeprecations: "6.0"`, `moduleResolution: node`, `baseUrl`, `types: ["*"]`) without an explicit request — those keep TypeScript 6 compiling this codebase.
 
 ## GOV.UK Frontend and UI

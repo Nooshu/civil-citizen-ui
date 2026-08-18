@@ -1,13 +1,13 @@
 # Playbook: dependency bump
 
-Canonical: [`AGENTS.md`](../../AGENTS.md) — Dependencies.
+Canonical: [`AGENTS.md`](../../AGENTS.md) — Dependencies. Why: [`docs/security-and-privacy.md`](../../docs/security-and-privacy.md).
 
-1. Confirm the version has been on npm **≥ 7 days** (security fixes may skip).
+1. Confirm the version has been on npm **≥ 7 days** (security fixes may skip). Yarn also enforces this via `npmMinimalAgeGate: 10080`. Same-day security: `YARN_NPM_MINIMAL_AGE_GATE=0` for that command only.
 2. Prefer **patch/minor** unless the user asked for major.
-3. Exact pin in `package.json` (no `^` / `~` on packages you touch).
-4. `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install` if the lockfile must change.
+3. Exact pin in `package.json` (no `^` / `~` / ranges) for **every** specifier you add or change, including `resolutions`.
+4. `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install` if the lockfile must change. Confirm the lockfile `checksum:` lines are present.
 5. If **multiple** packages: bump all, install once, test **once**.
-6. `yarn test:coverage` (background + poll ≤ 60s).
+6. `yarn deps:check` then `yarn test:coverage` (background + poll).
 7. If SIGSEGV: re-run the failed file only; if it passes, **stop**.
 8. If real failures: tell the user first, then fix; re-run coverage after real fixes.
 9. GOV.UK Frontend: also `yarn build` + `yarn test:govuk-fixtures` and upgrade-tests rule.

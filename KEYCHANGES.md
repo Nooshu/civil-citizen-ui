@@ -8,7 +8,7 @@
 - **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **SDK 3**, Node 24 Jest without Sparkplug crashes.
 - **Smaller security surface** — `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
 - **People can find how the app works** — full human `docs/`, portable `AGENTS.md` (any coding agent), and an `ai-docs/` mirror (upstream has almost none of this).
-- **Upgrades that stick** — exact version pins, a 7-day cooldown for routine bumps, and `yarn test:coverage` after dependency changes.
+- **Upgrades that stick** — every direct dependency and resolution is an exact pin; `yarn.lock` SHA-512 checksums are verified on install and in CI; a 7-day npm age gate; `yarn test:coverage` after dependency changes.
 
 The product is unchanged: HMCTS Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
 
@@ -41,7 +41,7 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
 | **Local delivery** | **UI Preview** (`yarn preview`) | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
 | **Knowledge** | Human `docs/`, portable `AGENTS.md`, `ai-docs/` | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE |
-| **Dependency hygiene** | Exact pins on packages the fork touched; 7-day cooldown; coverage after bumps | Repeatable upgrades instead of floating ranges and silent majors |
+| **Dependency hygiene** | Exact pins on **all** direct deps and resolutions; lockfile SHA checksums; 7-day Yarn age gate; `yarn deps:check` in CI | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
 
 ---
 
@@ -289,11 +289,15 @@ Application diffs vs upstream are **focused**, not a rewrite:
 
 **Benefit:** the compiler and i18n stack are on current majors while the existing codebase still compiles. ESM-only `uuid` is handled in Jest instead of blocking the upgrade.
 
-### Exact pins and upgrade policy
+### Exact pins, SHA checksums, and upgrade policy
 
-Packages the fork touched are **exact versions** (no `^`/`~` on those entries). Standing rules: patch/minor preferred, **7-day npm cooldown** for routine bumps, full `yarn test:coverage` after dependency work, SIGSEGV isolated re-run.
+**All** `dependencies`, `devDependencies`, and `resolutions` are **exact versions** (no `^`/`~`/ranges). Transitive packages are locked in `yarn.lock` with a **SHA-512 checksum** per npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw` and `npmMinimalAgeGate: 10080` (7 days). `yarn deps:check` (`bin/check-dependency-pins.mjs`) runs in `cichecks` and GitHub Actions; CI install uses Yarn hardened mode.
 
-**Benefit:** lockfile and `package.json` agree; “works on my machine” range drift is reduced; upgrades are evidenced by coverage, not hope.
+**Why (vs upstream ranges):** npm ranges let a later install pull different code without a reviewed bump — including compromised patch releases, protestware, and packages that later add telemetry. Checksums stop a same-version archive swap. The 7-day gate waits out npm’s short unpublish window and typical public reporting lag; security fixes may set `YARN_NPM_MINIMAL_AGE_GATE=0` for one command. Full rationale: [docs/security-and-privacy.md](docs/security-and-privacy.md).
+
+Standing rules remain: patch/minor preferred, full `yarn test:coverage` after dependency work, SIGSEGV isolated re-run.
+
+**Benefit:** lockfile and `package.json` agree; “works on my machine” range drift is gone; a poisoned or truncated tarball fails install instead of shipping to citizens.
 
 ---
 
@@ -315,8 +319,8 @@ Client JS is now **unit-tested**. `jquery` is **3.7 → 4.0.0**. webpack-dev-mid
 
 ## 8. CI/CD
 
-- `cichecks` still builds, lints, covers, and runs route integration; WireMock validate/contract steps that exist in this repo’s `package.json` remain in that script on the fork
-- GitHub Actions Node 24 + current action majors (section 4)
+- `cichecks` still builds, lints, covers, and runs route integration; it also runs `yarn deps:check` (exact pins + lockfile SHA checksums). WireMock validate/contract steps that exist in this repo’s `package.json` remain in that script on the fork
+- GitHub Actions Node 24 + current action majors (section 4); `ci.yml` install uses `YARN_ENABLE_HARDENED_MODE=1` then `yarn deps:check`
 - README table-refresh workflows use git-auto-commit **v7**
 
 **Benefit:** CI identities and caches stay on supported Actions. Local `yarn test` finally matches the intent of a unit-test script, so developers are less likely to push untested Jest changes.

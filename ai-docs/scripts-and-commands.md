@@ -8,7 +8,8 @@ Run `nvm use` first so Node matches `.nvmrc` (`>=24.18.0`).
 
 | Command | What it does | Notes |
 | --- | --- | --- |
-| `yarn install` | Install with `yarn.lock` | Immutable by default; use `YARN_ENABLE_IMMUTABLE_INSTALLS=false` only when the lockfile is meant to change |
+| `yarn install` | Install with `yarn.lock` | Immutable by default; checksums must match (`checksumBehavior: throw`). Use `YARN_ENABLE_IMMUTABLE_INSTALLS=false` only when the lockfile is meant to change. Age gate: `npmMinimalAgeGate` 7 days on resolve |
+| `yarn deps:check` | Exact pins in `package.json` + SHA checksums in `yarn.lock` | `bin/check-dependency-pins.mjs`. Also runs in `cichecks` and GitHub `ci.yml` |
 | `yarn start:dev` | Redis (`compose/draft-store.yml`) + nodemon + `NODE_ENV=development` | **https://localhost:3001**, self-signed TLS. Needs IDAM/civil-service URLs in config |
 | `yarn start:redis` | Docker Redis on `6379` | |
 | `yarn start` | `ts-node` `src/main/server.ts`; `NODE_ENV` defaults to production | HTTP, not HTTPS |
@@ -97,7 +98,7 @@ GitHub workflows on `master` can auto-commit README refreshes.
 
 ## CI aggregate
 
-`yarn cichecks` = install + build + lint + wiremock validate + wiremock contracts + coverage + routes + **a11y stub**. Windows: `yarn cichecks:win` (no wiremock steps).
+`yarn cichecks` = install + **deps:check** + build + lint + wiremock validate + wiremock contracts + coverage + routes + **a11y stub**. Windows: `yarn cichecks:win` (no wiremock steps).
 
 `yarn sonar-scan` — needs scanner credentials.
 
@@ -109,6 +110,7 @@ GitHub workflows on `master` can auto-commit README refreshes.
 | `bin/generate-ssl-options.sh` | Local HTTPS certs (`src/main/resources/localhost-ssl`, gitignored) |
 | `bin/pull-latest-civil-shared.sh` | Sparse-checkout helpers into `bin/shared/` from civil-service |
 | `bin/validate-wiremock-mappings.js` | Reduced-stack contract quality |
+| `bin/check-dependency-pins.mjs` | Exact `package.json` pins + `yarn.lock` SHA checksums (`yarn deps:check`) |
 | `bin/test-wiremock-contracts.sh` | Contract tests against chart mappings |
 | `bin/run-mocked-functional-tests.sh` | Local reduced-stack CodeceptJS |
 | `bin/run-preview-playwright-tests.sh` | Playwright against preview |

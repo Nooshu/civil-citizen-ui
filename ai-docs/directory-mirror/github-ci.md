@@ -4,7 +4,7 @@
 
 | Path | Agent notes |
 | --- | --- |
-| `workflows/ci.yml` | Node 24: PII Semgrep on PRs, `yarn install`, `yarn build`, `yarn wiremock:pull` |
+| `workflows/ci.yml` | Node 24: PII Semgrep on PRs, `yarn install` (`YARN_ENABLE_HARDENED_MODE=1`), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
 | `workflows/stale.yml` / `stale-branches.yml` | Hygiene bots |
 | `workflows/update-readme-e2e-tables.yml` | Auto-commit README E2E tables on `master` |
 | `workflows/update-readme-ftGroup-tables.yml` | Functional group tables |
