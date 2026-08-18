@@ -2,15 +2,15 @@
 
 ## Key benefits
 
-- **Look at the UI on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, IDAM, VPN, or mirrord**. Docker + WireMock is enough.
+- **Look at the user interface (UI) on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, Identity and Access Management (IDAM), virtual private network (VPN), or mirrord**. Docker + WireMock is enough.
 - **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,995 tests / 1,044 suites**).
 - **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines**. Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
-- **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **SDK 3**, Node 24 Jest without Sparkplug crashes.
+- **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **software development kit (SDK) 3**, Node 24 Jest without Sparkplug crashes.
 - **Smaller supply-chain surface** — **89%** of upstream `package.json` specifiers were version ranges; the fork has **0**. `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
 - **People can find how the app works** — human `docs/` is **4.5×** the file count and **6.2×** the line count of upstream’s specialised notes, plus portable `AGENTS.md` and a 31-page `ai-docs/` mirror (upstream has neither).
-- **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 checksums are **enforced** on install and in CI; a 7-day npm age gate; `yarn test:coverage` after dependency changes.
+- **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 (Secure Hash Algorithm) checksums are **enforced** on install and in continuous integration (CI); a 7-day npm age gate; `yarn test:coverage` after dependency changes.
 
-The product is unchanged: HMCTS Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
+The product is unchanged: His Majesty’s Courts and Tribunals Service (HMCTS) Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
 
 ---
 
@@ -99,6 +99,7 @@ Upstream `docs/` contains specialised notes only (WireMock contracts, PII Semgre
 
 New guides (not on upstream):
 
+- [docs/glossary.md](docs/glossary.md) — acronyms expanded on first use (HMCTS, litigant in person, IDAM, …)
 - [docs/README.md](docs/README.md) — index
 - [docs/project-overview.md](docs/project-overview.md), [architecture.md](docs/architecture.md), [directory-structure.md](docs/directory-structure.md)
 - [docs/local-development.md](docs/local-development.md), [docs/configuration.md](docs/configuration.md)
@@ -413,7 +414,7 @@ Honest gaps, not hidden:
 ## Suggested reading order
 
 1. This file (delta vs upstream)
-2. [docs/README.md](docs/README.md) — how the service works
-3. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / TCoP / Design System mapped to this app
-4. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular IDE)
+2. [docs/README.md](docs/README.md) — how the service works ([glossary](docs/glossary.md) for acronyms)
+3. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / Technology Code of Practice (TCoP) / Design System mapped to this app
+4. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular integrated development environment (IDE))
 5. [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record

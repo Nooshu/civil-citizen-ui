@@ -1,6 +1,6 @@
 # AI-only documentation (`ai-docs/`)
 
-**Audience: AI coding agents only.** Human-oriented project documentation is [`docs/README.md`](../docs/README.md). Developers: this folder is not a product manual; it exists so agents can inspect directory-level invariants before editing the codebase.
+**Audience: AI coding agents only.** Human-oriented project documentation is [`docs/README.md`](../docs/README.md). Expand acronyms on first use (Full name (ACRONYM)); list: [`docs/glossary.md`](../docs/glossary.md).
 
 If any instruction here conflicts with [`AGENTS.md`](../AGENTS.md), **`AGENTS.md` wins**. Fix this folder in the same change rather than improvising.
 

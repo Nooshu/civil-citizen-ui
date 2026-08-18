@@ -47,7 +47,7 @@ Keys in `src/main/modules/i18n/locales/en.json` **and** `cy.json`. Use `t('…')
 - Service unit test without `{app}` when possible
 - Route unit test with supertest if HTTP behaviour matters
 - Integration test if middleware/session is involved
-- Functional CodeceptJS only if the journey is user-visible in preview/AAT and neighbours already cover it
+- Functional CodeceptJS only if the journey is user-visible in preview/AAT (HMCTS acceptance environment) and neighbours already cover it
 
 ## 8. Verify
 

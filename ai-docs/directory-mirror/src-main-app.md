@@ -7,16 +7,16 @@ Do **not** add axios/got/fetch wrappers elsewhere. Extend these clients.
 | File | Backend | Config |
 | --- | --- | --- |
 | `civilServiceClient.ts` + `civilServiceUrls.ts` | civil-service (claims, fees, dashboard scenarios, events) | `services.civilService.url` / `CIVIL_SERVICE_URL` |
-| `civilServiceRequest.ts` (under `common/`) | Shared request helper: user token + S2S | |
+| `civilServiceRequest.ts` (under `common/`) | Shared request helper: user token + service-to-service (S2S) | |
 | `gaServiceClient.ts` + `gaServiceUrls.ts` | General applications | `services.generalApplication.url` (often same host as civil-service in deploy) |
-| `dmStoreClient.ts` | Document Management | `services.dmStore.baseUrl`; local microservice name may be `xui_webapp` |
+| `dmStoreClient.ts` | Document Management | `services.dmStore.baseUrl`; local microservice name may be `xui_webapp` (Expert UI) |
 | `serviceAuthProviderClient.ts` | S2S tokens | `services.serviceAuthProvider` |
-| `legacyDraftStoreClient.ts` | Legacy CMC draft-store API | Still configured; do not use for new journeys |
-| `pcq/` | PCQ id + HMAC + redirect | `shutter-pcq` LaunchDarkly flag |
+| `legacyDraftStoreClient.ts` | Legacy Civil Money Claims (CMC) draft-store API | Still configured; do not use for new journeys |
+| `pcq/` | Protected Characteristics Questionnaire (PCQ) id + Hash-based Message Authentication Code (HMAC) + redirect | `shutter-pcq` LaunchDarkly flag |
 
 Error types: `client/common/error/` (`callbackError`, `eventSubmissionError`).
 
-Auth on civil-service calls: IDAM access token **and** S2S where required. Functional tests use TOTP (`otplib` mocked in unit tests via `__mocks__/otplib.js`).
+Auth on civil-service calls: Identity and Access Management (IDAM) access token **and** S2S where required. Functional tests use Time-based One-Time Password (TOTP) (`otplib` mocked in unit tests via `__mocks__/otplib.js`).
 
 ### When the API changes
 

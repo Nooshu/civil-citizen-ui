@@ -2,7 +2,7 @@
 
 ## Summary
 
-This log records dependency updates completed from the GitHub dependency dashboard "PR Closed (Blocked)" and "Rate-Limited" sections on 2026-08-18.
+This log records dependency updates completed from the GitHub dependency dashboard "pull request (PR) Closed (Blocked)" and "Rate-Limited" sections on 2026-08-18.
 
 Each completed update was committed separately and validated with `yarn test:coverage`. Where a coverage failure occurred, only the specific failing test was re-run, per the requested process.
 
@@ -10,7 +10,7 @@ Each completed update was committed separately and validated with `yarn test:cov
 
 | Package | From | To | Notes |
 | --- | --- | --- | --- |
-| `uuid` | `^11.1.1` | `14.0.1` | ESM-only; added `uuid` to Jest transform config |
+| `uuid` | `^11.1.1` | `14.0.1` | ECMAScript modules (ESM) only; added `uuid` to Jest transform config |
 | `webpack-cli` | `^5.1.4` | `7.2.2` | Clean upgrade |
 | `webpack-dev-middleware` | `7.1.0` | `8.1.1` | Clean upgrade |
 | `actions/checkout` | `v4` | `v7` | GitHub Actions workflow update |
@@ -53,6 +53,6 @@ Each completed update was committed separately and validated with `yarn test:cov
 
 ## Risks and Unresolved Items
 
-- `ioredis@6` now uses RESP3 by default. It preserves legacy reply shapes, but production Redis behavior should still be confirmed in a real environment.
-- `codeceptjs@4` and `webdriverio@9` affect functional/e2e tooling more than unit coverage, so their runtime behavior should be validated when those suites are next exercised.
+- `ioredis@6` now uses Redis Serialization Protocol version 3 (RESP3) by default. It preserves legacy reply shapes, but production Redis behavior should still be confirmed in a real environment.
+- `codeceptjs@4` and `webdriverio@9` affect functional/end-to-end (e2e) tooling more than unit coverage, so their runtime behavior should be validated when those suites are next exercised.
 - `connect-redis`, `config`, Babel, and Jest remain open as larger migration tasks rather than routine dependency bumps.

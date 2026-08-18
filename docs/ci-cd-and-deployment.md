@@ -1,12 +1,14 @@
 # CI/CD and deployment
 
+Acronyms: [glossary](glossary.md). Continuous integration and continuous delivery (CI/CD) for this service.
+
 ## GitHub Actions
 
 Workflows under `.github/workflows/`:
 
 | Workflow | Purpose |
 | --- | --- |
-| `ci.yml` | PR/push: PII Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
+| `ci.yml` | Pull request (PR)/push: personally identifiable information (PII) Semgrep (PRs), `yarn install` (hardened mode), `yarn deps:check`, `yarn build`, `yarn wiremock:pull` |
 | `stale.yml` | Marks stale issues/PRs (`actions/stale`) |
 | `stale-branches.yml` | Stale branch cleanup (`crs-k/stale-branches`) |
 | `update-readme-e2e-tables.yml` | Regenerates E2E tables in README on `master` |
@@ -18,18 +20,18 @@ A11y is described in `package.json` `test:a11y` as running through GitHub Action
 
 ## Jenkins
 
-- `Jenkinsfile_CNP` — Continuous deployment pipeline (`type = nodejs`, `product = civil`, `component = citizen-ui`). Uses HMCTS `Infrastructure` library `2.4.4`.
+- `Jenkinsfile_CNP` — Cloud Native Platform (CNP) continuous deployment pipeline (`type = nodejs`, `product = civil`, `component = citizen-ui`). Uses HMCTS `Infrastructure` library `2.4.4`.
 - `Jenkinsfile_nightly` — Nightly functional (`@civil-citizen-nightly`).
 
-Preview and AAT behaviour is controlled with **GitHub labels** (also documented in the root README):
+Preview and AAT (HMCTS acceptance / pre-production) behaviour is controlled with **GitHub labels** (also documented in the root README):
 
 | Label | Effect |
 | --- | --- |
 | `enable_keep_helm` | Keep the preview namespace after the pipeline |
 | `pr-values:fullDeployment` | Real downstream components (hearings, Elasticsearch, …). Without it, most calls are mocked. |
-| `pr-values:reducedStack` | CUI + WireMock only; civil-service/WA/buses off. Uses `values.reducedStack.preview.template.yaml`. |
+| `pr-values:reducedStack` | Civil Citizen UI (CUI) + WireMock only; civil-service/Work Allocation (WA)/buses off. Uses `values.reducedStack.preview.template.yaml`. |
 | `pr-values:skip-functional-tests` | Skip functional stage for non-functional changes |
-| `civilDefinitionBranch:????` | CCD definition branch to import |
+| `civilDefinitionBranch:????` | Core Case Data (CCD) definition branch to import |
 | `civilServicePr:????` | Deploy `civil/service:pr-N` and import Camunda from that PR |
 | `civilShared:????` | civil-service shared scripts branch |
 

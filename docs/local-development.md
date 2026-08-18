@@ -5,7 +5,7 @@
 - **Node.js** matching `.nvmrc` / `package.json` `engines` (currently `>=24.18.0`). Use `nvm use` (or equivalent) before install and test.
 - **Yarn 4** — this repo is not npm. `yarn.lock` and `.yarnrc.yml` must stay intact.
 - **Docker** — required for Redis (`yarn start:redis`) and UI Preview.
-- Optional: Java/CCD tooling if you import definitions locally via `bin/` scripts.
+- Optional: Java/Core Case Data (CCD) tooling if you import definitions locally via `bin/` scripts.
 
 The `engines` field and `.nvmrc` are authoritative if other documents disagree.
 
@@ -22,7 +22,7 @@ yarn build                          # webpack → src/main/public/
 
 ## Run modes
 
-### Full local app (IDAM + Redis)
+### Full local app (Identity and Access Management (IDAM) + Redis)
 
 ```bash
 yarn start:dev
@@ -44,7 +44,7 @@ Production-style start (no nodemon, `NODE_ENV` defaults to production):
 yarn start
 ```
 
-### UI Preview (no IDAM)
+### User interface (UI) Preview (no IDAM)
 
 ```bash
 yarn preview
@@ -55,7 +55,7 @@ Opens **http://localhost:3001/ui-preview**.
 
 | | UI Preview | `yarn start:dev` |
 | --- | --- | --- |
-| Auth | None (`e2eTest` fake session user) | IDAM OIDC |
+| Auth | None (`e2eTest` fake session user) | IDAM OpenID Connect (OIDC) |
 | Backends | WireMock + in-memory Redis | Real Redis + services |
 | Fixture user id | `someID` | Your IDAM user |
 | Sample claim | `1645882162449409` | Whatever exists in your stack |

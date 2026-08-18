@@ -1,4 +1,4 @@
-# PII logging PR check
+# Personally identifiable information (PII) logging pull request (PR) check
 
 DTSCCI-5897 adds a diff-scoped Semgrep check to prevent the PII logging removed
 under DTSCCI-5875 from being reintroduced. The check is initially advisory:
@@ -14,7 +14,7 @@ Do not log:
 - complete case, claim, application, party, applicant, respondent, payment, or
   financial-detail objects.
 
-CCD case references, field/rule identifiers, template identifiers, and agreed
+Core Case Data (CCD) case references, field/rule identifiers, template identifiers, and agreed
 operational user identifiers may be logged. Prefer stable identifiers and state
 transitions over payloads. DTSCCI-5875 separately adds runtime redaction as a
 defence-in-depth layer; this PR-time check does not depend on that work.

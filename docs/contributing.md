@@ -1,5 +1,7 @@
 # Contributing
 
+Expand acronyms on first use in each document (Full name (ACRONYM)). List: [glossary](glossary.md).
+
 ## Remotes and branches
 
 - Default branch: `master`
@@ -35,13 +37,13 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 4. Reuse Nunjucks partials; do not duplicate claim-summary chrome.
 5. axe does not override GOV.UK.
 
-These UI rules exist so the service can meet the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Full mapping: [service-assessment.md](service-assessment.md).
+These user interface (UI) rules exist so the service can meet the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Full mapping: [service-assessment.md](service-assessment.md).
 
 ## Dependencies
 
 - Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md).
 - Patch/minor preferred; 7-day publish cooldown for routine bumps (`npmMinimalAgeGate` in `.yarnrc.yml`).
-- After dependency PRs: `yarn deps:check` then `yarn test:coverage`. On SIGSEGV, re-run the one suite.
+- After dependency pull requests (PRs): `yarn deps:check` then `yarn test:coverage`. On a segmentation violation (SIGSEGV), re-run the one suite.
 - Do not invent a second HTTP client or database.
 
 ## Git hygiene
@@ -53,13 +55,13 @@ These UI rules exist so the service can meet the [Service Standard](https://www.
 
 ## Documentation you must keep in sync
 
-If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or WireMock ownership, update:
+If you change runtime versions, scripts, remotes, GOV.UK version, Redis time to live (TTL), or WireMock ownership, update:
 
 - this `docs/` tree
 - [README.md](../README.md) getting-started bits if commands changed
 - [AGENTS.md](../AGENTS.md) if a standing agent convention changed
 - [`ai-docs/`](../ai-docs/README.md) if directories, scripts, or invariants changed (or confirm it is unaffected)
-- specialised docs (WireMock, PII, functional diagnostics) when those topics changed
+- specialised docs (WireMock, personally identifiable information (PII), functional diagnostics) when those topics changed
 
 ## Review checklist (human PRs)
 
@@ -67,7 +69,7 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 - [ ] `yarn lint` clean
 - [ ] Unit tests for new branches; integration tests if middleware/routes changed
 - [ ] Nunjucks uses macros; no duplicated journey HTML
-- [ ] Change does not deviate from the Service Standard / HMCTS citizen stack ([service-assessment.md](service-assessment.md)) — no SPA, no hand-rolled GOV.UK components
+- [ ] Change does not deviate from the Service Standard / His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack ([service-assessment.md](service-assessment.md)) — no Single Page Application (SPA), no hand-rolled GOV.UK components
 - [ ] No PII in new `logger.*` calls
 - [ ] Config/env documented if you added keys
 - [ ] Chart WireMock still validates if you touched mappings
@@ -75,4 +77,4 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis TTLs, or
 
 ## Agent-oriented rules
 
-AI assistants should treat [AGENTS.md](../AGENTS.md) as canonical (it is not tied to a particular IDE). Directory-level context, playbooks, and script catalogues live in [ai-docs/](../ai-docs/README.md). This contributing guide is for humans and agents alike; if `AGENTS.md` and this page ever diverge, **`AGENTS.md` wins** — then fix this page in the same change.
+AI assistants should treat [AGENTS.md](../AGENTS.md) as canonical (it is not tied to a particular integrated development environment (IDE)). Directory-level context, playbooks, and script catalogues live in [ai-docs/](../ai-docs/README.md). This contributing guide is for humans and agents alike; if `AGENTS.md` and this page ever diverge, **`AGENTS.md` wins** — then fix this page in the same change.

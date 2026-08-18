@@ -16,24 +16,25 @@
 
 ## Documentation
 
-The full project guide is in [`docs/`](docs/README.md). It covers architecture, directory layout, local development, configuration, citizen journeys, frontend (GOV.UK Frontend / Nunjucks), integrations, security, testing, CI/CD, and contributing.
+The full project guide is in [`docs/`](docs/README.md). It covers architecture, directory layout, local development, configuration, citizen journeys, frontend (GOV.UK Frontend / Nunjucks), integrations, security, testing, continuous integration and delivery (CI/CD), and contributing. Unfamiliar acronyms: [docs/glossary.md](docs/glossary.md) (for example litigant in person (LiP), Identity and Access Management (IDAM)).
 
 Start here: **[docs/README.md](docs/README.md)**.
 
 | Guide | Topic |
 | --- | --- |
-| [Project overview](docs/project-overview.md) | What CUI is, runtime, ownership |
+| [Glossary](docs/glossary.md) | Acronyms expanded on first use (HMCTS, LiP, IDAM, CCD, …) |
+| [Project overview](docs/project-overview.md) | What Civil Citizen UI (CUI) is, runtime, ownership |
 | [Architecture](docs/architecture.md) | Request lifecycle, layers, feature flags |
 | [Directory structure](docs/directory-structure.md) | Map of the repository |
-| [Local development](docs/local-development.md) | Install, `yarn start:dev`, UI Preview |
-| [Configuration](docs/configuration.md) | `node-config`, env vars, Redis TTLs |
-| [Citizen journeys](docs/citizen-journeys.md) | Claim, response, GA, and related flows |
-| [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend, assets, i18n |
-| [Integrations](docs/integrations.md) | civil-service, IDAM, Redis, payments |
-| [Security and privacy](docs/security-and-privacy.md) | CSRF, Helmet, OIDC, PII logging |
+| [Local development](docs/local-development.md) | Install, `yarn start:dev`, user interface (UI) Preview |
+| [Configuration](docs/configuration.md) | `node-config`, env vars, Redis time to live (TTL) |
+| [Citizen journeys](docs/citizen-journeys.md) | Claim, response, general application (GA), and related flows |
+| [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend, assets, internationalisation (i18n) |
+| [Integrations](docs/integrations.md) | civil-service, Identity and Access Management (IDAM), Redis, payments |
+| [Security and privacy](docs/security-and-privacy.md) | Cross-Site Request Forgery (CSRF), Helmet, OpenID Connect (OIDC), personally identifiable information (PII) logging |
 | [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |
 | [CI/CD and deployment](docs/ci-cd-and-deployment.md) | Jenkins, Helm, GitHub Actions |
-| [Service assessment](docs/service-assessment.md) | Service Standard, TCoP, HMCTS stack, Design System |
+| [Service assessment](docs/service-assessment.md) | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) stack, Design System |
 | [Contributing](docs/contributing.md) | Coding standards and review checklist |
 | [Key changes vs upstream](KEYCHANGES.md) | This fork compared with `hmcts/civil-citizen-ui` |
 

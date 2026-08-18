@@ -2,33 +2,33 @@
 
 ## Shape of the application
 
-CUI is a **server-rendered Express application**. A typical authenticated request:
+CUI is a **server-rendered Express application**. Acronyms: [glossary](glossary.md). A typical authenticated request:
 
 1. Hits Node on port `3001` (`src/main/server.ts`).
-2. Passes cookie, language, session, Helmet, health, and (outside tests) CSRF and OIDC middleware (`src/main/app.ts`).
+2. Passes cookie, language, session, Helmet, health, and (outside tests) Cross-Site Request Forgery (CSRF) and OpenID Connect (OIDC) middleware (`src/main/app.ts`).
 3. Matches a route registered in `src/main/routes/routes.ts`.
 4. A **thin controller** validates input, loads the claim, and calls a **service**.
-5. The service reads/writes Redis (draft store) and/or **civil-service** / **GA** HTTP APIs.
-6. CCD-shaped JSON is converted to CUI models (and back) under `src/main/services/translation/`.
+5. The service reads/writes Redis (draft store) and/or **civil-service** / **general application (GA)** HTTP application programming interfaces (APIs).
+6. Core Case Data (CCD)-shaped JSON is converted to Civil Citizen UI (CUI) models (and back) under `src/main/services/translation/`.
 7. The controller renders a Nunjucks view, or redirects to the next URL in `src/main/routes/urls.ts`.
 
 Client JavaScript (`src/main/index.js` → webpack bundle) only enhances pages that already have GOV.UK macro HTML.
 
-This Express SSR + Nunjucks + GOV.UK Frontend shape is the [HMCTS citizen frontend](https://hmcts.github.io/standards/technology-stack/), not an accident. Replacing it with a SPA would fail a service assessment. See [service-assessment.md](service-assessment.md).
+This Express server-side rendering (SSR) + Nunjucks + GOV.UK Frontend shape is the [His Majesty’s Courts and Tribunals Service (HMCTS) citizen frontend](https://hmcts.github.io/standards/technology-stack/), not an accident. Replacing it with a Single Page Application (SPA) would fail a service assessment. See [service-assessment.md](service-assessment.md).
 
 ```text
 Browser
   │  HTTPS (dev) / HTTP behind ingress (deployed)
   ▼
-server.ts  ── PII log redaction, keep-alive, TLS in development
+server.ts  ── personally identifiable information (PII) log redaction, keep-alive, Transport Layer Security (TLS) in development
   ▼
-app.ts     ── session, i18n, Nunjucks, Helmet, OIDC, guards, routes
+app.ts     ── session, internationalisation (i18n), Nunjucks, Helmet, OIDC, guards, routes
   ▼
 Controller (routes/features/…)
   ▼
 Service (services/features/…)  ── draft-store helpers, mapping, fees
   ▼
-HTTP clients (app/client/…)    ── civil-service, GA, DM, S2S, PCQ
+HTTP clients (app/client/…)    ── civil-service, GA, Document Management (DM), service-to-service (S2S), Protected Characteristics Questionnaire (PCQ)
   ▼
 Redis drafts / session         ── ioredis + connect-redis
 ```
@@ -89,8 +89,8 @@ Canonical paths live in `src/main/routes/urls.ts`. Almost all case journeys are 
 | `/case/:id/response/general-application/:appId` | Respondent GA |
 | `/case/:id/case-progression` | Evidence, hearings, trial arrangements |
 | `/case/:id/mediation` | Free telephone mediation |
-| `/case/:id/directions-questionnaire` | DQ |
-| `/oauth2/callback` | IDAM return |
+| `/case/:id/directions-questionnaire` | Directions questionnaire (DQ) |
+| `/oauth2/callback` | Identity and Access Management (IDAM) return |
 | `/ui-preview` | Preview index (e2eTest only) |
 
 ## Session versus draft store
@@ -98,7 +98,7 @@ Canonical paths live in `src/main/routes/urls.ts`. Almost all case journeys are 
 Two Redis uses are easy to confuse:
 
 1. **Express session** (`express-session` + Redis store from `getRedisStoreForSession()`). Cookie name `citizen-ui-session`. Holds the logged-in user (tokens, id, roles).
-2. **Draft store** (`app.locals.draftStoreClient`, ioredis). Journey JSON keyed by claim id / user id fragments. TTLs are in `config/default.yaml` under `services.draftStore.redis.ttl` and documented in [Configuration](configuration.md).
+2. **Draft store** (`app.locals.draftStoreClient`, ioredis). Journey JSON keyed by claim id / user id fragments. Time-to-live values (TTLs) are in `config/default.yaml` under `services.draftStore.redis.ttl` and documented in [Configuration](configuration.md).
 
 In `e2eTest`, both are swapped for in-memory implementations (`modules/e2eConfiguration`).
 
@@ -108,20 +108,20 @@ LaunchDarkly is initialised in `src/main/app/auth/launchdarkly/launchDarklyClien
 
 - `shutter-cui-service` — whole-service shutter page
 - `shutter-pcq`
-- `GaForLips` — general applications for LiPs
+- `GaForLips` — general applications for litigants in person (LiPs)
 - `is-dashboard-enabled-for-case`
-- `cam-enabled-for-case` (CARM mediation)
-- `multi-or-intermediate-track`
+- `cam-enabled-for-case` (Civil Automated Referral to Mediation, CARM)
+- `multi-or-intermediate-track` (Multi and Intermediate Track, MINTI)
 - `ea-courts-whitelisted-for-ga-lips`
 - `cui-query-management`
 - `enableWelshForMainCase`
-- `is-defendant-noc-online-for-case`
-- `cui-ga-nro`
+- `is-defendant-noc-online-for-case` (Notice of Change, NoC)
+- `cui-ga-nro` (national roll-out, NRO)
 - `judgment-buffer`
 - `hmcts-access-migration`
 - `cui-case-events-enabled`
 
-In `e2eTest`, a LaunchDarkly `TestData` source is used so flags can be toggled without a real SDK environment (`TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`).
+In `e2eTest`, a LaunchDarkly `TestData` source is used so flags can be toggled without a real software development kit (SDK) environment (`TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`).
 
 ## Error handling
 
@@ -134,7 +134,7 @@ In `e2eTest`, a LaunchDarkly `TestData` source is used so flags can be toggled w
 
 See [`AGENTS.md`](../AGENTS.md) — Performance and accessibility. In practice:
 
-- Avoid N+1 civil-service calls in a single request.
+- Avoid N+1 civil-service calls in a single request (one extra backend call per item in a loop).
 - Reuse draft-store helpers; do not read/write Redis repeatedly for the same key in one handler.
 - Do not ship extra client JS or rebuild GOV.UK HTML in the browser.
-- Call out Redis key/TTL changes in PR summaries.
+- Call out Redis key/TTL changes in pull request (PR) summaries.

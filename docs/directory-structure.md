@@ -1,27 +1,27 @@
 # Directory structure
 
-This is a map of the repository as it exists on `master`. Paths are relative to the repo root.
+This is a map of the repository as it exists on `master`. Paths are relative to the repo root. Acronyms: [glossary](glossary.md).
 
 ## Top level
 
 | Path | Purpose |
 | --- | --- |
 | `src/main/` | Application code (Express server, routes, views, assets) |
-| `src/test/` | Unit, a11y, contract, functional, and documentation generators |
+| `src/test/` | Unit, accessibility (a11y), contract, functional, and documentation generators |
 | `config/` | `node-config` YAML (defaults + env overlays) |
 | `webpack/` + `webpack.config.js` | Frontend asset pipeline |
 | `charts/civil-citizen-ui/` | Helm chart, values templates, packaged WireMock mappings |
 | `compose/` | Local Docker Compose (Redis draft store, UI Preview) |
-| `bin/` | Shell helpers: CCD/Camunda import, WireMock, preview, shared civil-service scripts |
-| `docs/` | This documentation, including [service-assessment.md](service-assessment.md) |
+| `bin/` | Shell helpers: Core Case Data (CCD)/Camunda import, WireMock, preview, shared civil-service scripts |
+| `docs/` | This documentation, including [glossary.md](glossary.md) and [service-assessment.md](service-assessment.md) |
 | `ai-docs/` | Agent-oriented directory mirror, playbooks, and [service-assessment.md](../ai-docs/service-assessment.md) (not a human product guide) |
 | `playwright/` | Playwright security specs |
 | `infrastructure/` | Supporting infra scripts (if present for the pipeline) |
 | `.github/workflows/` | GitHub Actions (CI lint/build, stale bots, README table refresh) |
-| `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Main and nightly pipelines |
+| `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Main Cloud Native Platform (CNP) and nightly pipelines |
 | `AGENTS.md` | Canonical standing conventions for any coding agent (`AGENT.md` is a symlink) |
 | `catalog-info.yaml` | Backstage component |
-| `docker-compose.yml` / `Dockerfile` | Container build for CUI |
+| `docker-compose.yml` / `Dockerfile` | Container build for Civil Citizen UI (CUI) |
 | `Dockerfile.ui-preview` | Image used by UI Preview |
 
 Generated or local-only directories you should not commit as source of truth: `node_modules/`, `coverage/`, `functional-output/`, `src/main/public/` (webpack output), `bin/shared/` (pulled from civil-service).
@@ -69,7 +69,7 @@ Feature folders match user journeys:
 | `dmStoreClient.ts` | Document management |
 | `serviceAuthProviderClient.ts` | S2S tokens |
 | `legacyDraftStoreClient.ts` | Legacy CMC draft-store API (still configured) |
-| `pcq/` | PCQ id/token/client |
+| `pcq/` | Protected Characteristics Questionnaire (PCQ) id/token/client |
 
 ### `src/main/modules/`
 

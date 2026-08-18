@@ -1,6 +1,6 @@
 # Configuration
 
-CUI uses [node-config](https://github.com/node-config/node-config). YAML files under `config/` are merged according to `NODE_ENV`, then environment variables from `config/custom-environment-variables.yaml` overlay them.
+CUI uses [node-config](https://github.com/node-config/node-config). YAML files under `config/` are merged according to `NODE_ENV`, then environment variables from `config/custom-environment-variables.yaml` overlay them. Acronyms: [glossary](glossary.md).
 
 Load order (simplified):
 
@@ -15,9 +15,9 @@ There is also `config/dev.yaml` (distinct from `development.yaml`) — check whi
 
 | File | Role |
 | --- | --- |
-| `default.yaml` | Local-oriented defaults (localhost civil-service, IDAM, Redis, secrets that are not real) |
+| `default.yaml` | Local-oriented defaults (localhost civil-service, Identity and Access Management (IDAM), Redis, secrets that are not real) |
 | `development.yaml` | Extra local development overrides |
-| `test.yaml` | Jest: port, dummy citizen JWT, fees URL, **upload rate limit off** |
+| `test.yaml` | Jest: port, dummy citizen JSON Web Token (JWT), fees URL, **upload rate limit off** |
 | `production.yaml` | Deployed defaults |
 | `custom-environment-variables.yaml` | Maps process env → config keys |
 | `postcode-lookup-exceptions.json` | Postcode lookup edge cases |
@@ -39,7 +39,7 @@ There is also `config/dev.yaml` (distinct from `development.yaml`) — check whi
 | --- | --- | --- |
 | `services.civilService.url` | `http://localhost:4000` | `CIVIL_SERVICE_URL` |
 | `services.civilService.microservice` | `civil_service` | |
-| `services.generalApplication.url` | `http://localhost:4550` | `CIVIL_SERVICE_URL` in env map (deployed GA is often the same host) |
+| `services.generalApplication.url` | `http://localhost:4550` | `CIVIL_SERVICE_URL` in env map (deployed general application (GA) is often the same host) |
 | `services.idam.url` / `authorizationURL` / `tokenURL` | localhost IDAM | `IDAM_API_URL`, `IDAM_WEB_URL` |
 | `services.idam.clientID` | `civil_citizen_ui` | `IDAM_CLIENT_ID` |
 | `services.idam.callbackURL` | `http://localhost:3001/oauth2/callback` | `OAUTH_CLIENT_REDIRECT` |
@@ -47,16 +47,16 @@ There is also `config/dev.yaml` (distinct from `development.yaml`) — check whi
 | `services.session.redis` | same Redis | `REDIS_HOST`, `REDIS_PORT` |
 | `services.dmStore.baseUrl` | `http://localhost:4506` | `DOCUMENT_MANAGEMENT_URL` |
 | `services.serviceAuthProvider.baseUrl` | `http://localhost:4502` | `AUTH_PROVIDER_SERVICE_CLIENT_BASEURL` |
-| `services.pcq.url` | AAT PCQ | `PCQ_URL` |
+| `services.pcq.url` | AAT (HMCTS acceptance) Protected Characteristics Questionnaire (PCQ) | `PCQ_URL` |
 | `services.govPay.url` | GOV.UK Pay cards | `GOVPAY_URL` |
 | `services.postcodeLookup.ordnanceSurveyApiUrl` | `https://api.os.uk` | `ORDNANCE_SURVEY_API_URL` |
 | `services.launchDarkly.sdk` / `env` | empty / `default` | `LAUNCH_DARKLY_SDK`, `LAUNCH_DARKLY_ENV` |
 | `appInsights.instrumentationKey` | empty | `APPINSIGHTS_KEY` |
 | `services.dynatrace.url` | Dynatrace JS snippet URL | `DYNATRACE_TAG` |
 
-IDAM client secret, OS API key, Redis key, S2S secrets, and PCQ token key are empty or placeholders in git. Deployed values come from Azure Key Vault via `modules/properties-volume` and Helm.
+IDAM client secret, Ordnance Survey (OS) API key, Redis key, service-to-service (S2S) secrets, and PCQ token key are empty or placeholders in git. Deployed values come from Azure Key Vault via `modules/properties-volume` and Helm.
 
-### Redis TTLs (`services.draftStore.redis.ttl`)
+### Redis time to live (TTL) (`services.draftStore.redis.ttl`)
 
 Values are **days** in default.yaml:
 
@@ -69,7 +69,7 @@ Values are **days** in default.yaml:
 
 Env: `REDIS_DRAFT_CLAIM_EXPIRE_IN_DAYS`, `REDIS_JOURNEY_CACHE_EXPIRE_IN_DAYS`, `REDIS_PAYMENT_SESSION_EXPIRE_IN_DAYS`, `REDIS_GA_JOURNEY_EXPIRE_IN_DAYS`.
 
-Helpers live in `src/main/modules/draft-store/ttlConfig.ts`. Changing TTL design is a performance/ops decision — mention it in PR summaries.
+Helpers live in `src/main/modules/draft-store/ttlConfig.ts`. Changing TTL design is a performance/ops decision — mention it in pull request (PR) summaries.
 
 ### Contact and GOV.UK links
 

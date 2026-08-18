@@ -9,10 +9,10 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | Topic | Section in `AGENTS.md` |
 | --- | --- |
 | Sync `hmcts` before application changes; package-only origin push | Before changing code; Package-only updates |
-| Exact pins (all deps/resolutions), lockfile SHA checksums, 7-day `npmMinimalAgeGate`, `yarn deps:check`, full `yarn test:coverage` after dep bumps, SIGSEGV isolation | Dependencies |
-| Service Standard, TCoP, HMCTS citizen stack, Design System, WCAG 2.2 AA | Service assessment (GOV.UK / HMCTS); [`docs/service-assessment.md`](../docs/service-assessment.md) |
+| Exact pins (all deps/resolutions), lockfile SHA (Secure Hash Algorithm) checksums, 7-day `npmMinimalAgeGate`, `yarn deps:check`, full `yarn test:coverage` after dep bumps, segmentation violation (SIGSEGV) isolation | Dependencies |
+| Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack, Design System, Web Content Accessibility Guidelines (WCAG) 2.2 AA | Service assessment (GOV.UK / HMCTS); [`docs/service-assessment.md`](../docs/service-assessment.md) |
 | Long coverage/install waits — background and poll | Long-running commands |
-| Express/TS under `src/main/`; no Nest/Prisma/SPA; existing HTTP clients and draft-store | Server / application stack |
+| Express/TS under `src/main/`; no Nest/Prisma/Single Page Application (SPA); existing HTTP clients and draft-store | Server / application stack |
 | GOV.UK macros only; app JS/SCSS only; axe does not override GOV.UK; reuse Nunjucks partials | GOV.UK Frontend |
 | After `govuk-frontend` bumps: build, fixtures, unit, a11y, spot-check | GOV.UK Frontend (upgrade checklist) |
 | Frontend performance, API/Redis cost, accessible UI | Performance and accessibility |
@@ -23,7 +23,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 
 Procedures (not standing rules): [playbooks/add-a-screen.md](playbooks/add-a-screen.md), [playbooks/dependency-bump.md](playbooks/dependency-bump.md), [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md).
 
-Human pairing: [`docs/contributing.md`](../docs/contributing.md), [`docs/testing.md`](../docs/testing.md), [`docs/frontend.md`](../docs/frontend.md), [`docs/service-assessment.md`](../docs/service-assessment.md).
+Human pairing: [`docs/contributing.md`](../docs/contributing.md), [`docs/testing.md`](../docs/testing.md), [`docs/frontend.md`](../docs/frontend.md), [`docs/service-assessment.md`](../docs/service-assessment.md), [`docs/glossary.md`](../docs/glossary.md).
 
 ## Useful one-liners
 

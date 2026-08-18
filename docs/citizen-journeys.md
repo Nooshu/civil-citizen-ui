@@ -1,6 +1,6 @@
 # Citizen journeys
 
-CUI is organised around **journeys**. Each journey has controllers under `src/main/routes/features/<name>/`, services under `src/main/services/features/<name>/`, and Nunjucks under `src/main/views/features/<name>/`. URL constants are centralised in `src/main/routes/urls.ts`.
+CUI is organised around **journeys**. Each journey has controllers under `src/main/routes/features/<name>/`, services under `src/main/services/features/<name>/`, and Nunjucks under `src/main/views/features/<name>/`. URL constants are centralised in `src/main/routes/urls.ts`. Acronyms: [glossary](glossary.md).
 
 This page describes what each journey is for, not every screen. For exhaustive scenario lists, use the generated tables in the root [README.md](../README.md).
 
@@ -9,14 +9,14 @@ This page describes what each journey is for, not every screen. For exhaustive s
 | Area | Paths | Notes |
 | --- | --- | --- |
 | Home | `/`, `/home` | Entry |
-| Cookies, privacy, T&Cs, accessibility, contact | `/cookies`, `/privacy-policy`, … | Allowlisted in OIDC middleware |
-| Eligibility | `/eligibility/…` | “Can I use this service?” — CSRF skipped |
+| Cookies, privacy, T&Cs, accessibility, contact | `/cookies`, `/privacy-policy`, … | Allowlisted in OpenID Connect (OIDC) middleware |
+| Eligibility | `/eligibility/…` | “Can I use this service?” — Cross-Site Request Forgery (CSRF) skipped |
 | First contact | `/first-contact/…` | Claim reference + PIN before full login — CSRF skipped |
 | UI Preview index | `/ui-preview` | Only useful in `e2eTest` |
 
 ## Claim issue (`/claim`)
 
-The claimant builds a **draft** in Redis (no CCD case id yet), then submits via civil-service `CREATE_LIP_CLAIM`.
+The claimant builds a **draft** in Redis (no Core Case Data (CCD) case id yet), then submits via civil-service `CREATE_LIP_CLAIM`.
 
 Typical steps: resolving the dispute, claimant/defendant details, amount breakdown, interest, timeline, evidence, help with fees, check answers, fee payment (GOV.UK Pay), confirmation.
 
@@ -43,15 +43,15 @@ Statement of means is nested under `/case/:id/response/statement-of-means/…` (
 
 ## Claimant response (`/case/:id/claimant-response`)
 
-After a defence or admission, the claimant chooses how to proceed: accept a repayment plan, propose their own, settle, or request a CCJ. `claimantIntentGuard` applies to the whole base path.
+After a defence or admission, the claimant chooses how to proceed: accept a repayment plan, propose their own, settle, or request a County Court Judgment (CCJ). `claimantIntentGuard` applies to the whole base path.
 
 ## Mediation
 
-`/case/:id/mediation/…` — free telephone mediation, contact details, availability, document upload. CARM behaviour is flag-gated (`cam-enabled-for-case`).
+`/case/:id/mediation/…` — free telephone mediation, contact details, availability, document upload. Civil Automated Referral to Mediation (CARM) behaviour is flag-gated (`cam-enabled-for-case`).
 
 ## Directions questionnaire
 
-`/case/:id/directions-questionnaire/…` — experts, witnesses, hearing requirements, Welsh language, vulnerability, extra four weeks, fixed recoverable costs / multi-track disclosure when MINTI applies (`multi-or-intermediate-track`).
+`/case/:id/directions-questionnaire/…` — experts, witnesses, hearing requirements, Welsh language, vulnerability, extra four weeks, fixed recoverable costs / multi-track disclosure when Multi and Intermediate Track (MINTI) applies (`multi-or-intermediate-track`).
 
 ## Case progression
 
@@ -64,7 +64,7 @@ Respondent: `/case/:id/response/general-application/:appId/…`
 
 Includes application type, agreement from the other party, hearing arrangements, N245, documents, fees, and Certificate of Satisfaction or Cancellation (COSC) under `/cosc`.
 
-Enabled for LiPs via `GaForLips`. `isGAForLiPEnabled` guard sits on both GA bases. Some courts need `ea-courts-whitelisted-for-ga-lips`.
+Enabled for litigants in person (LiPs) via `GaForLips`. `isGAForLiPEnabled` guard sits on both general application (GA) bases. Some courts need `ea-courts-whitelisted-for-ga-lips`.
 
 ## Query management
 
@@ -72,7 +72,7 @@ Citizen queries on a case (`QM_*` URLs in `urls.ts`). Gated by `cui-query-manage
 
 ## Payments and help with fees
 
-Claim fee, hearing fee, and GA application fee confirmation URLs are allowlisted in OIDC so GOV.UK Pay can return the user without a full re-login dance. Payment session keys live in Redis with a short TTL (`paymentSession`).
+Claim fee, hearing fee, and GA application fee confirmation URLs are allowlisted in OIDC so GOV.UK Pay can return the user without a full re-login dance. Payment session keys live in Redis with a short time to live (TTL) (`paymentSession`).
 
 Help with fees has its own feature folder and guards.
 
@@ -80,7 +80,7 @@ Help with fees has its own feature folder and guards.
 
 - Judgment online: `/case/:id/judgment-online/…`
 - Settlement agreement: `/case/:id/settlement-agreement/…` (YAML toggle `settlementAgreementEnabled` plus services)
-- Document download/view: `/case/:id/…` document controllers using DM store
+- Document download/view: `/case/:id/…` document controllers using Document Management (DM) store
 
 ## Translation layer
 
@@ -98,6 +98,6 @@ When civil-service or CCD fields change, update the client, the translator, unit
 3. Put rules and CCD mapping in `services/`.
 4. Add a class-validator form in `common/form/` if the page posts data.
 5. Add a Nunjucks view that **only** uses GOV.UK / shared macros for components.
-6. Add EN (and CY) strings in i18n locales.
+6. Add English (EN) and Welsh (CY, Cymraeg) strings in internationalisation (i18n) locales.
 7. Add a unit test that imports `app` and uses supertest, plus a service test without the full app where possible.
-8. Extend functional coverage if the journey is user-visible in preview/AAT.
+8. Extend functional coverage if the journey is user-visible in preview/AAT (HMCTS acceptance environment).

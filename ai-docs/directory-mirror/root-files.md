@@ -3,13 +3,13 @@
 | File | Do this |
 | --- | --- |
 | `package.json` | Scripts + `engines.node >=24.18.0`. **All** deps/devDeps/resolutions exact pins. `yarn deps:check`. Do not add npm scripts that invoke Jest **without** `--no-sparkplug`. |
-| `yarn.lock` | Keep integrity; every non-optional npm package must have a SHA-512 `checksum:` |
+| `yarn.lock` | Keep integrity; every non-optional npm package must have a SHA-512 (Secure Hash Algorithm) `checksum:` |
 | `.yarnrc.yml` | Yarn 4.10.3 path, immutable installs, `checksumBehavior: throw`, `npmMinimalAgeGate: 10080`, `nodeLinker: node-modules` |
 | `.nvmrc` | `v24.18.0` |
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
 | `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). Update when a change would alter that comparison. |
-| `docs/` | Human documentation (includes `docs/service-assessment.md`) |
+| `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`) |
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |
 | `tsconfig.jest.json` / `tsconfig.jest.integration.json` | Jest TS 6 `rootDir: "."`, `isolatedModules` |
