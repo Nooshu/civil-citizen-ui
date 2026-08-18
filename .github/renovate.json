@@ -2,8 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>hmcts/.github:renovate-config",
-    "local>hmcts/.github//renovate/automerge-all"
+    "local>hmcts/.github//renovate/automerge-minor"
   ],
+  "description": [
+    "Pin every npm specifier (yarn deps:check rejects ranges).",
+    "Wait 7 days after publish (matches Yarn npmMinimalAgeGate).",
+    "Automerge minor/patch only; majors stay for human review.",
+    "CI on renovate/* PRs runs yarn deps:check, yarn deps:audit, and yarn test:coverage."
+  ],
+  "rangeStrategy": "pin",
+  "ignoreTests": false,
   "labels": [
     "dependencies",
     "pr-values:elasticsearch"
@@ -13,6 +21,11 @@
   "rebaseWhen": "conflicted",
   "automergeStrategy": "squash",
   "prConcurrentLimit": 5,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "minimumReleaseAge": "0 days",
+    "prCreation": "immediate"
+  },
   "helmv3": {
     "bumpVersion": "patch"
   },
@@ -28,62 +41,65 @@
   ],
   "packageRules": [
     {
+      "description": "Wait 7 days for npm (matches Yarn npmMinimalAgeGate). Helm/Docker keep their own cadence.",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "7 days",
+      "internalChecksFilter": "strict",
+      "prCreation": "not-pending"
+    },
+    {
+      "description": "Never automerge major updates",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "description": "GOV.UK Frontend needs the fixture/build checklist — do not automerge or group",
+      "matchPackageNames": ["govuk-frontend"],
+      "automerge": false
+    },
+    {
       "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["*", "!govuk-frontend"],
       "groupName": "All non-major updates",
-      "groupSlug": "all-non-major",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "all-non-major"
     },
     {
       "matchManagers": ["helmv3"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Helm chart updates",
-      "groupSlug": "helm-charts",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "helm-charts"
     },
     {
       "matchManagers": ["dockerfile"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Dockerfile updates",
-      "groupSlug": "dockerfile",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "dockerfile"
     },
     {
       "matchPackageNames": ["@playwright/test", "playwright-core", "@axe-core/playwright"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Playwright",
-      "groupSlug": "playwright",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "playwright"
     },
     {
       "matchPackagePatterns": ["^allure-"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Allure reporting",
-      "groupSlug": "allure",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "allure"
     },
     {
       "matchPackageNames": ["eslint", "typescript-eslint"],
       "matchPackagePatterns": ["^@eslint/", "^@typescript-eslint/", "^eslint-"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "ESLint",
-      "groupSlug": "eslint",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "eslint"
     },
     {
       "matchPackageNames": ["typescript"],
       "matchPackagePatterns": ["^@types/"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "TypeScript",
-      "groupSlug": "typescript",
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["before 4pm every weekday"]
+      "groupSlug": "typescript"
     }
   ]
 }

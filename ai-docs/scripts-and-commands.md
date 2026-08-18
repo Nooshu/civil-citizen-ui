@@ -9,7 +9,7 @@ Run `nvm use` first so Node matches `.nvmrc` (`>=24.18.0`).
 | Command | What it does | Notes |
 | --- | --- | --- |
 | `yarn install` | Install with `yarn.lock` | Immutable by default; checksums must match (`checksumBehavior: throw`). Use `YARN_ENABLE_IMMUTABLE_INSTALLS=false` only when the lockfile is meant to change. Age gate: `npmMinimalAgeGate` 7 days on resolve |
-| `yarn deps:check` | Exact pins in `package.json` + SHA checksums in `yarn.lock` | `bin/check-dependency-pins.mjs`. Also runs in `cichecks` and GitHub `ci.yml` |
+| `yarn deps:check` | Exact pins in `package.json` + SHA checksums in `yarn.lock` | `bin/check-dependency-pins.mjs`. Also runs in `cichecks` and GitHub `ci.yml` (every PR; required before Renovate automerge) |
 | `yarn deps:audit` | `yarn npm audit --recursive` vs `yarn-audit-known-issues` | Production tree must be empty of advisories. `bin/check-yarn-audit.mjs`. Also in `cichecks` and `ci.yml` |
 | `yarn start:dev` | Redis (`compose/draft-store.yml`) + nodemon + `NODE_ENV=development` | **https://localhost:3001**, self-signed TLS. Needs IDAM/civil-service URLs in config |
 | `yarn start:redis` | Docker Redis on `6379` | |
@@ -100,6 +100,8 @@ GitHub workflows on `master` can auto-commit README refreshes.
 ## CI aggregate
 
 `yarn cichecks` = install + **deps:check** + **deps:audit** + build + lint + wiremock validate + wiremock contracts + coverage + routes. Accessibility is **not** included (use `yarn tests:a11y`; Jenkins runs `tests:a11y:parallel`). Windows: `yarn cichecks:win` (no wiremock steps).
+
+GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. **Renovate PRs** additionally run `yarn test:coverage`. Config: `.github/renovate.json` (`rangeStrategy: pin`, `automerge-minor`).
 
 `yarn sonar-scan` — needs scanner credentials.
 

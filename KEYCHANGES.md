@@ -2,6 +2,7 @@
 
 ## Key benefits
 
+- **Official GOV.UK macros, not copy-pasted HTML** — **15** journey pages plus **4** shared templates (**19** Nunjucks files) now call Design System macros (`govukHeader`, `govukServiceNavigation`, `govukTable`, `govukInsetText`, `govukButton`) instead of hand-written `govuk-*` markup. **Zero** of those classes remain under `src/main/views`. Frontend upgrades, maintenance, branding, and accessibility all ride the same official HTML.
 - **Look at the user interface (UI) on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, Identity and Access Management (IDAM), virtual private network (VPN), or mirrord**. Docker + WireMock is enough.
 - **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,997 tests / 1,045 suites**).
 - **Coverage across the codebase** — latest `yarn test:coverage` (all of `src/main` TS/JS, excluding webpack output and `mojAll.js`): **97.91% statements, 87.64% branches, 98.64% functions, 97.85% lines**, with a **97 / 86 / 97 / 97** global floor. Versus upstream: **+201 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
@@ -38,7 +39,7 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 | **Correctness of local tests** | `yarn test` runs Jest (**8,997** tests) | Upstream’s `test` script is `echo -c jest.config.js` and executes **0%** of the unit suite |
 | **Coverage** | **97.91% / 87.64% / 98.64% / 97.85%** stmts/branch/funcs/lines on **all** `src/main` TS/JS; global floor **97 / 86 / 97 / 97**; **+24%** unit files, **+22%** cases vs upstream | Whole-tree unit coverage with a CI floor; more of `src/main` is asserted before preview/AAT |
 | **Honest CI** | `collectCoverageFrom` + floor; `cichecks` drops the a11y echo stub; `yarn deps:audit` in `cichecks` and `ci.yml` | A green local/`cichecks` run cannot hide untested files, a skipped Pa11y suite, or an unaudited lockfile |
-| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0** plus **692** official **fixture HTML** assertions (0 upstream) | Macro-rendered HTML is checked against the Design System release, not guessed |
+| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0**; **19** templates converted to official macros (**15** pages + **4** shared); **692** fixture HTML assertions (0 upstream) | Macro HTML tracks the Design System release. Upgrades, branding, and accessibility stay in one place instead of 19 hand-written copies |
 | **Tooling** | TypeScript **6.0.3**, ESLint **10** flat config, Jest on Node 24 with `--no-sparkplug` | Compiles and lints on the current language/toolchain instead of ESLint 8 / TS 5.9 |
 | **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors; `yarn deps:audit` | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors; production CVEs fail the build |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
@@ -63,6 +64,7 @@ Like-for-like counts. Upstream Codecov is **unknown**, so statement/branch **per
 | Unit-test source lines (`src/test/unit` `.ts`/`.js`) | 128,158 | 147,649 | **+15%** |
 | Client JS modules with a paired unit file (`src/main/assets/js/`) | 1 / 13 (**8%**) | 13 / 13 (**100%**) | **+12 files**; **2 → 44** `it(` cases |
 | GOV.UK `fixtures.json` HTML assertions | 0 | 37 components, **692** fixtures | new Design System contract |
+| Hand-written `govuk-table` / `govuk-inset-text` / `govuk-header` / `govuk-button` in `src/main/views` | **18** templates | **0** remaining (**19** converted, including fork-only UI Preview) | official macros; one HTML source for upgrades |
 | Helmet CSP / referrer-policy unit tests | absent | present | new |
 | Jest `collectCoverageFrom` + `coverageThreshold` | absent (report = imported files only) | all `src/main` TS/JS except webpack output / `index.js` / `mojAll.js`; floor 97 / 86 / 97 / 97 | untested new files drop the published % and can fail CI |
 | `yarn test:a11y` | `echo` stub (always passes) | alias of `yarn tests:a11y` (Pa11y); **not** in `cichecks` (Jenkins `tests:a11y:parallel`) | `cichecks` cannot go green by pretending a11y ran |
@@ -282,13 +284,30 @@ Upstream `yarn test:a11y` (and this repo’s `cichecks` until this change) only 
 
 **Benefit:** upgrades cannot silently drift from the Design System. Accessibility and brand stay with GOV.UK’s own HTML, which is the project’s stated UI source of truth.
 
-### GOV.UK Frontend 6.4.0
+### GOV.UK Frontend 6.4.0 and official macros
 
 Pinned **6.2.0 → 6.4.0**. Combined with fixture tests, the service tracks a current Frontend release rather than freezing on an older patch line.
 
-App chrome now uses official macros where it previously diverged: `macro/header.njk` is `govukHeader` plus `govukServiceNavigation` (not a hand-written `govuk-header`); dashboard / amount / timeline tables use `govukTable`; inset wrappers and new-tab actions use `govukInsetText` / `govukButton`. Pa11y now scans **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** (fixtures under `src/test/utils/mocks/a11y/`). Remaining `ignored-urls.ts` entries are no-view routes, external URLs, unfinished journeys, or pages that still fail.
+Upstream still ships **18** view files with hand-written `govuk-table`, `govuk-inset-text`, `govuk-header`, or `govuk-button` markup. The fork converted those, plus the fork-only UI Preview catalogue — **19 Nunjucks templates** in total:
 
-**Benefit:** Service Standard 4/13 assessors see Design System components from the official macros. A green Pa11y mock run is still not a full WCAG audit.
+| Kind | Count | Files |
+| --- | ---: | --- |
+| Journey **pages** converted | **15** | Claims dashboard; CCJ paid-amount and judgement-amount summary; defendant timeline and your-defence; send-your-response-by-email; query create and follow-up; six general-application upload screens; UI Preview catalogue |
+| Shared **macros / fragments** | **4** | `macro/header.njk` (`govukHeader` + `govukServiceNavigation`); `macro/amount-breakdown.njk` and `macro/timeline-summary.njk` (`govukTable`); `features/dashboard/item-content.njk` (`govukTable` / `govukInsetText` / `govukButton`) |
+
+`item-content.njk` is imported by **59** other journey templates, so converting that fragment once updates confirmation, upload, and content screens across claim, response, case progression, general application, mediation, and query management. `header.njk` is the claim-details / dashboard / service-unavailable chrome. After this pass, **zero** of those four `class="govuk-*"` component patterns remain under `src/main/views`.
+
+Pa11y now scans **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** (fixtures under `src/test/utils/mocks/a11y/`). Remaining `ignored-urls.ts` entries are no-view routes, external URLs, unfinished journeys, or pages that still fail.
+
+**Why macros instead of custom HTML**
+
+- **Easier upgrades.** GOV.UK Frontend HTML, CSS, and JS live in the package. A pin bump plus `yarn test:govuk-fixtures` absorbs header, table, inset, and button changes. Hand-written copies would each need a manual rewrite when the Design System ships a new structure (service navigation, table captions, button `rel` for new tabs).
+- **Cheaper maintenance.** One header, one amount table, one inset wrapper — not 19 parallel fragments. Shared chrome (`item-content`, amount/timeline macros) is edited once.
+- **Aligned branding.** Citizens see the same GOV.UK look as other government services because the markup **is** the Design System output, not a lookalike. Service Standard 4/13 (“look like GOV.UK”) is easier to defend in a service assessment.
+- **Accessibility.** Focus order, labels, keyboard behaviour, skip-link adjacency, and table structure come from GOV.UK Frontend (Web Content Accessibility Guidelines (WCAG) 2.2 AA). Custom HTML is how those patterns silently drift. The project prefers GOV.UK over axe when they conflict; macros keep that policy honest.
+- **Fixture contract.** Official macros are the only HTML the **692** `fixtures.json` assertions can lock. Copy-pasted classes cannot be checked that way.
+
+A green Pa11y mock run is still not a full WCAG audit.
 
 ### Pa11y and functional tooling versions
 
@@ -326,6 +345,12 @@ Yarn resolutions include **`tar` 6.2.1 → 7.5.22**, **`flat` → 6.0.1** (with 
 Workflows use **checkout / setup-node / setup-python v7**, **actions/stale v11**, **stale-branches v10**, **git-auto-commit-action v7**. Upstream still uses v4/v5/v8 in several places.
 
 **Benefit:** CI runs on current Actions (Node 24 already), with a smaller backlog of deprecated action majors.
+
+### Renovate vs exact pins
+
+Upstream `.github/renovate.json` extends HMCTS **`automerge-all`**, which would merge major and ranged bumps. That fights `yarn deps:check` and the 7-day Yarn age gate. The fork extends **`automerge-minor`**, sets `rangeStrategy: pin`, waits 7 days for npm, and does not automerge majors or `govuk-frontend`. Renovate PRs run `yarn deps:check`, `yarn deps:audit`, and `yarn test:coverage` in GitHub Actions.
+
+**Benefit:** the pin policy holds when humans are not watching the bot.
 
 ### CVE scan (`yarn deps:audit`)
 
@@ -407,7 +432,7 @@ Standing rules remain: patch/minor preferred, full `yarn test:coverage` after de
 
 Standing conventions in [`AGENTS.md`](AGENTS.md) (not present upstream) require:
 
-- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header / table / inset text when a macro exists. App chrome uses `govukHeader` + service navigation, `govukTable` on the claims dashboard, and `govukButton` for new-tab actions.
+- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header / table / inset text when a macro exists. **15** journey pages and **4** shared templates (**19** files) were converted; **zero** of those `class="govuk-*"` patterns remain in `src/main/views`. `item-content.njk` carries official table/inset/button markup into **59** other screens.
 - App JS only in `src/main/assets/js/`; app theme only in `src/main/assets/scss/`
 - Prefer GOV.UK over axe when they conflict
 - Reuse Nunjucks partials instead of copying journey chrome
@@ -415,14 +440,15 @@ Standing conventions in [`AGENTS.md`](AGENTS.md) (not present upstream) require:
 
 Client JS is now **unit-tested**. `jquery` is **3.7 → 4.0.0**. webpack-dev-middleware **7 → 8.1.1**, webpack-cli **5 → 7.2.2**, copy-webpack-plugin **11 → 14**, css-loader **6 → 7**, babel-loader **9 → 10**.
 
-**Benefit:** UI changes are constrained to the Design System, which is better for citizens (consistent focus, errors, skip link) and cheaper to upgrade. Asset pipeline majors stay installable on Node 24.
+**Benefit:** UI changes are constrained to the Design System. That makes **Frontend upgrades cheaper** (change the pin and re-run fixtures instead of rewriting 19 copies of header/table/inset HTML), **maintenance smaller** (shared macros, not per-page markup), **branding aligned** with GOV.UK, and **accessibility** (focus, labels, keyboard, table structure) the Design System’s rather than a local approximation. Asset pipeline majors stay installable on Node 24.
 
 ---
 
 ## 8. CI/CD
 
 - `cichecks` builds, lints, covers, and runs route integration; it also runs `yarn deps:check` (exact pins + lockfile SHA checksums) and `yarn deps:audit` (`yarn npm audit`). It does **not** run Pa11y (`yarn tests:a11y` / Jenkins `tests:a11y:parallel`). WireMock validate/contract steps that exist in this repo’s `package.json` remain in that script on the fork
-- GitHub Actions Node 24 + current action majors (section 4); `ci.yml` install uses `YARN_ENABLE_HARDENED_MODE=1` then `yarn deps:check` and `yarn deps:audit`
+- GitHub Actions Node 24 + current action majors (section 4); `ci.yml` install uses `YARN_ENABLE_HARDENED_MODE=1` then `yarn deps:check` and `yarn deps:audit`. Renovate PRs also run `yarn test:coverage`.
+- Renovate extends HMCTS `automerge-minor` (not `automerge-all`), sets `rangeStrategy: pin` and a 7-day `minimumReleaseAge`, and does not automerge majors or `govuk-frontend`.
 - README table-refresh workflows use git-auto-commit **v7**
 
 **Benefit:** CI identities and caches stay on supported Actions. Local `yarn test` finally matches the intent of a unit-test script. Coverage, audit, and `cichecks` no longer report a cleaner picture than they measured.

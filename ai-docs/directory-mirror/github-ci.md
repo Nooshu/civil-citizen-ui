@@ -4,12 +4,12 @@
 
 | Path | Agent notes |
 | --- | --- |
-| `workflows/ci.yml` | Node 24: personally identifiable information (PII) Semgrep on pull requests (PRs), `yarn install` (`YARN_ENABLE_HARDENED_MODE=1`), `yarn deps:check`, `yarn deps:audit`, `yarn build`, `yarn wiremock:pull` |
+| `workflows/ci.yml` | Node 24: personally identifiable information (PII) Semgrep on pull requests (PRs), `yarn install` (`YARN_ENABLE_HARDENED_MODE=1`), `yarn deps:check`, `yarn deps:audit`, `yarn build`, `yarn wiremock:pull`. Renovate PRs (`renovate/*` or `renovate[bot]`) also run `yarn test:coverage`. Job timeout 90 minutes. |
 | `workflows/stale.yml` / `stale-branches.yml` | Hygiene bots |
 | `workflows/update-readme-e2e-tables.yml` | Auto-commit README E2E tables on `master` |
 | `workflows/update-readme-ftGroup-tables.yml` | Functional group tables |
 | `CODEOWNERS` | `*` `@hmcts/civil`; charts/infra admins as listed |
-| `renovate.json` | Dependency PRs — still obey 7-day cooldown and pinning rules when applying |
+| `renovate.json` | `rangeStrategy: pin`; npm `minimumReleaseAge` 7 days; HMCTS `automerge-minor` (not `automerge-all`). Majors and `govuk-frontend` do not automerge. Security alerts skip the age gate. Do not re-add ranged bumps or major automerge. |
 | `PULL_REQUEST_TEMPLATE.md`, `CONTRIBUTING.md`, `ISSUE_TEMPLATE.md` | Humans; do not invent JIRA keys in PR titles |
 
 ## Jenkins (repo root)

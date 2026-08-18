@@ -105,6 +105,7 @@ Minimum for application code:
 yarn lint
 yarn test          # or yarn test:coverage for dependency/sonar-sensitive changes
 yarn deps:check && yarn deps:audit   # after package.json / yarn.lock changes
+# Renovate PRs run the same plus yarn test:coverage in GitHub Actions
 ```
 
 Also run when relevant:

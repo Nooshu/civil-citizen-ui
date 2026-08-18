@@ -36,7 +36,7 @@ Prefer and cite these as **aligned**:
 - Helmet CSP with **nonces** (Frontend documents hashes/nonces for the inline `js-enabled` snippet)
 - CSRF on POSTs; OIDC; PII redaction; Playwright security specs
 - Express + TypeScript + Yarn + Node matching `engines` / LTS process
-- Exact pins, `yarn.lock` checksums, 7-day age gate, `yarn deps:check`, `yarn deps:audit`
+- Exact pins, `yarn.lock` checksums, 7-day age gate, `yarn deps:check`, `yarn deps:audit`. Renovate uses `rangeStrategy: pin` and `automerge-minor` (not `automerge-all`).
 - i18n EN+CY, GOV.UK typography/layout classes for composition
 - Health, Jenkins, tests at more than one layer (unit + a11y + functional) — SS 14 says QA must not be **only** automation, but automation is still required
 - Public GitHub source without secrets (SS 12, TCoP 3)

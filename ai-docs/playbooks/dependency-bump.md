@@ -14,4 +14,6 @@ Canonical: [`AGENTS.md`](../../AGENTS.md) — Dependencies. Why: [`docs/security
 10. Sync version notes in `AGENTS.md` / `docs/` if they mention the package.
 11. Package-**only** change and checks pass: origin fetch/rebase/push rule in `AGENTS.md` (maintainers). Do not invent JIRA ids. No agent co-author.
 
+Renovate is configured to pin, wait 7 days, and automerge **minor/patch only**. Do not restore `local>hmcts/.github//renovate/automerge-all`. `govuk-frontend` PRs stay manual (fixture/build checklist).
+
 Do not casually bump: `config` v5 (ESM), `connect-redis` v10 (ioredis), `@ministryofjustice/frontend` v10, Babel 8 + Jest 30. See `docs/dependency-update-log-2026-08-18.md`.
