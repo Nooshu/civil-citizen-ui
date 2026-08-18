@@ -28,6 +28,7 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 | Document | Topic |
 | --- | --- |
 | [Reduced-stack WireMock contracts](reduced-stack-wiremock-contracts.md) | Consumer-owned mappings packaged in the Helm chart |
+| [Functional test migration matrix](functional-test-migration-matrix.md) | Reduced-stack vs full-stack ownership (`@reduced-stack`) |
 | [Functional test diagnostics](functional-test-diagnostics.md) | Jenkins failure summaries and Allure artefacts |
 | [PII logging PR check](pii-logging-check.md) | Personally identifiable information (PII) Semgrep rules for names, contact details, and financial values |
 | [Dependency update log 2026-08-18](dependency-update-log-2026-08-18.md) | Record of a bulk dependency pass (completed and blocked bumps) |

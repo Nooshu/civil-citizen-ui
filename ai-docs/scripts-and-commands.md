@@ -67,8 +67,8 @@ Needs secrets / stack. Config: `codecept.conf.js`. Tests: `src/test/functionalTe
 | `yarn testgalip:e2e` | Deprecated name; greps `@ui-ga` |
 | `yarn test:debug` | `@debug` |
 | `yarn test:crossbrowser` / `test:crossbrowser-functional` | Sauce Labs |
-| `yarn test:mocked-functional` | `bin/run-mocked-functional-tests.sh` — e2eTest + chart WireMock + in-memory Redis + `@mocked-functional` |
-| `yarn test:mocked-functional:browser` | CodeceptJS only (stack already up) |
+| `yarn test:mocked-functional` | `bin/run-mocked-functional-tests.sh` — e2eTest + chart WireMock + in-memory Redis + `@reduced-stack` (compat `@mocked-functional`) |
+| `yarn test:mocked-functional:browser` | CodeceptJS only (stack already up); greps `@reduced-stack` |
 | `yarn test:smoke` | `bin/run-smoke-tests.sh` |
 
 Chromium for mocked functional: `yarn playwright install chromium` once. Logs: `${TMPDIR:-/tmp}/civil-citizen-ui-mocked-functional`.

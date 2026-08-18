@@ -57,7 +57,7 @@ Tags drive pipelines, for example:
 - `@civil-citizen-pr` — PR pipeline (`yarn test:civil-citizen-pr`)
 - `@civil-citizen-master`
 - `@civil-citizen-nightly`
-- Feature groups: `@ui-ga`, `@ui-payments`, `@ui-hearings`, `@mocked-functional`, …
+- Feature groups: `@ui-ga`, `@ui-payments`, `@ui-hearings`, `@reduced-stack`, `@mocked-functional`, …
 
 Scripts:
 
@@ -74,7 +74,7 @@ yarn playwright install chromium   # once
 yarn test:mocked-functional
 ```
 
-Starts CUI in `e2eTest`, WireMock with **chart** mappings, in-memory Redis, then CodeceptJS `@mocked-functional`. Logs: `${TMPDIR:-/tmp}/civil-citizen-ui-mocked-functional`.
+Starts CUI in `e2eTest`, WireMock with **chart** mappings, in-memory Redis, then CodeceptJS `@reduced-stack` (`yarn test:mocked-functional:browser`; `@mocked-functional` remains as a compatibility tag). Logs: `${TMPDIR:-/tmp}/civil-citizen-ui-mocked-functional`. Ownership of which assertions stay on WireMock vs full-stack: [functional test migration matrix](functional-test-migration-matrix.md).
 
 Authoritative CI: GitHub label `pr-values:reducedStack` (do not combine with `pr-values:fullDeployment`).
 

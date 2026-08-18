@@ -183,8 +183,9 @@ $ yarn test:mocked-functional
 ```
 
 This local command starts CUI in `e2eTest` mode, WireMock and the in-memory Redis test implementation, then runs
-the same `@mocked-functional` browser journey used by the reduced-stack Jenkins preview. It is a developer
-diagnostic and is not the authoritative CI execution. The runner uses the same consumer-owned mappings packaged
+the same `@reduced-stack` browser journey used by the reduced-stack Jenkins preview (`@mocked-functional` remains
+as a compatibility tag). It is a developer diagnostic and is not the authoritative CI execution. Coverage
+ownership: [functional test migration matrix](docs/functional-test-migration-matrix.md). The runner uses the same consumer-owned mappings packaged
 in `charts/civil-citizen-ui/wiremock/mappings` as the preview chart. Chromium must be installed locally; run
 `yarn playwright install chromium` once if needed. Logs are written to
 `${TMPDIR:-/tmp}/civil-citizen-ui-mocked-functional`.

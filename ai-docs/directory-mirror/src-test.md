@@ -27,7 +27,7 @@ Consumers: civil-service create-claim + fee payment, IDAM OIDC, S2S. Generated p
 | --- | --- |
 | `tests/ui_tests/` | Browser journeys (tags `@civil-citizen-pr`, `@ui-ga`, `@ui-payments`, …) |
 | `tests/api_tests/` | API-level functional |
-| `tests/mocked/` | `@mocked-functional` for reduced-stack |
+| `tests/mocked/` | `@reduced-stack` (compat `@mocked-functional`) for reduced-stack create-claim |
 | `citizenFeatures/`, `lrFeatures/`, `caseworkerFeatures/` | Page objects / steps |
 | `specClaimHelpers/` | CCD/API helpers, fixtures, IDAM, case roles |
 | `helpers/`, `plugins/` | Playwright helper, failed-file plugin |

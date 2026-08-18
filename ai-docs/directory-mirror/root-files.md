@@ -9,7 +9,7 @@
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
 | `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). Update when a change would alter that comparison. |
-| `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`) |
+| `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`, `docs/functional-test-migration-matrix.md`) |
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |
 | `tsconfig.jest.json` / `tsconfig.jest.integration.json` | Jest TS 6 `rootDir: "."`, `isolatedModules` |

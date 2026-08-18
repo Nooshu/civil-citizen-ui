@@ -7,7 +7,7 @@
 - **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines**. Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
 - **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **software development kit (SDK) 3**, Node 24 Jest without Sparkplug crashes.
 - **Smaller supply-chain surface** — **89%** of upstream `package.json` specifiers were version ranges; the fork has **0**. `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
-- **People can find how the app works** — human `docs/` is **4.5×** the file count and **6.2×** the line count of upstream’s specialised notes, plus portable `AGENTS.md` and a 31-page `ai-docs/` mirror (upstream has neither).
+- **People can find how the app works** — human `docs/` is **5.0×** the file count and **7.0×** the line count of upstream’s specialised notes, plus portable `AGENTS.md` and a 31-page `ai-docs/` mirror (upstream has neither).
 - **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 (Secure Hash Algorithm) checksums are **enforced** on install and in continuous integration (CI); a 7-day npm age gate; `yarn test:coverage` after dependency changes.
 
 The product is unchanged: His Majesty’s Courts and Tribunals Service (HMCTS) Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
@@ -19,11 +19,12 @@ The product is unchanged: His Majesty’s Courts and Tribunals Service (HMCTS) C
 This document compares **this fork** (`origin`, currently `Nooshu/civil-citizen-ui`) with the upstream default branch **`hmcts/civil-citizen-ui` `master`**.
 
 - **Upstream tip at comparison:** `b6eacffd3e`
-- **Fork tip at comparison:** `678f59b020`
+- **Fork tip at comparison:** `4ff66bee81`
 - **Date:** 18 August 2026
 - **Method:** two-dot file diff (`git diff hmcts/master HEAD`), plus `package.json` pin census, `git ls-tree` line counts, and test-file pairing. `yarn.lock` churn is omitted from narrative counts. Percentage tables below use the same upstream tip and this tree. They are file/specifier/test counts — not estimated hours saved or a claim that the live service is “X% more secure”.
+- **Upstream sync:** this tree was rebased onto `hmcts/master` on 18 August 2026. Git skipped the fork’s copy of **DTSCCI-5972** (already on upstream as `aabb3a0e66`). **DTSCCI-5973** (`b6eacffd3e`, reduced-stack create-claim coverage classification) is now included: [docs/functional-test-migration-matrix.md](docs/functional-test-migration-matrix.md), `@reduced-stack` / `@reduced-stack-create-claim` tags on the mocked create-claim journey, and `yarn test:mocked-functional:browser` greps `@reduced-stack`.
 
-Headline delta (excluding lockfile noise in the prose): on the order of **468 files**, **~28,600 insertions**, **~3,100 deletions**; **278 files added**, **185 modified**, **4 deleted**. About **200 additional Jest unit test files** (`src/test/unit/**/*.test.ts`: **837 upstream → 1,037** on the fork). The fork carries **57 commits** not on upstream; upstream has **2 commits** not yet in the fork (reduced-stack create-claim coverage classification).
+Headline delta (excluding lockfile noise in the prose): on the order of **460 files**, **~25,000 insertions**, **~580 deletions**; **269 files added**, **188 modified**, **3 deleted**. About **200 additional Jest unit test files** (`src/test/unit/**/*.test.ts`: **837 upstream → 1,037** on the fork). The fork carries **61 commits** not on upstream; upstream is **0 commits** ahead.
 
 Jest coverage percentages for the fork (see [Coverage percentages](#coverage-percentages-and-breadth)) come from `yarn test:coverage` on this tree (18 August 2026). Upstream Codecov currently publishes **unknown** (no comparable public %); the volume and breadth stats below are the like-for-like git comparison.
 
@@ -40,7 +41,7 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 | **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
 | **Local delivery** | **UI Preview** (`yarn preview`) plus **5** fork-only Yarn scripts | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
-| **Knowledge** | Human `docs/` **4.5×** files / **6.2×** lines; `AGENTS.md` + **31** `ai-docs/` pages (0 upstream) | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
+| **Knowledge** | Human `docs/` **5.0×** files / **7.0×** lines; `AGENTS.md` + **31** `ai-docs/` pages (0 upstream) | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
 | **Dependency hygiene** | Exact pins on **100%** of deps/devDeps (upstream **9%**); lockfile SHA **throw**; 7-day age gate | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
 | **Maintainability shape** | `src/main` **+0.4%** lines vs unit tests **+15%** | The product was not rewritten; the extra code is tests, docs, and toolchain |
 
@@ -57,7 +58,7 @@ Like-for-like counts. Upstream Codecov is **unknown**, so statement/branch **per
 | `yarn test` | `echo -c jest.config.js` (does not run Jest) | 8,995 tests / 1,044 suites | **0% → 100%** of the unit suite actually executed |
 | Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,037 | **+200 (+24%)** |
 | `it(` cases in those files | 6,356 | 7,783 | **+1,427 (+22%)** |
-| Unit-test source lines (`src/test/unit` `.ts`/`.js`) | 128,152 | 147,643 | **+15%** |
+| Unit-test source lines (`src/test/unit` `.ts`/`.js`) | 128,158 | 147,649 | **+15%** |
 | Client JS modules with a paired unit file (`src/main/assets/js/`) | 1 / 13 (**8%**) | 13 / 13 (**100%**) | **+12 files**; **2 → 44** `it(` cases |
 | GOV.UK `fixtures.json` HTML assertions | 0 | 37 components, **692** fixtures | new Design System contract |
 | Helmet CSP / referrer-policy unit tests | absent | present | new |
@@ -82,11 +83,11 @@ Privacy controls that **already exist upstream** (PII logging Semgrep, Playwrigh
 
 | Metric | Upstream | Fork | Change |
 | --- | --- | --- | ---: |
-| Application source lines (`src/main` `.ts`/`.js`) | 71,987 | 72,291 | **+0.4%** (journeys not rewritten) |
-| Human `docs/*.md` | 4 files, 269 lines | 18 files, 1,667 lines | **4.5×** files, **6.2×** lines |
-| `AGENTS.md` | absent | 223 lines | standing conventions for any agent |
+| Application source lines (`src/main` `.ts`/`.js`) | 72,005 | 72,309 | **+0.4%** (journeys not rewritten) |
+| Human `docs/*.md` | 4 files, 269 lines | 20 files, 1,882 lines | **5.0×** files, **7.0×** lines |
+| `AGENTS.md` | absent | 225 lines | standing conventions for any agent |
 | `ai-docs/*.md` | 0 files | 31 files, 1,545 lines | directory mirror + deviation checklist |
-| Structured guidance (docs + AGENTS + ai-docs) | 269 lines | 3,435 lines | **~13×** |
+| Structured guidance (docs + AGENTS + ai-docs) | 269 lines | 3,652 lines | **~14×** |
 | Coverage (statements / branches / functions / lines) | not published | **95.36% / 84.73% / 92.47% / 97.85%** | fork-only; no upstream % to compare |
 
 ---
@@ -107,6 +108,8 @@ New guides (not on upstream):
 - [docs/security-and-privacy.md](docs/security-and-privacy.md), [docs/testing.md](docs/testing.md), [docs/ci-cd-and-deployment.md](docs/ci-cd-and-deployment.md), [docs/contributing.md](docs/contributing.md)
 - [docs/service-assessment.md](docs/service-assessment.md) — Service Standard, Technology Code of Practice, HMCTS stack, Design System (what passing an assessment means)
 - [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md)
+
+Shared with upstream after this rebase: [docs/functional-test-migration-matrix.md](docs/functional-test-migration-matrix.md) (DTSCCI-5973 — which assertions stay on WireMock vs full-stack).
 
 The root [README.md](README.md) now links this hub, and the Node prerequisite matches `engines` / `.nvmrc` (`>=24.18.0`) instead of an obsolete Node 14 line.
 
@@ -215,8 +218,8 @@ Public Codecov for upstream `master` currently shows **unknown**, so a published
 | --- | ---: | ---: | ---: |
 | Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,037 | **+200 (+23.9%)** |
 | `it(` cases in those files | 6,356 | 7,783 | **+1,427 (+22.4%)** |
-| New unit-test file lines (added files only) | — | — | **+14,402** |
-| All of `src/test/` (two-dot) | — | — | **+19,824 / −228 lines** (347 files) |
+| New unit-test file lines (added files only) | — | — | **+14,363** |
+| All of `src/test/` (two-dot) | — | — | **+19,823 / −227 lines** (347 files) |
 
 New unit files by area (spread across the tree):
 
@@ -403,11 +406,10 @@ These were assessed and **left blocked**, with reasons recorded in [docs/depende
 
 Honest gaps, not hidden:
 
-1. **Upstream is 2 commits ahead** on reduced-stack create-claim coverage classification. Rebase/merge `hmcts/master` before a long-lived PR.
-2. **`ioredis` 6 / RESP3** — confirm against platform Redis (legacy reply shapes are preserved in this version, but behaviour should be checked in AAT).
-3. **CodeceptJS 4 / WebdriverIO 9** — unit coverage does not replace a tagged functional run on preview/AAT.
-4. **TypeScript `strict` remains false** — required for a TS 6 landing; a future strict pass would be a separate, large effort.
-5. **Preview OIDC allowlist** is intentional for `e2eTest`; it must not be copied into production path policy.
+1. **`ioredis` 6 / RESP3** — confirm against platform Redis (legacy reply shapes are preserved in this version, but behaviour should be checked in AAT).
+2. **CodeceptJS 4 / WebdriverIO 9** — unit coverage does not replace a tagged functional run on preview/AAT. Reduced-stack browser selection is now `@reduced-stack` (see [functional test migration matrix](docs/functional-test-migration-matrix.md)).
+3. **TypeScript `strict` remains false** — required for a TS 6 landing; a future strict pass would be a separate, large effort.
+4. **Preview OIDC allowlist** is intentional for `e2eTest`; it must not be copied into production path policy.
 
 ---
 
