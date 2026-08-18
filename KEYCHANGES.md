@@ -3,12 +3,12 @@
 ## Key benefits
 
 - **Look at the UI on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, IDAM, VPN, or mirrord**. Docker + WireMock is enough.
-- **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file and does not execute tests.
-- **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines** (1,044 suites / 8,995 tests). Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
+- **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,995 tests / 1,044 suites**).
+- **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines**. Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
 - **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **SDK 3**, Node 24 Jest without Sparkplug crashes.
-- **Smaller security surface** — `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
-- **People can find how the app works** — full human `docs/` (including a Service Standard / TCoP / Design System snapshot), portable `AGENTS.md` (any coding agent), and an `ai-docs/` mirror (upstream has almost none of this).
-- **Upgrades that stick** — every direct dependency and resolution is an exact pin; `yarn.lock` SHA-512 checksums are verified on install and in CI; a 7-day npm age gate; `yarn test:coverage` after dependency changes.
+- **Smaller supply-chain surface** — **89%** of upstream `package.json` specifiers were version ranges; the fork has **0**. `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
+- **People can find how the app works** — human `docs/` is **4.5×** the file count and **6.2×** the line count of upstream’s specialised notes, plus portable `AGENTS.md` and a 31-page `ai-docs/` mirror (upstream has neither).
+- **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 checksums are **enforced** on install and in CI; a 7-day npm age gate; `yarn test:coverage` after dependency changes.
 
 The product is unchanged: HMCTS Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
 
@@ -21,7 +21,7 @@ This document compares **this fork** (`origin`, currently `Nooshu/civil-citizen-
 - **Upstream tip at comparison:** `b6eacffd3e`
 - **Fork tip at comparison:** `678f59b020`
 - **Date:** 18 August 2026
-- **Method:** two-dot file diff (`git diff hmcts/master HEAD`), plus `package.json` / script / test-count checks. `yarn.lock` churn is omitted from narrative counts.
+- **Method:** two-dot file diff (`git diff hmcts/master HEAD`), plus `package.json` pin census, `git ls-tree` line counts, and test-file pairing. `yarn.lock` churn is omitted from narrative counts. Percentage tables below use the same upstream tip and this tree. They are file/specifier/test counts — not estimated hours saved or a claim that the live service is “X% more secure”.
 
 Headline delta (excluding lockfile noise in the prose): on the order of **468 files**, **~28,600 insertions**, **~3,100 deletions**; **278 files added**, **185 modified**, **4 deleted**. About **200 additional Jest unit test files** (`src/test/unit/**/*.test.ts`: **837 upstream → 1,037** on the fork). The fork carries **57 commits** not on upstream; upstream has **2 commits** not yet in the fork (reduced-stack create-claim coverage classification).
 
@@ -33,15 +33,61 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 
 | Area | What changed | Why it matters |
 | --- | --- | --- |
-| **Correctness of local tests** | `yarn test` actually runs Jest | Upstream’s `test` script is `echo -c jest.config.js` and does not execute the suite |
-| **Coverage** | **95.36% / 84.73% / 92.47% / 97.85%** stmts/branch/funcs/lines; **+200** unit files vs upstream | Whole-tree unit coverage, not a single-journey spike; more of `src/main` is asserted before preview/AAT |
-| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0** plus official **fixture HTML** tests | Macro-rendered HTML is checked against the Design System release, not guessed |
+| **Correctness of local tests** | `yarn test` runs Jest (**8,995** tests) | Upstream’s `test` script is `echo -c jest.config.js` and executes **0%** of the unit suite |
+| **Coverage** | **95.36% / 84.73% / 92.47% / 97.85%** stmts/branch/funcs/lines; **+24%** unit files, **+22%** cases vs upstream | Whole-tree unit coverage, not a single-journey spike; more of `src/main` is asserted before preview/AAT |
+| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0** plus **692** official **fixture HTML** assertions (0 upstream) | Macro-rendered HTML is checked against the Design System release, not guessed |
 | **Tooling** | TypeScript **6.0.3**, ESLint **10** flat config, Jest on Node 24 with `--no-sparkplug` | Compiles and lints on the current language/toolchain instead of ESLint 8 / TS 5.9 |
-| **Security / supply chain** | Helmet 8, `crypto-js` removed, `tar`/`flat`/`formidable` resolutions, GitHub Actions v7 | Fewer unmaintained or historically noisy packages; newer Actions and HTTP stack |
+| **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
-| **Local delivery** | **UI Preview** (`yarn preview`) | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
-| **Knowledge** | Human `docs/` (including service-assessment), portable `AGENTS.md`, `ai-docs/` | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
-| **Dependency hygiene** | Exact pins on **all** direct deps and resolutions; lockfile SHA checksums; 7-day Yarn age gate; `yarn deps:check` in CI | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
+| **Local delivery** | **UI Preview** (`yarn preview`) plus **5** fork-only Yarn scripts | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
+| **Knowledge** | Human `docs/` **4.5×** files / **6.2×** lines; `AGENTS.md` + **31** `ai-docs/` pages (0 upstream) | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
+| **Dependency hygiene** | Exact pins on **100%** of deps/devDeps (upstream **9%**); lockfile SHA **throw**; 7-day age gate | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
+| **Maintainability shape** | `src/main` **+0.4%** lines vs unit tests **+15%** | The product was not rewritten; the extra code is tests, docs, and toolchain |
+
+---
+
+## Measured delta vs `hmcts/master`
+
+Like-for-like counts. Upstream Codecov is **unknown**, so statement/branch **percentages** are fork-only (`yarn test:coverage`, 18 August 2026). PII Semgrep exists upstream as well and is **not** counted as a fork gain.
+
+### Testing and developer productivity
+
+| Metric | Upstream | Fork | Change |
+| --- | --- | --- | ---: |
+| `yarn test` | `echo -c jest.config.js` (does not run Jest) | 8,995 tests / 1,044 suites | **0% → 100%** of the unit suite actually executed |
+| Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,037 | **+200 (+24%)** |
+| `it(` cases in those files | 6,356 | 7,783 | **+1,427 (+22%)** |
+| Unit-test source lines (`src/test/unit` `.ts`/`.js`) | 128,152 | 147,643 | **+15%** |
+| Client JS modules with a paired unit file (`src/main/assets/js/`) | 1 / 13 (**8%**) | 13 / 13 (**100%**) | **+12 files**; **2 → 44** `it(` cases |
+| GOV.UK `fixtures.json` HTML assertions | 0 | 37 components, **692** fixtures | new Design System contract |
+| Helmet CSP / referrer-policy unit tests | absent | present | new |
+| Yarn scripts | 56 | 61 | **+5** (`preview`, `start:ui-preview`, `start:ui-preview:down`, `test:govuk-fixtures`, `deps:check`) |
+
+### Security, privacy, and supply chain
+
+| Metric | Upstream | Fork | Change |
+| --- | --- | --- | ---: |
+| `package.json` specifiers that are version ranges (`^` / `~` / other) | 151 / 169 (**89%**) | 0 / 172 (**0%**) | **−100%** floating ranges |
+| Exact pins (`dependencies` + `devDependencies`) | 11 / 124 (**9%**) | 125 / 125 (**100%**) | every direct install is a reviewed version |
+| Exact pins including `resolutions` | 18 / 169 (**11%**) | 171 / 172 (**99%**; remaining entry is a Yarn `patch:`) | resolutions no longer carry ranges either |
+| `checksumBehavior: throw` + `yarn deps:check` | absent | enforced in install, `cichecks`, and CI | a swapped tarball fails instead of installing |
+| 7-day npm publish cooldown (`npmMinimalAgeGate`) | absent | 10,080 minutes | new versions wait a week unless a security override is set |
+| Runtime `crypto-js` | `^4.2.0` | removed (Node `crypto`) | **−1** third-party crypto implementation |
+| GitHub Actions `uses` entries | checkout/setup-node **v4**, stale **v8**, mixed SHA pins of older majors | all **13** uses on current majors (v7 / v10 / v11) | **100%** of workflow actions refreshed |
+| Helmet | `^7` | **8.3.0** (exact) + CSP unit tests | supported major; missing referrer policy still throws |
+
+Privacy controls that **already exist upstream** (PII logging Semgrep, Playwright API-security specs) are unchanged in count. The fork adds discoverable docs and a Playwright `tsconfig` so those specs type-check.
+
+### Maintainability and knowledge
+
+| Metric | Upstream | Fork | Change |
+| --- | --- | --- | ---: |
+| Application source lines (`src/main` `.ts`/`.js`) | 71,987 | 72,291 | **+0.4%** (journeys not rewritten) |
+| Human `docs/*.md` | 4 files, 269 lines | 18 files, 1,667 lines | **4.5×** files, **6.2×** lines |
+| `AGENTS.md` | absent | 223 lines | standing conventions for any agent |
+| `ai-docs/*.md` | 0 files | 31 files, 1,545 lines | directory mirror + deviation checklist |
+| Structured guidance (docs + AGENTS + ai-docs) | 269 lines | 3,435 lines | **~13×** |
+| Coverage (statements / branches / functions / lines) | not published | **95.36% / 84.73% / 92.47% / 97.85%** | fork-only; no upstream % to compare |
 
 ---
 
@@ -162,7 +208,7 @@ Jest reports coverage for files **exercised** by the unit suite (`jest.config.js
 
 #### Versus upstream `hmcts/master` (git, same date)
 
-Public Codecov for upstream `master` currently shows **unknown**, so a published upstream percentage is not available to quote. The **volume** change is:
+Public Codecov for upstream `master` currently shows **unknown**, so a published upstream percentage is not available to quote. Volume, pin, docs, and pairing percentages are in [Measured delta vs `hmcts/master`](#measured-delta-vs-hmctsmaster). The **volume** change is:
 
 | | Upstream | Fork | Change |
 | --- | ---: | ---: | ---: |
@@ -280,7 +326,7 @@ LaunchDarkly SDK **8 → 9.13.0**. `@hmcts/properties-volume` **0.0.14 → 1.4.1
 
 ## 6. Maintainability of the application layer
 
-Application diffs vs upstream are **focused**, not a rewrite:
+Application diffs vs upstream are **focused**, not a rewrite (`src/main` **+0.4%** lines; unit tests **+15%** — [Measured delta](#measured-delta-vs-hmctsmaster)):
 
 - UI Preview routes/views/OIDC allowlist (above)
 - First-contact PIN uses `cryptoAes` instead of CryptoJS
