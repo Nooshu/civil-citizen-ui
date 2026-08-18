@@ -184,3 +184,54 @@ Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still
 - 89% of upstream package specifiers were floating ranges. We have none.
 - 692 GOV.UK fixture assertions. Upstream has none.
 - Application code plus 0.4%. Unit tests plus 15%. Same product.
+
+---
+
+## Key benefits for the Civil development team
+
+What you get if you look at this fork. Same citizen product; the journeys and Express + Nunjucks shape are unchanged.
+
+| If you… | You get… |
+| --- | --- |
+| Want to see a page | `yarn preview` — live GOV.UK user interface (UI) on a laptop, no Identity and Access Management (IDAM), virtual private network (VPN), or civil-service |
+| Need claimant-response screens | Full- and part-admit fixtures with an instalment plan, so **How they want to pay** shows amount, frequency, and dates |
+| Worry preview stubs will break reduced-stack | Preview mappings live in `compose/ui-preview-mappings/`, separate from Helm chart WireMock contracts |
+| Iterate Nunjucks offline | Designers and developers can work without Core Case Data (CCD), IDAM, or a tunnel into the His Majesty’s Courts and Tribunals Service (HMCTS) acceptance environment (AAT) |
+| Touch header, table, inset, or button markup | Official GOV.UK macros on **19** templates; shared `item-content.njk` carries that into **59** other screens |
+| Touch tabs, tags, summary lists, or Find address | Official `govukTabs`, `govukTag`, `govukSummaryList` (including cards), `govukInput`, and `govukButton` |
+| Edit upload or query summaries | Shared `uploaded-files-summary.njk` and `query-message-card.njk` — one fragment change updates every caller |
+| Upgrade GOV.UK Frontend | Pin bump + `yarn test:govuk-fixtures` (**692** assertions, **37** components). Upstream has **none** |
+| Defend “look like GOV.UK” | Markup **is** Design System output. Service Standard 4 and 13 are easier to argue |
+| Care about accessibility | Focus, labels, keyboard (including tabs), and table structure come from GOV.UK Frontend (Web Content Accessibility Guidelines (WCAG) 2.2 AA). GOV.UK wins if axe disagrees |
+| Run unit tests | `yarn test` executes **8,997** tests in **1,045** suites. Upstream’s script runs **none** |
+| Compare test volume | **+201** unit files (**+24%**) and **+1,427** cases (**+22%**) vs upstream, across forms, services, clients, modules, routes, and client JS |
+| Change client JavaScript | All **13** `src/main/assets/js/` modules have a paired unit file (upstream had **1**) |
+| Care about coverage | **97.91%** statements / **87.64%** branches / **98.64%** functions / **97.85%** lines on the whole `src/main` tree |
+| Add an untested controller | It counts as zero. Continuous integration (CI) floor **97 / 86 / 97 / 97** can fail the build |
+| Trust `yarn test:coverage` | It measures every application file, not only files a test already imported |
+| Trust `yarn cichecks` | Builds, lints, covers, route integration, pin check, and audit. Accessibility is **not** a stub that always passed |
+| Run accessibility locally | `yarn test:a11y` is the real Pa11y command (Jenkins still runs `tests:a11y:parallel`) |
+| Run Jest on Node 24 | `--no-sparkplug` on the Jest binary so workers do not segmentation-fault (SIGSEGV) |
+| Lint or compile Sass | ESLint **10** flat config; sass-loader **17** still resolves GOV.UK Sass |
+| Type-check Playwright specs | Separate `playwright/tsconfig.json` — no clash with Jest globals |
+| Install dependencies | **0** version ranges (upstream **89%**). Every `dependencies` / `devDependencies` entry is an exact pin |
+| Worry about a swapped tarball | `yarn.lock` SHA-512 (Secure Hash Algorithm) checksums; `checksumBehavior: throw`; `yarn deps:check` in CI |
+| Worry about a brand-new npm package | 7-day age gate. Security fixes can skip it for one command |
+| Need a Common Vulnerabilities and Exposures (CVE) scan, not just pins | `yarn deps:audit` — production tree must be clean; runs in `cichecks` and GitHub Actions |
+| Leave Renovate unattended | `automerge-minor` only, pinned ranges, 7-day wait; no automerge of majors or `govuk-frontend`. Its pull requests (PRs) run pin check, audit, and coverage |
+| Encrypt first-contact personal identification number (PIN) | Node `crypto` instead of `crypto-js`; in-flight sessions still decrypt |
+| Configure Helmet | Helmet **8.3.0** with tests that referrer-policy is required and Content Security Policy (CSP) nonce callbacks run |
+| Update GitHub Actions | checkout / setup-node **v7**, stale **v11** — current majors, not v4/v8 |
+| Lift noisy transitives | `tar` 7.5.22, `flat` 6.0.1, `formidable` 3.5.4, `node-fetch` 3 — reviewed, not an accidental install |
+| Send telemetry | Application Insights software development kit (SDK) **3.15.1**; non-prod samples at **100%** so diagnosis is not silently dropped |
+| Use feature flags or Key Vault | LaunchDarkly **9.13.0**; `@hmcts/properties-volume` **1.4.1** |
+| Compile TypeScript | **6.0.3** with documented transitional flags (`strict: false` on purpose) |
+| Use i18n or ESM packages | i18next **26**; `uuid` 14 transformed in Jest instead of blocking the upgrade |
+| Bump webpack / jQuery | jquery **4** and webpack 7-era loaders installable on Node 24 |
+| Wonder why some majors were skipped | Reasons recorded (`config` 5, `connect-redis` 10, Ministry of Justice Frontend 10, Babel 8 + Jest 30) — completable upgrades, not a big-bang |
+| Onboard someone | Human `docs/` is **20** files / **7×** the line count of upstream’s specialised notes, plus a glossary |
+| Ask an agent or a human to change code | `AGENTS.md` — same rules for Copilot, Claude, Codex, Cursor, or a person (not Cursor-only `.mdc` files) |
+| Need directory-level context | **31** `ai-docs/` pages: mirror, playbooks, script catalogue, service-assessment deviation checklist |
+| Judge a stack or UI proposal | Dated Service Standard / Technology Code of Practice (TCoP) snapshot — say no to a citizen Single Page Application (SPA) or hand-rolled GOV.UK from the manuals |
+| Read the README Node line | Matches `engines` / `.nvmrc` (`>=24.18.0`), not an obsolete Node 14 line |
+| Look at application source size | `src/main` **+0.4%** lines. Unit tests **+15%**. The extra code is tests, docs, and toolchain — not a rewrite |
