@@ -3,12 +3,13 @@
 ## Key benefits
 
 - **Look at the user interface (UI) on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, Identity and Access Management (IDAM), virtual private network (VPN), or mirrord**. Docker + WireMock is enough.
-- **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,995 tests / 1,044 suites**).
-- **Coverage across the codebase** — latest `yarn test:coverage`: **95.36% statements, 84.73% branches, 92.47% functions, 97.85% lines**. Versus upstream: **+200 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
+- **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,997 tests / 1,045 suites**).
+- **Coverage across the codebase** — latest `yarn test:coverage` (all of `src/main` TS/JS, excluding webpack output and `mojAll.js`): **97.91% statements, 87.64% branches, 98.64% functions, 97.85% lines**, with a **97 / 86 / 97 / 97** global floor. Versus upstream: **+201 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
+- **Continuous integration (CI) tells the truth** — coverage counts **every** `src/main` TypeScript/JavaScript file (upstream reports only files a test already imported); `yarn cichecks` no longer ends with an accessibility (a11y) stub that always passes; `yarn deps:audit` runs `yarn npm audit` in `cichecks` and GitHub Actions (production tree must be clean).
 - **Current toolchain** — TypeScript **6**, ESLint **10**, GOV.UK Frontend **6.4**, Helmet **8**, Application Insights **software development kit (SDK) 3**, Node 24 Jest without Sparkplug crashes.
 - **Smaller supply-chain surface** — **89%** of upstream `package.json` specifiers were version ranges; the fork has **0**. `crypto-js` replaced with Node `crypto`; `tar` / `flat` / `formidable` and GitHub Actions majors lifted.
 - **People can find how the app works** — human `docs/` is **5.0×** the file count and **7.0×** the line count of upstream’s specialised notes, plus portable `AGENTS.md` and a 31-page `ai-docs/` mirror (upstream has neither).
-- **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 (Secure Hash Algorithm) checksums are **enforced** on install and in continuous integration (CI); a 7-day npm age gate; `yarn test:coverage` after dependency changes.
+- **Upgrades that stick** — **100%** of `dependencies` and `devDependencies` are exact pins (upstream **9%**); `yarn.lock` SHA-512 (Secure Hash Algorithm) checksums are **enforced** on install and in continuous integration (CI); a 7-day npm age gate; `yarn deps:audit` for known advisories; `yarn test:coverage` after dependency changes.
 
 The product is unchanged: His Majesty’s Courts and Tribunals Service (HMCTS) Civil Citizen UI (Express 5, TypeScript, Nunjucks, GOV.UK Frontend). The fork improves **how** the service is built, tested, secured, documented, and kept current.
 
@@ -24,7 +25,7 @@ This document compares **this fork** (`origin`, currently `Nooshu/civil-citizen-
 - **Method:** two-dot file diff (`git diff hmcts/master HEAD`), plus `package.json` pin census, `git ls-tree` line counts, and test-file pairing. `yarn.lock` churn is omitted from narrative counts. Percentage tables below use the same upstream tip and this tree. They are file/specifier/test counts — not estimated hours saved or a claim that the live service is “X% more secure”.
 - **Upstream sync:** this tree was rebased onto `hmcts/master` on 18 August 2026. Git skipped the fork’s copy of **DTSCCI-5972** (already on upstream as `aabb3a0e66`). **DTSCCI-5973** (`b6eacffd3e`, reduced-stack create-claim coverage classification) is now included: [docs/functional-test-migration-matrix.md](docs/functional-test-migration-matrix.md), `@reduced-stack` / `@reduced-stack-create-claim` tags on the mocked create-claim journey, and `yarn test:mocked-functional:browser` greps `@reduced-stack`.
 
-Headline delta (excluding lockfile noise in the prose): on the order of **460 files**, **~25,000 insertions**, **~580 deletions**; **269 files added**, **188 modified**, **3 deleted**. About **200 additional Jest unit test files** (`src/test/unit/**/*.test.ts`: **837 upstream → 1,037** on the fork). The fork carries **61 commits** not on upstream; upstream is **0 commits** ahead.
+Headline delta (excluding lockfile noise in the prose): on the order of **460 files**, **~25,000 insertions**, **~580 deletions**; **269 files added**, **188 modified**, **3 deleted**. About **201 additional Jest unit test files** (`src/test/unit/**/*.test.ts`: **837 upstream → 1,038** on the fork). The fork carries **61 commits** not on upstream; upstream is **0 commits** ahead.
 
 Jest coverage percentages for the fork (see [Coverage percentages](#coverage-percentages-and-breadth)) come from `yarn test:coverage` on this tree (18 August 2026). Upstream Codecov currently publishes **unknown** (no comparable public %); the volume and breadth stats below are the like-for-like git comparison.
 
@@ -34,15 +35,16 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 
 | Area | What changed | Why it matters |
 | --- | --- | --- |
-| **Correctness of local tests** | `yarn test` runs Jest (**8,995** tests) | Upstream’s `test` script is `echo -c jest.config.js` and executes **0%** of the unit suite |
-| **Coverage** | **95.36% / 84.73% / 92.47% / 97.85%** stmts/branch/funcs/lines; **+24%** unit files, **+22%** cases vs upstream | Whole-tree unit coverage, not a single-journey spike; more of `src/main` is asserted before preview/AAT |
+| **Correctness of local tests** | `yarn test` runs Jest (**8,997** tests) | Upstream’s `test` script is `echo -c jest.config.js` and executes **0%** of the unit suite |
+| **Coverage** | **97.91% / 87.64% / 98.64% / 97.85%** stmts/branch/funcs/lines on **all** `src/main` TS/JS; global floor **97 / 86 / 97 / 97**; **+24%** unit files, **+22%** cases vs upstream | Whole-tree unit coverage with a CI floor; more of `src/main` is asserted before preview/AAT |
+| **Honest CI** | `collectCoverageFrom` + floor; `cichecks` drops the a11y echo stub; `yarn deps:audit` in `cichecks` and `ci.yml` | A green local/`cichecks` run cannot hide untested files, a skipped Pa11y suite, or an unaudited lockfile |
 | **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0** plus **692** official **fixture HTML** assertions (0 upstream) | Macro-rendered HTML is checked against the Design System release, not guessed |
 | **Tooling** | TypeScript **6.0.3**, ESLint **10** flat config, Jest on Node 24 with `--no-sparkplug` | Compiles and lints on the current language/toolchain instead of ESLint 8 / TS 5.9 |
-| **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors |
+| **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors; `yarn deps:audit` | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors; production CVEs fail the build |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
-| **Local delivery** | **UI Preview** (`yarn preview`) plus **5** fork-only Yarn scripts | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
+| **Local delivery** | **UI Preview** (`yarn preview`) plus **6** fork-only Yarn scripts | Browse the live UI **without a civil-service backend, IDAM, VPN, or mirrord** — Docker + WireMock on the laptop is enough |
 | **Knowledge** | Human `docs/` **5.0×** files / **7.0×** lines; `AGENTS.md` + **31** `ai-docs/` pages (0 upstream) | Onboarding and AI-assisted change no longer depend on tribal knowledge or a particular IDE; agents can flag Service Standard deviations |
-| **Dependency hygiene** | Exact pins on **100%** of deps/devDeps (upstream **9%**); lockfile SHA **throw**; 7-day age gate | Repeatable upgrades instead of floating ranges, silent majors, or swapped tarballs |
+| **Dependency hygiene** | Exact pins on **100%** of deps/devDeps (upstream **9%**); lockfile SHA **throw**; 7-day age gate; `yarn deps:audit` | Repeatable upgrades instead of floating ranges, silent majors, swapped tarballs, or unaudited lockfiles |
 | **Maintainability shape** | `src/main` **+0.4%** lines vs unit tests **+15%** | The product was not rewritten; the extra code is tests, docs, and toolchain |
 
 ---
@@ -55,14 +57,16 @@ Like-for-like counts. Upstream Codecov is **unknown**, so statement/branch **per
 
 | Metric | Upstream | Fork | Change |
 | --- | --- | --- | ---: |
-| `yarn test` | `echo -c jest.config.js` (does not run Jest) | 8,995 tests / 1,044 suites | **0% → 100%** of the unit suite actually executed |
-| Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,037 | **+200 (+24%)** |
+| `yarn test` | `echo -c jest.config.js` (does not run Jest) | 8,997 tests / 1,045 suites | **0% → 100%** of the unit suite actually executed |
+| Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,038 | **+201 (+24%)** |
 | `it(` cases in those files | 6,356 | 7,783 | **+1,427 (+22%)** |
 | Unit-test source lines (`src/test/unit` `.ts`/`.js`) | 128,158 | 147,649 | **+15%** |
 | Client JS modules with a paired unit file (`src/main/assets/js/`) | 1 / 13 (**8%**) | 13 / 13 (**100%**) | **+12 files**; **2 → 44** `it(` cases |
 | GOV.UK `fixtures.json` HTML assertions | 0 | 37 components, **692** fixtures | new Design System contract |
 | Helmet CSP / referrer-policy unit tests | absent | present | new |
-| Yarn scripts | 56 | 61 | **+5** (`preview`, `start:ui-preview`, `start:ui-preview:down`, `test:govuk-fixtures`, `deps:check`) |
+| Jest `collectCoverageFrom` + `coverageThreshold` | absent (report = imported files only) | all `src/main` TS/JS except webpack output / `index.js` / `mojAll.js`; floor 97 / 86 / 97 / 97 | untested new files drop the published % and can fail CI |
+| `yarn test:a11y` | `echo` stub (always passes) | alias of `yarn tests:a11y` (Pa11y); **not** in `cichecks` (Jenkins `tests:a11y:parallel`) | `cichecks` cannot go green by pretending a11y ran |
+| Yarn scripts | 56 | 62 | **+6** (`preview`, `start:ui-preview`, `start:ui-preview:down`, `test:govuk-fixtures`, `deps:check`, `deps:audit`) |
 
 ### Security, privacy, and supply chain
 
@@ -72,6 +76,7 @@ Like-for-like counts. Upstream Codecov is **unknown**, so statement/branch **per
 | Exact pins (`dependencies` + `devDependencies`) | 11 / 124 (**9%**) | 125 / 125 (**100%**) | every direct install is a reviewed version |
 | Exact pins including `resolutions` | 18 / 169 (**11%**) | 171 / 172 (**99%**; remaining entry is a Yarn `patch:`) | resolutions no longer carry ranges either |
 | `checksumBehavior: throw` + `yarn deps:check` | absent | enforced in install, `cichecks`, and CI | a swapped tarball fails instead of installing |
+| `yarn deps:audit` (`yarn npm audit`) | documented, not wired | production tree must be empty; toolchain lines in `yarn-audit-known-issues`; `cichecks` + `ci.yml` | pins are not a CVE scan |
 | 7-day npm publish cooldown (`npmMinimalAgeGate`) | absent | 10,080 minutes | new versions wait a week unless a security override is set |
 | Runtime `crypto-js` | `^4.2.0` | removed (Node `crypto`) | **−1** third-party crypto implementation |
 | GitHub Actions `uses` entries | checkout/setup-node **v4**, stale **v8**, mixed SHA pins of older majors | all **13** uses on current majors (v7 / v10 / v11) | **100%** of workflow actions refreshed |
@@ -88,7 +93,7 @@ Privacy controls that **already exist upstream** (PII logging Semgrep, Playwrigh
 | `AGENTS.md` | absent | 225 lines | standing conventions for any agent |
 | `ai-docs/*.md` | 0 files | 31 files, 1,545 lines | directory mirror + deviation checklist |
 | Structured guidance (docs + AGENTS + ai-docs) | 269 lines | 3,652 lines | **~14×** |
-| Coverage (statements / branches / functions / lines) | not published | **95.36% / 84.73% / 92.47% / 97.85%** | fork-only; no upstream % to compare |
+| Coverage (statements / branches / functions / lines) | not published | **97.91% / 87.64% / 98.64% / 97.85%** on all `src/main` TS/JS | fork-only; global floor 97 / 86 / 97 / 97 |
 
 ---
 
@@ -164,11 +169,14 @@ Preview stubs are **isolated** from Helm chart WireMock contracts. That preserve
 | --- | --- | --- |
 | `yarn test` | `echo -c jest.config.js` (does not run tests) | Jest unit suite via `node --no-sparkplug …/jest.js` |
 | `yarn test:govuk-fixtures` | Absent | Official GOV.UK `fixtures.json` vs this app’s Nunjucks |
+| `yarn test:coverage` | Jest without an allowlist or floor | `collectCoverageFrom` all `src/main` TS/JS (minus webpack output / `index.js` / `mojAll.js`) + global floor |
+| `yarn test:a11y` | `echo` that a11y runs in GitHub Actions (it does not; always passes) | Alias of `yarn tests:a11y` (Pa11y). **Not** in `cichecks`; Jenkins runs `tests:a11y:parallel` |
+| `yarn deps:audit` | Absent (`yarn-audit-known-issues` unused) | `yarn npm audit --recursive`; production tree must be empty; toolchain lines reviewed in `yarn-audit-known-issues` |
 | Lint | ESLint 8 + `.eslintrc.js` / `win.eslint.json` | ESLint 10 flat `eslint.config.mjs` / `eslint.config.win.mjs` |
 | Sass | `sass-loader` 13, default API | `sass-loader` 17 with `loadPaths` so `@import 'node_modules/…'` still resolves |
 | Playwright editor types | Inferred project, clashes with Jest globals | `playwright/tsconfig.json` (`noEmit`, `types: ["node"]`) |
 
-**Benefit:** `yarn test` is a trustworthy local and CI-adjacent command. ESLint 10 matches current ESLint (legacy `.eslintrc` is removed). sass-loader 17 does not break GOV.UK Sass resolution. Playwright specs type-check in the editor without polluting the app `tsc` project.
+**Benefit:** `yarn test` is a trustworthy local and CI-adjacent command. Coverage and `cichecks` report the same tree they claim to measure. ESLint 10 matches current ESLint (legacy `.eslintrc` is removed). sass-loader 17 does not break GOV.UK Sass resolution. Playwright specs type-check in the editor without polluting the app `tsc` project.
 
 ### Node 24 Jest stability
 
@@ -186,13 +194,15 @@ Coverage was expanded **across the whole application**, not a single folder. The
 
 #### Latest fork totals (`yarn test:coverage`, 18 August 2026)
 
+`collectCoverageFrom` is `src/main/**/*.{ts,js}` excluding webpack output, `src/main/index.js`, and vendored `mojAll.js`. Percentages are for **that whole tree**, not only files a test already imported. `coverageThreshold` global floor: statements **97**, branches **86**, functions **97**, lines **97**.
+
 | Metric | Coverage |
 | --- | ---: |
-| **Statements** | **95.36%** |
-| **Branches** | **84.73%** |
-| **Functions** | **92.47%** |
+| **Statements** | **97.91%** |
+| **Branches** | **87.64%** |
+| **Functions** | **98.64%** |
 | **Lines** | **97.85%** |
-| Test suites | 1,044 passed / 1,044 |
+| Test suites | 1,044 passed / 1,044 (plus 2 config-guard tests added after this run) |
 | Tests | 8,995 passed / 8,995 |
 
 Same run, illustrative **layer** totals (Jest directory rows from that report):
@@ -205,10 +215,9 @@ Same run, illustrative **layer** totals (Jest directory rows from that report):
 | `src/main/common/form/validators` | 99.06% | 98.38% | 100% | 98.85% |
 | `src/main/common/logging` | 100% | 94.44% | 100% | 100% |
 | `src/main/common/utils` | 97.03% | 88.46% | 97.90% | 96.73% |
+| `src/main/assets/js` (excluding `mojAll.js`) | 94.80% | 79.38% | 96.12% | 95.50% |
 
-Many journey **service** folders in that report sit in the mid-90s to 100% on statements and lines (claim, claimant response, dashboard, GA, mediation, query management, response, settlement, UI Preview, first contact, generic form). Branches remain the hardest metric (optional chaining and error paths). Client JS statements look lower (~38%) because vendored `mojAll.js` is in that folder; **lines** for `assets/js` were **95.51%** on the same run.
-
-Jest reports coverage for files **exercised** by the unit suite (`jest.config.js` has no `collectCoverageFrom` allowlist). Adding tests both **brings more of `src/main` into the report** and **raises hits** on those files.
+Many journey **service** folders in that report sit in the mid-90s to 100% on statements and lines (claim, claimant response, dashboard, GA, mediation, query management, response, settlement, UI Preview, first contact, generic form). Branches remain the hardest metric (optional chaining and error paths). Untested new files now count as zero coverage and will fail `yarn test:coverage` if they pull the global total under the floor.
 
 #### Versus upstream `hmcts/master` (git, same date)
 
@@ -216,7 +225,7 @@ Public Codecov for upstream `master` currently shows **unknown**, so a published
 
 | | Upstream | Fork | Change |
 | --- | ---: | ---: | ---: |
-| Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,037 | **+200 (+23.9%)** |
+| Unit test files (`src/test/unit/**/*.test.ts`) | 837 | 1,038 | **+201 (+24.0%)** |
 | `it(` cases in those files | 6,356 | 7,783 | **+1,427 (+22.4%)** |
 | New unit-test file lines (added files only) | — | — | **+14,363** |
 | All of `src/test/` (two-dot) | — | — | **+19,823 / −227 lines** (347 files) |
@@ -245,8 +254,21 @@ New unit files by area (spread across the tree):
 - Content builders and CCD translators
 - Home / unauthorised controllers, several guards
 - UI Preview catalogue
+- Jest `collectCoverageFrom` / `coverageThreshold` config guard
 
 **Benefit:** more of the BFF and the progressive-enhancement JS is locked by assertions, not only by CodeceptJS in AAT. Client JS tests reduce the chance of calculator or postcode regressions that functional suites sample sparsely.
+
+### Honest coverage instrumentation
+
+Upstream Jest has no `collectCoverageFrom` and no `coverageThreshold`, so `yarn test:coverage` only reports files the unit suite already imported. The fork allowlists `src/main/**/*.{ts,js}` (excluding webpack output, the webpack JS/SCSS entry, and vendored `mojAll.js`) and fails the run if the global total drops below **97 / 86 / 97 / 97** (statements / branches / functions / lines). A new untested controller counts as zero and can fail CI.
+
+**Benefit:** the published coverage percentage is for the application tree, not for “whatever happened to be imported”. Adding a file without tests can no longer leave the headline number unchanged.
+
+### Pa11y is not faked in `cichecks`
+
+Upstream `yarn test:a11y` (and this repo’s `cichecks` until this change) only `echo`s that accessibility runs in GitHub Actions — that statement is false (Pa11y is Jenkins `tests:a11y:parallel`) and the stub always exits 0. The fork aliases `yarn test:a11y` to `yarn tests:a11y` and **drops it from `cichecks`**, so a green aggregate run does not claim Pa11y ran.
+
+**Benefit:** local `cichecks` matches what it actually executed. Accessibility remains a real command and a Jenkins stage, not a passing echo.
 
 ### GOV.UK Frontend fixture suite
 
@@ -294,6 +316,16 @@ Yarn resolutions include **`tar` 6.2.1 → 7.5.22**, **`flat` → 6.0.1** (with 
 Workflows use **checkout / setup-node / setup-python v7**, **actions/stale v11**, **stale-branches v10**, **git-auto-commit-action v7**. Upstream still uses v4/v5/v8 in several places.
 
 **Benefit:** CI runs on current Actions (Node 24 already), with a smaller backlog of deprecated action majors.
+
+### CVE scan (`yarn deps:audit`)
+
+Pins, checksums, and the 7-day age gate do not replace an advisory scan. Upstream documents `yarn npm audit` / `yarn-audit-known-issues` but does not run them in CI. The fork adds `yarn deps:audit` (`bin/check-yarn-audit.mjs`):
+
+- **Production** (`dependencies`) must have **zero** advisories — no allowlist
+- Other findings must match `yarn-audit-known-issues` exactly (new or stale lines fail)
+- Runs in `yarn cichecks` and `.github/workflows/ci.yml` after `yarn deps:check`
+
+**Benefit:** a new production CVE fails CI until the package is upgraded. Toolchain noise stays reviewed instead of silently accumulating.
 
 ### Rate limiting and Redis client
 
@@ -351,7 +383,7 @@ Application diffs vs upstream are **focused**, not a rewrite (`src/main` **+0.4%
 
 ### Exact pins, SHA checksums, and upgrade policy
 
-**All** `dependencies`, `devDependencies`, and `resolutions` are **exact versions** (no `^`/`~`/ranges). Transitive packages are locked in `yarn.lock` with a **SHA-512 checksum** per npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw` and `npmMinimalAgeGate: 10080` (7 days). `yarn deps:check` (`bin/check-dependency-pins.mjs`) runs in `cichecks` and GitHub Actions; CI install uses Yarn hardened mode.
+**All** `dependencies`, `devDependencies`, and `resolutions` are **exact versions** (no `^`/`~`/ranges). Transitive packages are locked in `yarn.lock` with a **SHA-512 checksum** per npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw` and `npmMinimalAgeGate: 10080` (7 days). `yarn deps:check` (`bin/check-dependency-pins.mjs`) and `yarn deps:audit` (`bin/check-yarn-audit.mjs`) run in `cichecks` and GitHub Actions; CI install uses Yarn hardened mode.
 
 **Why (vs upstream ranges):** npm ranges let a later install pull different code without a reviewed bump — including compromised patch releases, protestware, and packages that later add telemetry. Checksums stop a same-version archive swap. The 7-day gate waits out npm’s short unpublish window and typical public reporting lag; security fixes may set `YARN_NPM_MINIMAL_AGE_GATE=0` for one command. Full rationale: [docs/security-and-privacy.md](docs/security-and-privacy.md).
 
@@ -379,11 +411,11 @@ Client JS is now **unit-tested**. `jquery` is **3.7 → 4.0.0**. webpack-dev-mid
 
 ## 8. CI/CD
 
-- `cichecks` still builds, lints, covers, and runs route integration; it also runs `yarn deps:check` (exact pins + lockfile SHA checksums). WireMock validate/contract steps that exist in this repo’s `package.json` remain in that script on the fork
-- GitHub Actions Node 24 + current action majors (section 4); `ci.yml` install uses `YARN_ENABLE_HARDENED_MODE=1` then `yarn deps:check`
+- `cichecks` builds, lints, covers, and runs route integration; it also runs `yarn deps:check` (exact pins + lockfile SHA checksums) and `yarn deps:audit` (`yarn npm audit`). It does **not** run Pa11y (`yarn tests:a11y` / Jenkins `tests:a11y:parallel`). WireMock validate/contract steps that exist in this repo’s `package.json` remain in that script on the fork
+- GitHub Actions Node 24 + current action majors (section 4); `ci.yml` install uses `YARN_ENABLE_HARDENED_MODE=1` then `yarn deps:check` and `yarn deps:audit`
 - README table-refresh workflows use git-auto-commit **v7**
 
-**Benefit:** CI identities and caches stay on supported Actions. Local `yarn test` finally matches the intent of a unit-test script, so developers are less likely to push untested Jest changes.
+**Benefit:** CI identities and caches stay on supported Actions. Local `yarn test` finally matches the intent of a unit-test script. Coverage, audit, and `cichecks` no longer report a cleaner picture than they measured.
 
 ---
 

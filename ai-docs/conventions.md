@@ -9,7 +9,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | Topic | Section in `AGENTS.md` |
 | --- | --- |
 | Sync `hmcts` before application changes; package-only origin push | Before changing code; Package-only updates |
-| Exact pins (all deps/resolutions), lockfile SHA (Secure Hash Algorithm) checksums, 7-day `npmMinimalAgeGate`, `yarn deps:check`, full `yarn test:coverage` after dep bumps, segmentation violation (SIGSEGV) isolation | Dependencies |
+| Exact pins (all deps/resolutions), lockfile SHA (Secure Hash Algorithm) checksums, 7-day `npmMinimalAgeGate`, `yarn deps:check`, `yarn deps:audit`, full `yarn test:coverage` after dep bumps, segmentation violation (SIGSEGV) isolation | Dependencies |
 | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack, Design System, Web Content Accessibility Guidelines (WCAG) 2.2 AA | Service assessment (GOV.UK / HMCTS); [`docs/service-assessment.md`](../docs/service-assessment.md) |
 | Long coverage/install waits — background and poll | Long-running commands |
 | Express/TS under `src/main/`; no Nest/Prisma/Single Page Application (SPA); existing HTTP clients and draft-store | Server / application stack |
@@ -42,4 +42,7 @@ yarn lint
 
 # exact pins + yarn.lock SHA checksums
 yarn deps:check
+
+# yarn npm audit vs yarn-audit-known-issues (production tree must be clean)
+yarn deps:audit
 ```

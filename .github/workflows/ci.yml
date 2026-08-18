@@ -59,6 +59,8 @@ jobs:
         run: yarn install
       - name: Check exact pins and lockfile SHA checksums
         run: yarn deps:check
+      - name: Audit npm advisories
+        run: yarn deps:audit
       - name: Build
         run: yarn build
       - name: Pull WireMock mappings

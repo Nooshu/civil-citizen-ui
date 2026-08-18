@@ -18,7 +18,7 @@ Acronyms: [glossary](glossary.md).
 | Playwright security | Playwright | specs in `playwright/tests/` | Running Civil Citizen UI (CUI) |
 | Smoke | `bin/run-smoke-tests.sh` | `yarn test:smoke` | Deployed env |
 
-`yarn test:a11y` is a **stub** that prints that a11y is enforced in GitHub Actions. The real local command is `yarn tests:a11y`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y is the scanner His Majesty’s Courts and Tribunals Service (HMCTS) documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
+`yarn test:a11y` is an alias of `yarn tests:a11y` (Pa11y against HTML fixtures). It is **not** part of `yarn cichecks`. Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y is the scanner His Majesty’s Courts and Tribunals Service (HMCTS) documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
 
 ## Unit tests (Jest)
 
@@ -30,7 +30,7 @@ Acronyms: [glossary](glossary.md).
 
 Most **route** tests import `{app}` from `src/main/app` and use supertest. That boots Express, Nunjucks, and Redis mocks — suites can take several seconds under coverage. **Service** tests should mock `draftStoreService` and avoid importing `app` when they do not need HTTP.
 
-Coverage: `yarn test:coverage` uses `--maxWorkers=8` (memory). Jest reports coverage for files exercised by the unit suite. Sonar reads `coverage/lcov.info` (`sonar-project.properties`).
+Coverage: `yarn test:coverage` uses `--maxWorkers=8` (memory). `jest.config.js` sets `collectCoverageFrom` to `src/main/**/*.{ts,js}` (excluding webpack output, `src/main/index.js`, and vendored `mojAll.js`) so untested files count as zero, not as missing from the report. `coverageThreshold` is a global floor; adding an untested controller that pulls the total under the floor fails the run. Sonar reads `coverage/lcov.info` (`sonar-project.properties`).
 
 ### Node 24 / SIGSEGV
 
@@ -102,6 +102,7 @@ Minimum for application code:
 ```bash
 yarn lint
 yarn test          # or yarn test:coverage for dependency/sonar-sensitive changes
+yarn deps:check && yarn deps:audit   # after package.json / yarn.lock changes
 ```
 
 Also run when relevant:

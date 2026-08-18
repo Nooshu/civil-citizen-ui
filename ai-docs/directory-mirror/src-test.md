@@ -15,7 +15,7 @@ Setup: `jest.setup.redis-mock.js`, `jest.setup.js`. Environment `node`.
 
 ## `a11y/`
 
-Pa11y. Real command: `yarn tests:a11y`. HTML fixtures under `src/test/utils/mocks/a11y/` (claim `1645882162449409`). `ignored-urls.ts` / `action-urls.ts` — do not ignore new pages without reason. `yarn test:a11y` is a **stub**.
+Pa11y. Real command: `yarn tests:a11y` (alias `yarn test:a11y`). HTML fixtures under `src/test/utils/mocks/a11y/` (claim `1645882162449409`). `ignored-urls.ts` / `action-urls.ts` — do not ignore new pages without reason. Not part of `yarn cichecks`; Jenkins runs `tests:a11y:parallel`.
 
 ## `contract/` — Pact
 

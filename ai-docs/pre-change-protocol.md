@@ -61,7 +61,7 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 | Routes / middleware | `yarn test:integration` as well as unit tests |
 | Nunjucks / GOV.UK / macros | `yarn test:govuk-fixtures` after Frontend or Nunjucks-env changes; `yarn build` if webpack entries/SCSS/JS changed |
 | Chart WireMock mappings | `yarn wiremock:validate` and `yarn test:wiremock-contracts` |
-| Dependencies | `yarn deps:check` then `yarn test:coverage` after all bumps (`AGENTS.md` Dependencies) |
+| Dependencies | `yarn deps:check` then `yarn deps:audit` then `yarn test:coverage` after all bumps (`AGENTS.md` Dependencies) |
 | Logging | No PII; see `docs/pii-logging-check.md` and `.semgrep/` |
 
 Long Jest: run in the background and poll until complete — `AGENTS.md` Long-running commands.

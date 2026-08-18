@@ -87,7 +87,7 @@ Mirror production layout: `src/test/unit/<same path after src/main>/`. Route tes
 
 ## Dependencies
 
-Exact pins for **all** direct deps and resolutions. 7-day cooldown unless security (`npmMinimalAgeGate` / `YARN_NPM_MINIMAL_AGE_GATE=0`). Then `yarn deps:check` and **one** `yarn test:coverage`. SIGSEGV → re-run that file only. Package-**only** changes may follow the origin auto-push rule in `AGENTS.md`.
+Exact pins for **all** direct deps and resolutions. 7-day cooldown unless security (`npmMinimalAgeGate` / `YARN_NPM_MINIMAL_AGE_GATE=0`). Then `yarn deps:check`, `yarn deps:audit`, and **one** `yarn test:coverage`. SIGSEGV → re-run that file only. Package-**only** changes may follow the origin auto-push rule in `AGENTS.md`.
 
 Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), `@ministryofjustice/frontend` v10, Babel 8 + Jest 30 coupled. See `docs/dependency-update-log-2026-08-18.md`.
 

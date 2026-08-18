@@ -7,7 +7,7 @@ Canonical: [`AGENTS.md`](../../AGENTS.md) — Dependencies. Why: [`docs/security
 3. Exact pin in `package.json` (no `^` / `~` / ranges) for **every** specifier you add or change, including `resolutions`.
 4. `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install` if the lockfile must change. Confirm the lockfile `checksum:` lines are present.
 5. If **multiple** packages: bump all, install once, test **once**.
-6. `yarn deps:check` then `yarn test:coverage` (background + poll).
+6. `yarn deps:check` then `yarn deps:audit` then `yarn test:coverage` (background + poll).
 7. If SIGSEGV: re-run the failed file only; if it passes, **stop**.
 8. If real failures: tell the user first, then fix; re-run coverage after real fixes.
 9. GOV.UK Frontend: also `yarn build` + `yarn test:govuk-fixtures` and upgrade-tests rule.
