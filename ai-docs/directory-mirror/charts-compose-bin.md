@@ -38,7 +38,7 @@ Preview labels (do not combine reducedStack + fullDeployment): see [`docs/ci-cd-
 | `ui-preview.yml` | `yarn preview` — CUI + WireMock |
 | `ui-preview-mappings/` | Preview-only stubs; chart mappings may be mounted nested as `reduced-stack/` |
 
-Preview URL: **http://localhost:3001/ui-preview** (HTTP). Fixture user `someID`. Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit), `1645882162449602` (part admit), `1645882162449603` (case progression), `1645882162449604` (general application). Redis extras: `src/main/modules/e2eConfiguration/uiPreviewRedisData.json`. Mappings: `compose/ui-preview-mappings/` (`ui-preview-claims.json` plus journey files).
+Preview URL: **http://localhost:3001/ui-preview** (HTTP). Fixture user `someID`. Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit by instalments), `1645882162449602` (part admit by instalments), `1645882162449603` (case progression), `1645882162449604` (general application). Redis extras: `src/main/modules/e2eConfiguration/uiPreviewRedisData.json`. Mappings: `compose/ui-preview-mappings/` (`ui-preview-claims.json` plus journey files).
 
 ## bin
 

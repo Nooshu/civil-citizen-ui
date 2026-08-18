@@ -32,6 +32,14 @@ describe('UI Preview claimant response fixtures', () => {
     const taskLists = getClaimantResponseTaskLists(claim, claimId, 'en', false, false);
     expect(taskLists.length).toBeGreaterThan(0);
     expect(taskLists[0].tasks.length).toBeGreaterThan(0);
+
+    const plan = claim.fullAdmission?.paymentIntention?.repaymentPlan
+      ?? claim.partialAdmission?.paymentIntention?.repaymentPlan;
+    expect(claim.fullAdmission?.paymentIntention?.paymentOption
+      ?? claim.partialAdmission?.paymentIntention?.paymentOption).toBe('INSTALMENTS');
+    expect(plan?.paymentAmount).toBe(100);
+    expect(plan?.repaymentFrequency).toBe('MONTH');
+    expect(plan?.firstRepaymentDate).toBeTruthy();
   });
 
   it.each([
@@ -42,5 +50,24 @@ describe('UI Preview claimant response fixtures', () => {
     const taskLists = getClaimantResponseTaskLists(claim, claimId, 'en', false, false);
     expect(taskLists.length).toBeGreaterThan(0);
     expect(taskLists[0].tasks.length).toBeGreaterThan(0);
+  });
+
+  it('should include a complete instalment plan on the full-admit Redis fixture', () => {
+    const claim = Object.assign(new Claim(), loadRedisCaseData(UI_PREVIEW_FULL_ADMIT_CLAIM_ID));
+    const plan = claim.fullAdmission.paymentIntention.repaymentPlan;
+    expect(claim.fullAdmission.paymentIntention.paymentOption).toBe('INSTALMENTS');
+    expect(plan.paymentAmount).toBe(100);
+    expect(plan.repaymentFrequency).toBe('MONTH');
+    expect(plan.firstRepaymentDate).toBeTruthy();
+    expect(new Date(plan.firstRepaymentDate).toString()).not.toBe('Invalid Date');
+  });
+
+  it('should include a complete instalment plan on the part-admit Redis fixture', () => {
+    const claim = Object.assign(new Claim(), loadRedisCaseData(UI_PREVIEW_PART_ADMIT_CLAIM_ID));
+    const plan = claim.partialAdmission.paymentIntention.repaymentPlan;
+    expect(claim.partialAdmission.paymentIntention.paymentOption).toBe('INSTALMENTS');
+    expect(plan.paymentAmount).toBe(100);
+    expect(plan.repaymentFrequency).toBe('MONTH');
+    expect(plan.firstRepaymentDate).toBeTruthy();
   });
 });

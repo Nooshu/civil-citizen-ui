@@ -28,7 +28,7 @@ services/
 | `generalApplication/` | Types, hearings, N245, fees, COSC, respondent, written reps |
 | `queryManagement/` | Create query, CYA |
 | `dashboard/` | Claim summary / latest update **content builders** |
-| `helpWithFees/`, `judgmentOnline/`, `settlementAgreement/`, `document/`, `eligibility/`, `feePayment/`, `uiPreview/` | Catalogue + fixture claim IDs for `yarn preview`. Extra claims: `uiPreviewRedisData.json` + `compose/ui-preview-mappings/`. Admit Redis fixtures need `claimantResponse` because `getClaimById` reads Redis first. |
+| `helpWithFees/`, `judgmentOnline/`, `settlementAgreement/`, `document/`, `eligibility/`, `feePayment/`, `uiPreview/` | Catalogue + fixture claim IDs for `yarn preview`. Extra claims: `uiPreviewRedisData.json` + `compose/ui-preview-mappings/`. Admit Redis fixtures need `claimantResponse` (getClaimById reads Redis first) and an INSTALMENTS `repaymentPlan` for **How they want to pay**. |
 
 Content builders return objects for Nunjucks (summary rows, task lists). Reuse `services/features/common/` (e.g. support-required lists) instead of copying.
 

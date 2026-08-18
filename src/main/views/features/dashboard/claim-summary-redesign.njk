@@ -5,6 +5,7 @@
 {% from "../../macro/notifications.njk" import notifications %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "../../macro/support-links.njk" import supportLinks %}
 {% from "../../macro/banner.njk" import addBanner %}
 
@@ -64,9 +65,10 @@
                           </span>
                       </div>
                       <div class="column">
-                        <strong class="govuk-tag app-task-list__tag {{ task.statusColour}}">
-                          {% if lang=="cy"%}{{ task.statusCy }} {% else %} {{ task.statusEn }} {% endif %}
-                        </strong>
+                        {{ govukTag({
+                          text: task.statusCy if lang=="cy" else task.statusEn,
+                          classes: 'app-task-list__tag ' + (task.statusColour or '')
+                        }) }}
                       </div>
                       {% if task.hintTextEn %}
                         <br/>

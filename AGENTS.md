@@ -60,7 +60,7 @@ Suggested first reads inside `ai-docs/`:
 - **UI Preview (no Identity and Access Management, IDAM):** `yarn preview` (or `yarn start:ui-preview`) → rebuilds, frees ports, starts Docker stack, prints **http://localhost:3001/ui-preview** (`compose/ui-preview.yml`, `bin/ui-preview.sh`)
   - Distinct from `yarn start:dev` (real Redis + OpenID Connect (OIDC))
   - Fixture user id: `someID`
-  - Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit), `1645882162449602` (part admit), `1645882162449603` (case progression), `1645882162449604` (general application)
+  - Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit by instalments), `1645882162449602` (part admit by instalments), `1645882162449603` (case progression), `1645882162449604` (general application)
   - Preview-only WireMock stubs: `compose/ui-preview-mappings/` — keep them out of `charts/civil-citizen-ui/wiremock/mappings`, which is the validated reduced-stack contract set (`yarn wiremock:validate` forbids broad matchers)
   - Stop: `yarn start:ui-preview:down`
 
@@ -122,7 +122,7 @@ Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs whe
 
 - **GOV.UK Frontend is the single source of truth** for the user interface
 - All GOV.UK Design System component HTML must come from official Nunjucks macros — do not hand-write component markup when a macro exists
-- Prefer `{% from "govuk/components/.../macro.njk" import ... %}`; layout chrome (skip link, header, footer, breadcrumbs, pagination, table, inset text) must use macros
+- Prefer `{% from "govuk/components/.../macro.njk" import ... %}`; layout chrome (skip link, header, footer, breadcrumbs, pagination, table, inset text, tabs, summary list, tag) must use macros
 - Typography/layout utilities (`govuk-heading-*`, `govuk-body`, `govuk-grid-*`, `govuk-!-*-*`) are fine for composition; component structure still comes from macros
 - Client-side UI should show/hide or populate **macro-rendered** markup rather than building GOV.UK component HTML in JavaScript
 - Prefer GOV.UK Frontend HTML, CSS, and JS over **axe** / **axe-core** when they conflict (document/disable the scanner rule; do not rewrite GOV.UK)

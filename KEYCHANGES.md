@@ -2,7 +2,7 @@
 
 ## Key benefits
 
-- **Official GOV.UK macros, not copy-pasted HTML** — **15** journey pages plus **4** shared templates (**19** Nunjucks files) now call Design System macros (`govukHeader`, `govukServiceNavigation`, `govukTable`, `govukInsetText`, `govukButton`) instead of hand-written `govuk-*` markup. **Zero** of those classes remain under `src/main/views`. Frontend upgrades, maintenance, branding, and accessibility all ride the same official HTML.
+- **Official GOV.UK macros, not copy-pasted HTML** — **15** journey pages plus **4** shared templates (**19** Nunjucks files) now call Design System macros (`govukHeader`, `govukServiceNavigation`, `govukTable`, `govukInsetText`, `govukButton`) instead of hand-written `govuk-*` markup. A second pass converted remaining components: claim-summary **tabs**, query-management **table** and **summary cards**, general-application / query **summary lists**, postcode **input/button**, report-detail **Remove**, task-list **tags**, and the paper-form address. Frontend upgrades, maintenance, branding, and accessibility all ride the same official HTML.
 - **Look at the user interface (UI) on a laptop** — `yarn preview` runs a live GOV.UK UI **without a civil-service backend, Identity and Access Management (IDAM), virtual private network (VPN), or mirrord**. Docker + WireMock is enough.
 - **`yarn test` actually runs the unit suite** — upstream’s script only `echo`s a Jest config file (**0 tests executed**). The fork runs the full unit suite (**8,997 tests / 1,045 suites**).
 - **Coverage across the codebase** — latest `yarn test:coverage` (all of `src/main` TS/JS, excluding webpack output and `mojAll.js`): **97.91% statements, 87.64% branches, 98.64% functions, 97.85% lines**, with a **97 / 86 / 97 / 97** global floor. Versus upstream: **+201 unit test files (+24%)**, **+1,427 `it()` cases (+22%)**, tests added in forms, services, clients, modules, routes, and client JS — not one corner of the tree.
@@ -39,7 +39,7 @@ Jest coverage percentages for the fork (see [Coverage percentages](#coverage-per
 | **Correctness of local tests** | `yarn test` runs Jest (**8,997** tests) | Upstream’s `test` script is `echo -c jest.config.js` and executes **0%** of the unit suite |
 | **Coverage** | **97.91% / 87.64% / 98.64% / 97.85%** stmts/branch/funcs/lines on **all** `src/main` TS/JS; global floor **97 / 86 / 97 / 97**; **+24%** unit files, **+22%** cases vs upstream | Whole-tree unit coverage with a CI floor; more of `src/main` is asserted before preview/AAT |
 | **Honest CI** | `collectCoverageFrom` + floor; `cichecks` drops the a11y echo stub; `yarn deps:audit` in `cichecks` and `ci.yml` | A green local/`cichecks` run cannot hide untested files, a skipped Pa11y suite, or an unaudited lockfile |
-| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0**; **19** templates converted to official macros (**15** pages + **4** shared); **692** fixture HTML assertions (0 upstream) | Macro HTML tracks the Design System release. Upgrades, branding, and accessibility stay in one place instead of 19 hand-written copies |
+| **UI contract** | GOV.UK Frontend **6.2.0 → 6.4.0**; **19** templates converted to official macros in the first pass (**15** pages + **4** shared), then a second pass for tabs / summary lists / tags / postcode; **692** fixture HTML assertions (0 upstream) | Macro HTML tracks the Design System release. Upgrades, branding, and accessibility stay in one place instead of hand-written copies |
 | **Tooling** | TypeScript **6.0.3**, ESLint **10** flat config, Jest on Node 24 with `--no-sparkplug` | Compiles and lints on the current language/toolchain instead of ESLint 8 / TS 5.9 |
 | **Security / supply chain** | **89% → 0%** ranged specifiers; Helmet 8; `crypto-js` removed; Actions on current majors; `yarn deps:audit` | Unreviewed installs cannot float; one fewer third-party crypto implementation; CI actions no longer sit on deprecated majors; production CVEs fail the build |
 | **Observability** | Application Insights **SDK 3.15.1** | Compatible with the supported SDK; non-prod can send full telemetry without the old processor API |
@@ -155,11 +155,11 @@ The fork adds a **self-contained UI Preview** environment:
 - **No VPN and no mirrord.** Preview does not tunnel into AAT, preview cluster, or a remote namespace. Docker Compose on the developer machine is sufficient (`compose/ui-preview.yml`).
 - **No IDAM login.** A fixture session user (`someID`) and seeded claims are enough to render journeys:
   - `1645882162449409` — awaiting defendant response
-  - `1645882162449601` — full admission (claimant response)
-  - `1645882162449602` — part admission (claimant response)
+  - `1645882162449601` — full admission by instalments (claimant response)
+  - `1645882162449602` — part admission by instalments (claimant response)
   - `1645882162449603` — case progression
   - `1645882162449604` — general application
-- Admit Redis seeds include `claimantResponse` (even empty) because `getClaimById` reads Redis first; the claimant-response task list used to 500 when that object was missing.
+- Admit Redis seeds include `claimantResponse` (even empty) because `getClaimById` reads Redis first; the claimant-response task list used to 500 when that object was missing. Full- and part-admit seeds include an instalment `repaymentPlan` (£100 a month from 18 September 2026) so **How they want to pay** is not `£undefined` / `Invalid DateTime`.
 - Commands: `yarn preview` / `yarn start:ui-preview` / `yarn start:ui-preview:down`
 - Supporting files: `bin/ui-preview.sh`, `Dockerfile.ui-preview`, `/ui-preview` catalogue (`uiPreviewController`, `pageCatalog`), Redis extras in `src/main/modules/e2eConfiguration/uiPreviewRedisData.json`
 - OIDC allowlist for `/ui-preview` so the catalogue is reachable in `e2eTest`
@@ -297,6 +297,18 @@ Upstream still ships **18** view files with hand-written `govuk-table`, `govuk-i
 
 `item-content.njk` is imported by **59** other journey templates, so converting that fragment once updates confirmation, upload, and content screens across claim, response, case progression, general application, mediation, and query management. `header.njk` is the claim-details / dashboard / service-unavailable chrome. After this pass, **zero** of those four `class="govuk-*"` component patterns remain under `src/main/views`.
 
+A **second pass** converted the remaining clear Design System gaps (not the same four classes):
+
+| Kind | Files |
+| --- | --- |
+| **Tabs** | `features/dashboard/claim-summary.njk` (`govukTabs`; unused imports dropped from pay-hearing-fee-start and telephone-mediation) |
+| **Table** | `features/queryManagement/qm-view-queries-template.njk` (`govukTable` + `tableWrap`) |
+| **Summary list / card** | GA and QM upload screens via `macro/uploaded-files-summary.njk`; query details via `macro/query-message-card.njk` (`govukSummaryList` + `card`); paper-form address is `govukInsetText` (it was a summary-list with no rows) |
+| **Input / button** | `macro/postcode-address-form.njk` (`govukInput` + `govukButton`, JS hooks kept); `macro/report-detail.njk` Remove (`govukButton` + `.remove-row`) |
+| **Tag** | Claim, response, claimant-response, and dashboard redesign task lists (`govukTag`; `app-task-list` layout unchanged) |
+
+Official `govukTaskList` is still not used — that would replace Prototype Kit `app-task-list` markup, not a drop-in class swap.
+
 Pa11y now scans **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** (fixtures under `src/test/utils/mocks/a11y/`). Remaining `ignored-urls.ts` entries are no-view routes, external URLs, unfinished journeys, or pages that still fail.
 
 **Why macros instead of custom HTML**
@@ -432,7 +444,7 @@ Standing rules remain: patch/minor preferred, full `yarn test:coverage` after de
 
 Standing conventions in [`AGENTS.md`](AGENTS.md) (not present upstream) require:
 
-- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header / table / inset text when a macro exists. **15** journey pages and **4** shared templates (**19** files) were converted; **zero** of those `class="govuk-*"` patterns remain in `src/main/views`. `item-content.njk` carries official table/inset/button markup into **59** other screens.
+- GOV.UK **macros** for component HTML; no hand-rolled `govuk-button` / error summary / header / table / inset text / tabs / summary list / tag when a macro exists. **15** journey pages and **4** shared templates (**19** files) were converted in the first pass; a second pass covered tabs, summary lists, query table/card, postcode input/button, report-detail Remove, and task-list tags. `item-content.njk` carries official table/inset/button markup into **59** other screens.
 - App JS only in `src/main/assets/js/`; app theme only in `src/main/assets/scss/`
 - Prefer GOV.UK over axe when they conflict
 - Reuse Nunjucks partials instead of copying journey chrome
