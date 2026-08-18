@@ -13,6 +13,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 - Default branch: `master`
 - Upstream remote: `hmcts` (`hmcts/civil-citizen-ui`) — add if missing: `git remote add hmcts git@github.com:hmcts/civil-citizen-ui.git`
 - Push/pull default: `origin` (fork), unless doing an upstream sync
+- Human-oriented project documentation: [`docs/README.md`](docs/README.md)
 
 ## Runtime
 
@@ -138,6 +139,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 
 | File | Purpose |
 |------|---------|
+| `docs/README.md` | Project documentation (architecture, journeys, testing, CI) |
 | `.cursor/rules/project-standards.mdc` | Node/Yarn, hmcts/origin sync, tests after deps, summary risks |
 | `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, yarn.lock integrity, full `yarn test:coverage` after bumps |
 | `.cursor/rules/shell-wait-limits.mdc` | Cap Shell/AwaitShell blocking waits at 1 minute; background long jobs and poll |
