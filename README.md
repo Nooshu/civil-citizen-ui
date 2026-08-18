@@ -35,7 +35,7 @@ Start here: **[docs/README.md](docs/README.md)**.
 | [CI/CD and deployment](docs/ci-cd-and-deployment.md) | Jenkins, Helm, GitHub Actions |
 | [Contributing](docs/contributing.md) | Coding standards and review checklist |
 
-Specialised notes (WireMock contracts, functional-test diagnostics, PII Semgrep, dependency logs) are listed from the [docs index](docs/README.md). Agent coding rules remain in [AGENTS.md](AGENTS.md).
+Specialised notes (WireMock contracts, functional-test diagnostics, PII Semgrep, dependency logs) are listed from the [docs index](docs/README.md). Agent coding rules remain in [AGENTS.md](AGENTS.md). AI-only directory-level context (invariants, scripts, playbooks) is in [`ai-docs/`](ai-docs/README.md) — that folder is for coding agents, not a human product guide.
 
 ## Getting Started
 

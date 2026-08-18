@@ -34,5 +34,6 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 | --- | --- |
 | [README.md](../README.md) | Quick start, preview labels, generated test tables |
 | [AGENTS.md](../AGENTS.md) | Standing rules for AI coding agents (symlink: `AGENT.md`) |
+| [ai-docs/README.md](../ai-docs/README.md) | **AI-only** directory mirror, playbooks, and scripts (not a human product guide) |
 | [.cursor/rules/](../.cursor/rules/) | Canonical Cursor rules (GOV.UK macros, Yarn 4, dependency pinning, and so on) |
 | [catalog-info.yaml](../catalog-info.yaml) | Backstage component metadata (`dts_civil`) |
