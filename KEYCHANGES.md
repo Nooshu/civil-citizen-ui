@@ -2,7 +2,7 @@
 
 This fork is still His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI): Express 5, TypeScript, Nunjucks, GOV.UK Frontend. Citizens still issue and respond to money claims through the same journeys. What changed is how the service is **seen, tested, secured, documented, and kept current**.
 
-Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is branch `complete-macros`: last commit `08f1b30da0` plus uncommitted Design System, fixture, and preview-render work as of 19 August 2026. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — not yet rebased here. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
+Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is `master` at `d7419c2888`. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — not yet rebased here. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
 
 The rest of this note is the story of that gap. Counts and pins sit at the end for anyone who wants receipts.
 
@@ -14,7 +14,7 @@ Upstream local run (`yarn start:dev`) assumes Identity and Access Management (ID
 
 `yarn preview` starts a self-contained stack: Docker Compose, WireMock stubs, and in-memory Redis fixtures. There is no civil-service, Core Case Data (CCD), or IDAM process to start, and no tunnel into the HMCTS acceptance environment (AAT). A fixture user (`someID`) and six seeded claims are enough to render journeys. Open **http://localhost:3001/ui-preview**.
 
-The catalogue lists **315** Ready GET links (eligibility, claim issue, response, statement of means, mediation, directions questionnaire, claimant response, case progression, general application, query management). On 19 August 2026 a crawl of every unique `/ui-preview` href returned **Hypertext Transfer Protocol (HTTP) 200** on the intended template — no error pages and no guard redirects to a different screen. The catalogue includes **Query details** for parent id `qm-9603-hearing` on the case-progression claim.
+The catalogue lists **315** Ready GET links (eligibility, claim issue, response, statement of means, mediation, directions questionnaire, claimant response, case progression, general application, query management). A crawl of every unique `/ui-preview` href returned **Hypertext Transfer Protocol (HTTP) 200** on the intended template — no error pages and no guard redirects to a different screen. The catalogue includes **Query details** for parent id `qm-9603-hearing` on the case-progression claim.
 
 Ready means a useful GET of that Nunjucks template with fixture data. Omitted on purpose: document downloads, GOV.UK Pay returns, unregistered URL constants, PIN-gated first-contact claim summary, check-your-answers and confirmations that redirect until a journey is complete, query create (needs a share-query session), and N245 (not a strike-out type). Small production-safe guards keep those GETs honest: defendant timeline passes `today` and empty `rows`; evidence check-your-answers tolerates a missing upload form; continue-claiming-interest passes a **string** legend into `yesNoRadioButton` (nested HTML as `title` 500s).
 
@@ -22,14 +22,14 @@ Ready means a useful GET of that Nunjucks template with fixture data. Omitted on
 
 These are production-safe guards plus fixture data, not preview-only hacks:
 
-- **How they want to pay / Your payment plan.** Full- and part-admit seeds include an instalment plan (**£100** a month from **18 September 2026**). The same figures sit on `claimantResponse.suggestedPaymentIntention.repaymentPlan`. `getRepaymentScheduleDisplay` and `calculate-length-repayment.js` (runs when `document.readyState` is `complete`, not only on `window` `load`) so **Your payment plan** shows **10 months** instead of a dash.
-- **Court offered set date.** Admit fixtures seed `paymentIntention.paymentDate` (**18 June 2027**, when ten £100 months from 18 September 2026 would finish). `getPaymentDate` reads that field so the page is not Luxon `Invalid DateTime`.
+- **How they want to pay / Your payment plan.** Full- and part-admit seeds include an instalment plan (**£100** a month). The same figures sit on `claimantResponse.suggestedPaymentIntention.repaymentPlan`. `getRepaymentScheduleDisplay` and `calculate-length-repayment.js` (runs when `document.readyState` is `complete`, not only on `window` `load`) so **Your payment plan** shows **10 months** instead of a dash.
+- **Court offered set date.** Admit fixtures seed `paymentIntention.paymentDate` (when ten £100 months would finish). `getPaymentDate` reads that field so the page is not Luxon `Invalid DateTime`.
 - **Settle the claim for £…** uses `Claim.amountDefendantAdmittedInPounds()` (full claim amount on a full admission). Formatting `partialAdmissionPaymentAmount()` alone was `undefined` → **£NaN** on fixture `1645882162449601`.
-- **Claimant-response confirmation** on that fixture seeds `applicant1ResponseDate` (**18 August 2026**) and a signed settlement agreement so the panel is not `Invalid DateTime`.
+- **Claimant-response confirmation** on that fixture seeds `applicant1ResponseDate` and a signed settlement agreement so the panel is not `Invalid DateTime`.
 - **Statement of means.** Claim `1645882162449605` is a defendant part-admit (**£400** of **£1,000**) so those pages pass their guard.
 - **Who employs you?** Employer name and job title sit in one page-level `govuk-grid-column-two-thirds`. Nested `govuk-grid-column-*` without a `govuk-grid-row` was indenting the inputs.
 - **Case progression** `1645882162449603` is `FAST_CLAIM` with trial-arrangement answers, a **60-minute** hearing, and Help with Fees reference `HWF-A1B-23C`.
-- **View the response to the claim / Orders and notices.** `formatDateToFullDate` returns `''` for missing or invalid dates (never `Invalid DateTime`). Core Case Data (CCD) ISO strings such as `respondent1ResponseDate` are converted with `new Date(...)`. The document hint uses `respondent1ResponseDate` or the DEFENDANT_DEFENCE `createdDatetime`, passed into `addCreateFileInformation` **without** wrapping in `t()` (that interpolation was **Created []**). The page shows **Created [25 September 2022]**; the square brackets are intended copy.
+- **View the response to the claim / Orders and notices.** `formatDateToFullDate` returns `''` for missing or invalid dates (never `Invalid DateTime`). Core Case Data (CCD) ISO strings such as `respondent1ResponseDate` are converted with `new Date(...)`. The document hint uses `respondent1ResponseDate` or the DEFENDANT_DEFENCE `createdDatetime`, passed into `addCreateFileInformation` **without** wrapping in `t()` (that interpolation was **Created []**). The page shows a **Created** hint with the defence date; the square brackets in that copy are intended.
 - **Messages to the court** (`/case/1645882162449603/qm/view-query`). The same claim seeds **ten** query-management parent threads (four sent, four response received, two closed) so the table is not empty. Subject links open query details.
 - **General application** `1645882162449604` seeds a **strike-out** draft (hearing contact, Certificate of Satisfaction or Cancellation (COSC) payment date, application fee **10800** pence). Submit confirmation without `?appFee=` (including COSC `/general-application/cosc/submit-general-application-confirmation`) uses that draft fee so the copy is **£108**, not `£NaN`. The pay URL omits `appFee` when the value is not finite.
 - **Respondent agreement** sets `{% block pageTitle %}` and `getRespondToApplicationCaption` maps CCD labels (or falls back to **Respond to an application**) so the heading is not `PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO.undefined` overlapping Contact us. The GA WireMock case stores `applicationTypes` as the CCD label **Strike out** so **My applications** is not `APPLICATION_TYPE_CCD.undefined`.
@@ -62,7 +62,7 @@ Pa11y 9 scans `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`
 
 Upstream `yarn test` echoes a Jest config path and executes **zero** tests. The fork runs the unit suite: **8,997** tests in **1,045** suites, via `node --no-sparkplug` on the Jest binary so Node 24 workers do not segmentation-fault (SIGSEGV) (Sparkplug plus Jest’s `vm` module). Coverage still uses `--maxWorkers=8` for memory.
 
-Those tests are not a single-folder spike. Versus upstream there are **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` (18 August 2026) on every `src/main` TypeScript and JavaScript file except webpack output and vendored `mojAll.js` is **97.91%** statements, **87.64%** branches, **98.64%** functions, **97.85%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric.
+Those tests are not a single-folder spike. Versus upstream there are **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output and vendored `mojAll.js` is **97.91%** statements, **87.64%** branches, **98.64%** functions, **97.85%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric.
 
 Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. The fork aliases it to the real Pa11y command and **drops it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, then `yarn deps:check` and `yarn deps:audit`.
 
@@ -94,7 +94,7 @@ Application Insights software development kit (SDK) **3.15.1** needs a connectio
 
 TypeScript is **6.0.3** with documented transitional flags (`strict: false` on purpose). i18next is **26**. `uuid` 14 is ECMAScript modules (ESM); Jest transforms it instead of blocking the upgrade. jquery 4 and the webpack 7-era loaders stay installable on Node 24.
 
-A few majors were assessed and **left blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
+A few majors were assessed and **left blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in the [dependency update log](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
 
 Citizen journeys stay the same shape: controllers, services, GOV.UK macros. The application-layer diff is preview routes, `cryptoAes`, Insights flush, Nunjucks preview globals, and compiler layout — not a parallel framework.
 
@@ -118,26 +118,26 @@ These are honest gaps, not hidden work:
 2. A tagged **CodeceptJS 4 / WebdriverIO 9** run on preview or AAT. Reduced-stack browser selection is `@reduced-stack` — see [docs/functional-test-migration-matrix.md](docs/functional-test-migration-matrix.md).
 3. TypeScript **`strict` remains false**; turning it on is a separate, large effort.
 4. The preview OpenID Connect (OIDC) allowlist is intentional for `e2eTest` and must not be copied into production path policy.
-5. Rebase or merge **`hmcts/master` `3bb804c4f9`** (`DTSCCI-5978` Camunda import scripts) — this branch is one commit behind as of 19 August 2026.
+5. Rebase or merge **`hmcts/master` `3bb804c4f9`** (`DTSCCI-5978` Camunda import scripts) — this branch is one commit behind.
 
-The rebase onto `hmcts/master` on 18 August 2026 skipped this fork’s copy of DTSCCI-5972 (already upstream) and includes DTSCCI-5973 (reduced-stack create-claim coverage classification).
+The rebase onto `hmcts/master` skipped this fork’s copy of DTSCCI-5972 (already upstream) and includes DTSCCI-5973 (reduced-stack create-claim coverage classification).
 
 ---
 
 ## In numbers
 
-Like-for-like vs `hmcts/master` at `3bb804c4f9`, with this branch’s working tree included (19 August 2026). Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**; coverage percentages are fork-only (`yarn test:coverage`, 18 August 2026) and do not include the 19 August preview, date, repayment, and general-application tests. PII Semgrep exists upstream and is not counted as a fork gain. `yarn.lock` churn is omitted from the prose counts above.
+Like-for-like vs `hmcts/master` at `3bb804c4f9`. Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**; coverage percentages are fork-only (`yarn test:coverage`) and do not include later preview, date, repayment, and general-application tests. PII Semgrep exists upstream and is not counted as a fork gain. `yarn.lock` churn is omitted from the prose counts above.
 
 | | Upstream | Fork |
 | --- | --- | --- |
-| `yarn test` | Echoes a config path (0 tests) | 8,997 tests / 1,045 suites (18 August 2026 run) |
+| `yarn test` | Echoes a config path (0 tests) | 8,997 tests / 1,045 suites |
 | Unit test files | 843 | 1,046 (**+24%**) |
 | `it()` cases | 6,356 | 7,800 (**+23%**) |
 | Client JS modules with a paired unit file | 1 / 13 | 13 / 13 |
 | GOV.UK `fixtures.json` HTML assertions | 0 | 692 (37 components) |
 | Hand-written header/table/inset/button views | 18 templates | 0 (19 converted, including preview) |
 | Nested radios fieldsets / date-error lookalikes / hand-rolled task lists | present | `govukRadios` once; `govukDateInput` error HTML; `govukTaskList` via TypeScript items |
-| UI Preview Ready GET links | absent | **315** (crawl: all HTTP 200, 19 August 2026) |
+| UI Preview Ready GET links | absent | **315** (crawl: all HTTP 200) |
 | `package.json` version ranges | 151 / 169 (**89%**) | 0 / 172 |
 | Exact pins (`dependencies` + `devDependencies`) | 9% | 100% |
 | Human `docs/*.md` | 4 files, 269 lines | 20 files, 1,916 lines |
@@ -146,7 +146,7 @@ Like-for-like vs `hmcts/master` at `3bb804c4f9`, with this branch’s working tr
 | Coverage (stmts / branch / funcs / lines) | not published | 97.91% / 87.64% / 98.64% / 97.85% |
 | Yarn scripts | 56 | 62 (`preview`, fixture tests, pin check, audit) |
 
-Method: two-dot `git diff hmcts/master HEAD`, working tree on `complete-macros`, `package.json` pin census, `git ls-tree` / working-tree line counts, and test-file pairing.
+Method: two-dot `git diff hmcts/master HEAD`, `package.json` pin census, `git ls-tree` / working-tree line counts, and test-file pairing.
 
 ---
 
@@ -155,13 +155,13 @@ Method: two-dot `git diff hmcts/master HEAD`, working tree on `complete-macros`,
 1. [docs/README.md](docs/README.md) — how the service works ([glossary](docs/glossary.md) for acronyms)
 2. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / TCoP / Design System mapped to this app
 3. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular editor)
-4. [docs/dependency-update-log-2026-08-18.md](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record
+4. [Dependency update log](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record
 
 ---
 
 ## Meeting readout — highlights and benefits
 
-Written to be read aloud. Figures are versus `hmcts/civil-citizen-ui` `master` on 19 August 2026. The citizen product is unchanged: same journeys, same Express and Nunjucks stack. The fork changes how we **see, test, secure, document, and upgrade** the service.
+Written to be read aloud. Figures are versus `hmcts/civil-citizen-ui` `master`. The citizen product is unchanged: same journeys, same Express and Nunjucks stack. The fork changes how we **see, test, secure, document, and upgrade** the service.
 
 ### One minute
 
@@ -195,7 +195,7 @@ People can find how the app works: a full human guide, standing conventions for 
 
 **9. Toolchain on supported majors, without an explosive rewrite.** TypeScript 6, ESLint 10, Node 24 Jest that actually finishes (Sparkplug workaround), Application Insights 3, LaunchDarkly 9, i18next 26, jquery 4. Non-prod telemetry samples at one hundred percent so diagnosis is not silently dropped. We deliberately did **not** take config 5, connect-redis 10, Ministry of Justice Frontend 10, or Babel 8 with Jest 30 — completable upgrades beat a single big-bang.
 
-**10. People can find how the app works.** Human docs are five times the file count and seven times the line count of upstream’s specialised notes. Standing conventions live in AGENTS.md so any person or coding agent follows the same rules — GOV.UK macros, Express and TypeScript, exact pins — not a particular editor. Thirty-two pages of directory context. A dated service-assessment snapshot so we can say no to a citizen Single Page Application or hand-rolled GOV.UK from the manuals, not from memory. Structured guidance is about fourteen times upstream.
+**10. People can find how the app works.** Human docs are five times the file count and seven times the line count of upstream’s specialised notes. Standing conventions live in AGENTS.md so any person or coding agent follows the same rules — GOV.UK macros, Express and TypeScript, exact pins — not a particular editor. Thirty-two pages of directory context. A service-assessment snapshot so we can say no to a citizen Single Page Application or hand-rolled GOV.UK from the manuals, not from memory. Structured guidance is about fourteen times upstream.
 
 ### If you have thirty more seconds — what we are honest about
 
@@ -220,10 +220,10 @@ What you get if you look at this fork. Same citizen product; the journeys and Ex
 | If you… | You get… |
 | --- | --- |
 | Want to see a page | `yarn preview` — live GOV.UK user interface (UI) on a laptop, no Identity and Access Management (IDAM), virtual private network (VPN), or civil-service. **315** Ready GET links, crawl-checked |
-| Need claimant-response screens | Full- and part-admit fixtures with an instalment plan, so **How they want to pay** shows amount, frequency, and dates; **Your payment plan** shows **10 months**; **Court offered set date** is **18 June 2027**; settle-admitted is not `£NaN` |
+| Need claimant-response screens | Full- and part-admit fixtures with an instalment plan, so **How they want to pay** shows amount, frequency, and dates; **Your payment plan** shows **10 months**; **Court offered set date** is populated; settle-admitted is not `£NaN` |
 | Need statement of means, trial arrangements, or a general application | Seeded claims `1645882162449605` (part admit £400 of £1,000), `1645882162449603` (`FAST_CLAIM`, 60-minute hearing, ten court-message threads), `1645882162449604` (strike-out draft; confirmation **£108** without `?appFee=`) |
 | Need **Messages to the court** or query details | Case `1645882162449603` seeds ten parent threads (sent, response received, closed); details id `qm-9603-hearing` |
-| Need **View the response to the claim** | `respondent1ResponseDate` plus a DEFENDANT_DEFENCE PDF → **Created [25 September 2022]**, not `Created []` |
+| Need **View the response to the claim** | `respondent1ResponseDate` plus a DEFENDANT_DEFENCE PDF → a **Created** hint with the defence date, not `Created []` |
 | Worry preview stubs will break reduced-stack | Preview mappings live in `compose/ui-preview-mappings/` (seven JSON files), separate from Helm chart WireMock contracts |
 | Iterate Nunjucks offline | Designers and developers can work without Core Case Data (CCD), IDAM, or a tunnel into the His Majesty’s Courts and Tribunals Service (HMCTS) acceptance environment (AAT) |
 | Touch header, table, inset, or button markup | Official GOV.UK macros on **19** templates; shared `item-content.njk` carries that into **59** other screens |
@@ -261,6 +261,6 @@ What you get if you look at this fork. Same citizen product; the journeys and Ex
 | Onboard someone | Human `docs/` is **20** files / **7×** the line count of upstream’s specialised notes (**1,916** vs **269**), plus a glossary |
 | Ask an agent or a human to change code | `AGENTS.md` — same rules for Copilot, Claude, Codex, Cursor, or a person (not Cursor-only `.mdc` files) |
 | Need directory-level context | **32** `ai-docs/` pages: mirror, playbooks, script catalogue, service-assessment deviation checklist |
-| Judge a stack or UI proposal | Dated Service Standard / Technology Code of Practice (TCoP) snapshot — say no to a citizen Single Page Application (SPA) or hand-rolled GOV.UK from the manuals |
+| Judge a stack or UI proposal | Service Standard / Technology Code of Practice (TCoP) snapshot — say no to a citizen Single Page Application (SPA) or hand-rolled GOV.UK from the manuals |
 | Read the README Node line | Matches `engines` / `.nvmrc` (`>=24.18.0`), not an obsolete Node 14 line |
 | Look at application source size | `src/main` TypeScript/JavaScript **+1.0%** lines. Unit tests **+15%**. The extra code is tests, docs, preview fixtures, and toolchain — not a rewrite |
