@@ -1,10 +1,10 @@
 # Key changes relative to `hmcts/civil-citizen-ui`
 
-This fork is still His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI): Express 5, TypeScript, Nunjucks, GOV.UK Frontend. Citizens still issue and respond to money claims through the same journeys. What changed is how the service is **seen, tested, secured, documented, and kept current**.
+This fork is still His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI): Express 5, TypeScript, Nunjucks, GOV.UK Frontend. Citizens still issue and respond to money claims through the same journeys. I did this work alone. What changed is how the service is **seen, tested, secured, documented, and kept current**.
 
-Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is `master` at `d7419c2888`. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — not yet rebased here. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
+Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is `master` at `d7419c2888`. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — I have not rebased onto that commit yet. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
 
-The rest of this note is the story of that gap. Counts and pins sit at the end for anyone who wants receipts.
+The rest of this note is the story of that gap. Counts and pins sit at the end if you want receipts.
 
 ---
 
@@ -44,13 +44,13 @@ Designers, researchers, and developers can iterate on Nunjucks and GOV.UK markup
 
 ## What you look at is the Design System, not a lookalike
 
-The service’s stated user interface (UI) source of truth is **GOV.UK Frontend**, pinned **6.2.0 → 6.4.0**. Upstream still ships eighteen view files with hand-written `govuk-table`, `govuk-inset-text`, `govuk-header`, or `govuk-button` markup. The fork converted those, plus the preview catalogue — **nineteen** Nunjucks templates. Shared `item-content.njk` is imported by **fifty-nine** other screens, so one table/inset/button conversion reaches confirmation, upload, and content pages across claim, response, case progression, general application, mediation, and query management.
+The service’s stated user interface (UI) source of truth is **GOV.UK Frontend**, pinned **6.2.0 → 6.4.0**. Upstream still ships eighteen view files with hand-written `govuk-table`, `govuk-inset-text`, `govuk-header`, or `govuk-button` markup. I converted those, plus the preview catalogue — **nineteen** Nunjucks templates. Shared `item-content.njk` is imported by **fifty-nine** other screens, so one table/inset/button conversion reaches confirmation, upload, and content pages across claim, response, case progression, general application, mediation, and query management.
 
-A second pass put the remaining high-traffic components on the same official macros. Claim summary uses `govukTabs` (Design System keyboard and selected-state behaviour, including the official Contents heading). Query lists use `govukTable`. General-application and query uploads share `uploaded-files-summary.njk`; query threads use `query-message-card.njk` with Frontend 6 summary cards. Find address is `govukInput` and `govukButton` (default submit); progressive enhancement still intercepts the click for the Asynchronous JavaScript and XML (AJAX) lookup. The paper-form postal address is `govukInsetText`.
+I then put the remaining high-traffic components on the same official macros. Claim summary uses `govukTabs` (Design System keyboard and selected-state behaviour, including the official Contents heading). Query lists use `govukTable`. General-application and query uploads share `uploaded-files-summary.njk`; query threads use `query-message-card.njk` with Frontend 6 summary cards. Find address is `govukInput` and `govukButton` (default submit); progressive enhancement still intercepts the click for the Asynchronous JavaScript and XML (AJAX) lookup. The paper-form postal address is `govukInsetText`.
 
-A third pass removed leftover lookalike **fieldsets** around `govukRadios` / `yesNoRadioButton` (nested fieldsets — `govukRadios` already emits one) and stopped stuffing extra `govuk-error-message` markup inside `govukDateInput` `errorMessage.html` (the date macro already wraps that). Contact-us always-open help uses `govukDetails` with `open: true`. Claim, response, claimant-response, and dashboard task lists use `govukTaskList` (with `app-task-list__item` kept as a locator class for existing Codecept checks). Item arrays are built in TypeScript (`govukTaskListItems.ts`) because Nunjucks cannot parse `{% set x = [{...}] %}`. Unused `macro/task.njk` was deleted. Yes/no legends must be a **string** `title` plus `isPageHeading` / `legendClasses` — not nested heading HTML. That pass touches the shared macros plus on the order of **one hundred** journey templates (eligibility, claim, response, statement of means, directions questionnaire, claimant response, case progression, general application, mediation, query management). **Who employs you?** no longer nests `govuk-grid-column-*` around `govukInput` (those columns add gutters unless they sit in a `govuk-grid-row`), so employer name and job title line up with the heading and buttons.
+I then removed leftover lookalike **fieldsets** around `govukRadios` / `yesNoRadioButton` (nested fieldsets — `govukRadios` already emits one) and stopped stuffing extra `govuk-error-message` markup inside `govukDateInput` `errorMessage.html` (the date macro already wraps that). Contact-us always-open help uses `govukDetails` with `open: true`. Claim, response, claimant-response, and dashboard task lists use `govukTaskList` (with `app-task-list__item` kept as a locator class for existing Codecept checks). Item arrays are built in TypeScript (`govukTaskListItems.ts`) because Nunjucks cannot parse `{% set x = [{...}] %}`. Unused `macro/task.njk` was deleted. Yes/no legends must be a **string** `title` plus `isPageHeading` / `legendClasses` — not nested heading HTML. That work touches the shared macros plus on the order of **one hundred** journey templates (eligibility, claim, response, statement of means, directions questionnaire, claimant response, case progression, general application, mediation, query management). **Who employs you?** no longer nests `govuk-grid-column-*` around `govukInput` (those columns add gutters unless they sit in a `govuk-grid-row`), so employer name and job title line up with the heading and buttons.
 
-That is cheaper than it sounds. GOV.UK HTML, CSS, and JavaScript live in the package. A pin bump plus `yarn test:govuk-fixtures` absorbs structure changes — service navigation, table captions, button `rel` for new tabs, summary cards — instead of rewriting lookalike markup page by page. Citizens see the same GOV.UK look as other government services because the markup **is** the Design System output. Focus order, labels, keyboard behaviour (including tabs), and table structure come from Frontend (Web Content Accessibility Guidelines (WCAG) 2.2 AA). The project prefers GOV.UK over axe when they conflict; macros keep that policy honest.
+That is cheaper than it sounds. GOV.UK HTML, CSS, and JavaScript live in the package. A pin bump plus `yarn test:govuk-fixtures` absorbs structure changes — service navigation, table captions, button `rel` for new tabs, summary cards — instead of rewriting lookalike markup page by page. Citizens see the same GOV.UK look as other government services because the markup **is** the Design System output. Focus order, labels, keyboard behaviour (including tabs), and table structure come from Frontend (Web Content Accessibility Guidelines (WCAG) 2.2 AA). I prefer GOV.UK over axe when they conflict; macros keep that policy honest.
 
 The fixture suite (`src/test/unit/govukFrontend/`) renders every official component through this app’s Nunjucks environment and compares HTML to the package `fixtures.json` — **692** assertions across **37** components. Upstream has none. Copy-pasted classes cannot be checked that way. Service Standard points 4 and 13 (“look like GOV.UK”) are easier to defend when the HTML is the Design System’s.
 
@@ -60,11 +60,11 @@ Pa11y 9 scans `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`
 
 ## Local commands tell the truth
 
-Upstream `yarn test` echoes a Jest config path and executes **zero** tests. The fork runs the unit suite: **8,997** tests in **1,045** suites, via `node --no-sparkplug` on the Jest binary so Node 24 workers do not segmentation-fault (SIGSEGV) (Sparkplug plus Jest’s `vm` module). Coverage still uses `--maxWorkers=8` for memory.
+Upstream `yarn test` echoes a Jest config path and executes **zero** tests. This tree runs the unit suite: **8,997** tests in **1,045** suites, via `node --no-sparkplug` on the Jest binary so Node 24 workers do not segmentation-fault (SIGSEGV) (Sparkplug plus Jest’s `vm` module). Coverage still uses `--maxWorkers=8` for memory.
 
 Those tests are not a single-folder spike. Versus upstream there are **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output and vendored `mojAll.js` is **97.91%** statements, **87.64%** branches, **98.64%** functions, **97.85%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric.
 
-Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. The fork aliases it to the real Pa11y command and **drops it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, then `yarn deps:check` and `yarn deps:audit`.
+Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. I aliased it to the real Pa11y command and **dropped it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, then `yarn deps:check` and `yarn deps:audit`.
 
 ESLint is **10** (flat config). Sass-loader **17** keeps GOV.UK Sass resolving. Playwright specs have their own `tsconfig.json` so they type-check without clashing with Jest globals. CodeceptJS 4, WebdriverIO 9, Playwright 1.62, and Pact 17 are on maintained majors; they still need a dedicated AAT or preview functional run.
 
@@ -74,7 +74,7 @@ The effect is practical: form, client, middleware, translator, and calculator re
 
 ## Installs stay the version you reviewed
 
-**89%** of upstream `package.json` specifiers were version ranges. The fork has **none**. Every `dependencies` and `devDependencies` entry is an exact pin (upstream: **9%**). `yarn.lock` stores a SHA-512 (Secure Hash Algorithm) checksum per npm tarball; `.yarnrc.yml` sets `checksumBehavior: throw`. A 7-day npm age gate (`npmMinimalAgeGate: 10080`) waits out the unpublish window and typical public reporting lag. Security fixes may set `YARN_NPM_MINIMAL_AGE_GATE=0` for one command.
+**89%** of upstream `package.json` specifiers were version ranges. This tree has **none**. Every `dependencies` and `devDependencies` entry is an exact pin (upstream: **9%**). `yarn.lock` stores a SHA-512 (Secure Hash Algorithm) checksum per npm tarball; `.yarnrc.yml` sets `checksumBehavior: throw`. A 7-day npm age gate (`npmMinimalAgeGate: 10080`) waits out the unpublish window and typical public reporting lag. Security fixes may set `YARN_NPM_MINIMAL_AGE_GATE=0` for one command.
 
 Ranges let a later install pull different code without a reviewed bump — compromised patches, protestware, packages that later add telemetry. Checksums stop a same-version archive swap. `yarn deps:check` and Yarn hardened mode in GitHub Actions enforce that in CI.
 
@@ -82,9 +82,9 @@ Pins are not a Common Vulnerabilities and Exposures (CVE) scan. Upstream documen
 
 Renovate extends HMCTS `automerge-minor` (not `automerge-all`), pins ranges, waits seven days, and does not automerge majors or `govuk-frontend`. Its pull requests run pin check, audit, and coverage. The pin policy holds when nobody is watching the bot.
 
-Transitive noise is lifted on purpose: `tar` 7.5.22, `flat` 6.0.1, `formidable` 3.5.4, `node-fetch` 3. First-contact personal identification number (PIN) encryption uses Node `crypto` instead of `crypto-js`, keeping OpenSSL `Salted__` output so in-flight sessions still decrypt. Helmet is **8.3.0** with tests that referrer-policy is required and Content Security Policy (CSP) nonce callbacks run. GitHub Actions `uses` entries are on current majors (checkout / setup-node **v7**, stale **v11**). Rate-limit-redis 6 and ioredis 6 stay on maintained clients; Redis Serialization Protocol version 3 (RESP3) against platform Redis still wants an AAT smoke test.
+I lifted transitive noise on purpose: `tar` 7.5.22, `flat` 6.0.1, `formidable` 3.5.4, `node-fetch` 3. First-contact personal identification number (PIN) encryption uses Node `crypto` instead of `crypto-js`, keeping OpenSSL `Salted__` output so in-flight sessions still decrypt. Helmet is **8.3.0** with tests that referrer-policy is required and Content Security Policy (CSP) nonce callbacks run. GitHub Actions `uses` entries are on current majors (checkout / setup-node **v7**, stale **v11**). Rate-limit-redis 6 and ioredis 6 stay on maintained clients; Redis Serialization Protocol version 3 (RESP3) against platform Redis still wants an AAT smoke test.
 
-Personally identifiable information (PII) Semgrep and Playwright API-security specs already exist upstream. The fork documents them and gives the Playwright specs a typed project so a security `expect` is not “fixed” with Jest’s.
+Personally identifiable information (PII) Semgrep and Playwright API-security specs already exist upstream. I documented them and gave the Playwright specs a typed project so a security `expect` is not “fixed” with Jest’s.
 
 ---
 
@@ -94,7 +94,7 @@ Application Insights software development kit (SDK) **3.15.1** needs a connectio
 
 TypeScript is **6.0.3** with documented transitional flags (`strict: false` on purpose). i18next is **26**. `uuid` 14 is ECMAScript modules (ESM); Jest transforms it instead of blocking the upgrade. jquery 4 and the webpack 7-era loaders stay installable on Node 24.
 
-A few majors were assessed and **left blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in the [dependency update log](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
+I assessed a few majors and **left them blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in the [dependency update log](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
 
 Citizen journeys stay the same shape: controllers, services, GOV.UK macros. The application-layer diff is preview routes, `cryptoAes`, Insights flush, Nunjucks preview globals, and compiler layout — not a parallel framework.
 
@@ -102,9 +102,9 @@ Citizen journeys stay the same shape: controllers, services, GOV.UK macros. The 
 
 ## People can find how the app works
 
-Upstream `docs/` is four specialised notes (WireMock, PII Semgrep, functional-test diagnostics). The fork’s human guide is **twenty** files and **7×** the line count (**1,916** lines vs **269**): architecture, local development, citizen journeys, frontend, integrations, security, testing, CI, contributing, and a [service assessment](docs/service-assessment.md) snapshot (14 Service Standard points, Technology Code of Practice (TCoP), HMCTS Express server-side rendering stack, Design System fixture HTML). The root README points at that hub. Node in the README matches `engines` / `.nvmrc` (`>=24.18.0`) instead of an obsolete Node 14 line.
+Upstream `docs/` is four specialised notes (WireMock, PII Semgrep, functional-test diagnostics). I wrote a human guide of **twenty** files and **7×** the line count (**1,916** lines vs **269**): architecture, local development, citizen journeys, frontend, integrations, security, testing, CI, contributing, and a [service assessment](docs/service-assessment.md) snapshot (14 Service Standard points, Technology Code of Practice (TCoP), HMCTS Express server-side rendering stack, Design System fixture HTML). The root README points at that hub. Node in the README matches `engines` / `.nvmrc` (`>=24.18.0`) instead of an obsolete Node 14 line.
 
-Upstream has no `AGENTS.md`. The fork adds vendor-neutral standing conventions — Yarn 4, GOV.UK macros, Express/TypeScript stack, exact pins, no invented ticket keys, no Artificial Intelligence (AI) agent git identity — so Copilot, Claude, Codex, Cursor, or a human follow the same rules. [`ai-docs/`](ai-docs/README.md) is a **32**-page directory mirror, script catalogue, and deviation checklist (**1,558** lines plus **229** in `AGENTS.md`). Conventions are not stored as Cursor `.mdc` files. Structured guidance is about **14×** the upstream line count.
+Upstream has no `AGENTS.md`. I added vendor-neutral standing conventions — Yarn 4, GOV.UK macros, Express/TypeScript stack, exact pins, no invented ticket keys, no Artificial Intelligence (AI) agent git identity — so Copilot, Claude, Codex, Cursor, or a human follow the same rules. [`ai-docs/`](ai-docs/README.md) is a **32**-page directory mirror, script catalogue, and deviation checklist (**1,558** lines plus **229** in `AGENTS.md`). Conventions are not stored as Cursor `.mdc` files. Structured guidance is about **14×** the upstream line count.
 
 Agents can recommend against a citizen Single Page Application (SPA) — a React- or Angular-style app that updates the page in the browser instead of this Express + Nunjucks service sending HTML — or against hand-rolled GOV.UK HTML or unexplained Artificial Intelligence (AI), because the assessment bar is in the repo, not only in someone’s head.
 
@@ -120,15 +120,15 @@ These are honest gaps, not hidden work:
 4. The preview OpenID Connect (OIDC) allowlist is intentional for `e2eTest` and must not be copied into production path policy.
 5. Rebase or merge **`hmcts/master` `3bb804c4f9`** (`DTSCCI-5978` Camunda import scripts) — this branch is one commit behind.
 
-The rebase onto `hmcts/master` skipped this fork’s copy of DTSCCI-5972 (already upstream) and includes DTSCCI-5973 (reduced-stack create-claim coverage classification).
+The rebase onto `hmcts/master` skipped this tree’s copy of DTSCCI-5972 (already upstream) and includes DTSCCI-5973 (reduced-stack create-claim coverage classification).
 
 ---
 
 ## In numbers
 
-Like-for-like vs `hmcts/master` at `3bb804c4f9`. Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**; coverage percentages are fork-only (`yarn test:coverage`) and do not include later preview, date, repayment, and general-application tests. PII Semgrep exists upstream and is not counted as a fork gain. `yarn.lock` churn is omitted from the prose counts above.
+Like-for-like vs `hmcts/master` at `3bb804c4f9`. Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**; coverage percentages are from this tree only (`yarn test:coverage`) and do not include later preview, date, repayment, and general-application tests. PII Semgrep exists upstream and is not counted as a gain here. `yarn.lock` churn is omitted from the prose counts above.
 
-| | Upstream | Fork |
+| | Upstream | This tree |
 | --- | --- | --- |
 | `yarn test` | Echoes a config path (0 tests) | 8,997 tests / 1,045 suites |
 | Unit test files | 843 | 1,046 (**+24%**) |
@@ -161,11 +161,11 @@ Method: two-dot `git diff hmcts/master HEAD`, `package.json` pin census, `git ls
 
 ## Meeting readout — highlights and benefits
 
-Written to be read aloud. Figures are versus `hmcts/civil-citizen-ui` `master`. The citizen product is unchanged: same journeys, same Express and Nunjucks stack. The fork changes how we **see, test, secure, document, and upgrade** the service.
+Written to be read aloud. Figures are versus `hmcts/civil-citizen-ui` `master`. The citizen product is unchanged: same journeys, same Express and Nunjucks stack. I changed how you can **see, test, secure, document, and upgrade** the service.
 
 ### One minute
 
-This is still Civil Citizen UI. We did not rewrite the product. Application TypeScript and JavaScript grew by about one percent; unit tests grew by fifteen percent.
+This is still Civil Citizen UI. I did not rewrite the product. Application TypeScript and JavaScript grew by about one percent; unit tests grew by fifteen percent.
 
 You can now look at the live GOV.UK interface on a laptop with Docker — no Identity and Access Management, no virtual private network, no civil-service backend. What you see is official Design System HTML, not copy-pasted lookalikes, so upgrades, branding, and accessibility travel with the GOV.UK Frontend package.
 
@@ -173,31 +173,31 @@ You can now look at the live GOV.UK interface on a laptop with Docker — no Ide
 
 Every package is an exact pin. Eighty-nine percent of upstream specifiers were floating ranges. Installs cannot silently change. A seven-day npm cooldown and a production audit in CI keep that honest.
 
-People can find how the app works: a full human guide, standing conventions for any coding agent, and a service-assessment snapshot. That is the fork in one minute.
+People can find how the app works: a full human guide, standing conventions for any coding agent, and a service-assessment snapshot. That is this tree in one minute.
 
 ### Talking points
 
-**1. Same product, better way of working.** Citizens still issue and respond to money claims the same way. We invested in tests, documentation, toolchain, and Design System HTML — not a parallel framework, and not a citizen Single Page Application. A Single Page Application, or SPA, is a React- or Angular-style app that runs in the browser and rewrites the page in JavaScript. This service stays Express and Nunjucks: the server sends HTML for each screen.
+**1. Same product, better way of working.** Citizens still issue and respond to money claims the same way. I invested in tests, documentation, toolchain, and Design System HTML — not a parallel framework, and not a citizen Single Page Application. A Single Page Application, or SPA, is a React- or Angular-style app that runs in the browser and rewrites the page in JavaScript. This service stays Express and Nunjucks: the server sends HTML for each screen.
 
 **2. You can look at the service on a laptop.** `yarn preview` starts Docker, WireMock, and fixture Redis. Designers, researchers, and developers iterate in minutes, offline from His Majesty’s Courts and Tribunals Service (HMCTS) networks. The catalogue is **three hundred and fifteen** Ready GET links — eligibility through query management — crawl-checked so each link renders the intended template. Full- and part-admit fixtures include a real instalment plan, so “How they want to pay” and “Your payment plan” are reviewable. Statement of means, trial arrangements, ten sample court messages, and a strike-out general application have their own seeded claims. Pages that used to show `£NaN`, `Invalid DateTime`, `Created []`, or an empty messages table now render with fixture data.
 
-**3. What you look at is GOV.UK, not a lookalike.** Frontend is on 6.4. Nineteen templates that used hand-written header, table, inset, or button markup now call official macros. A shared fragment carries that into fifty-nine other screens. Later passes put tabs, summary lists and cards, tags, Find address, the paper-form address, radios fieldsets, date errors, details, and task lists on the same macros — including TypeScript-built `govukTaskList` items, because Nunjucks cannot parse object-array literals. One pin bump plus the fixture suite absorbs Design System changes instead of rewriting pages. That is cheaper maintenance, aligned branding, and accessibility that comes from GOV.UK — focus, labels, keyboard including tabs, table structure. We prefer GOV.UK over axe when they conflict.
+**3. What you look at is GOV.UK, not a lookalike.** Frontend is on 6.4. Nineteen templates that used hand-written header, table, inset, or button markup now call official macros. A shared fragment carries that into fifty-nine other screens. I then put tabs, summary lists and cards, tags, Find address, the paper-form address, radios fieldsets, date errors, details, and task lists on the same macros — including TypeScript-built `govukTaskList` items, because Nunjucks cannot parse object-array literals. One pin bump plus the fixture suite absorbs Design System changes instead of rewriting pages. That is cheaper maintenance, aligned branding, and accessibility that comes from GOV.UK — focus, labels, keyboard including tabs, table structure. I prefer GOV.UK over axe when they conflict.
 
-**4. We can prove the HTML matches the Design System.** Six hundred and ninety-two official fixture assertions, across thirty-seven components. Upstream has zero. Service Standard points about looking like GOV.UK are easier to defend when the markup is the Design System’s own output.
+**4. I can prove the HTML matches the Design System.** Six hundred and ninety-two official fixture assertions, across thirty-seven components. Upstream has zero. Service Standard points about looking like GOV.UK are easier to defend when the markup is the Design System’s own output.
 
-**5. Local test commands tell the truth.** Upstream `yarn test` echoes a config file and executes nothing. We run eight thousand nine hundred and ninety-seven tests in one thousand and forty-five suites. Two hundred and three extra unit files — plus twenty-four percent — across forms, services, clients, modules, routes, and every client JavaScript file. Coverage on the whole `src/main` tree is ninety-seven point nine one percent statements, eighty-seven point six four percent branches, ninety-eight point six four percent functions, ninety-seven point eight five percent lines, with a continuous integration (CI) floor so a new untested file can fail the build. Form, calculator, and postcode regressions are more likely to fail on the laptop, not only in the HMCTS acceptance environment (AAT).
+**5. Local test commands tell the truth.** Upstream `yarn test` echoes a config file and executes nothing. I run eight thousand nine hundred and ninety-seven tests in one thousand and forty-five suites. Two hundred and three extra unit files — plus twenty-four percent — across forms, services, clients, modules, routes, and every client JavaScript file. Coverage on the whole `src/main` tree is ninety-seven point nine one percent statements, eighty-seven point six four percent branches, ninety-eight point six four percent functions, ninety-seven point eight five percent lines, with a continuous integration (CI) floor so a new untested file can fail the build. Form, calculator, and postcode regressions are more likely to fail on the laptop, not only in the HMCTS acceptance environment (AAT).
 
 **6. Green CI means what it says.** Coverage counts every application file, not only files a test already imported. Accessibility is no longer a stub in `cichecks` that always passed while claiming Pa11y ran in GitHub Actions — it does not; Pa11y is Jenkins. Pin check and npm audit run in `cichecks` and GitHub Actions. A green run cannot hide untested files, a skipped accessibility suite, or an unaudited lockfile.
 
-**7. Installs stay the version you reviewed.** Zero version ranges; upstream was eighty-nine percent ranges, nine percent exact pins. Lockfile SHA-512 (Secure Hash Algorithm) checksums fail a swapped tarball. New npm versions wait seven days unless we override for a security fix. Production audit must be clean — a new Common Vulnerabilities and Exposures (CVE) identifier fails CI. Renovate automerges minors only, never majors or GOV.UK Frontend, and its pull requests (PRs) run the same checks. The pin policy holds when nobody is watching the bot.
+**7. Installs stay the version you reviewed.** Zero version ranges; upstream was eighty-nine percent ranges, nine percent exact pins. Lockfile SHA-512 (Secure Hash Algorithm) checksums fail a swapped tarball. New npm versions wait seven days unless I override for a security fix. Production audit must be clean — a new Common Vulnerabilities and Exposures (CVE) identifier fails CI. Renovate automerges minors only, never majors or GOV.UK Frontend, and its pull requests (PRs) run the same checks. The pin policy holds when nobody is watching the bot.
 
-**8. Smaller, current security surface.** First-contact personal identification number (PIN) encryption uses Node’s own crypto, not a third-party library. Helmet 8 with tests around referrer policy and content-security-policy nonces. GitHub Actions on current majors. Known-noisy transitives lifted on purpose. Personally identifiable information scanning was already upstream; we made it discoverable and kept the Playwright security specs typed.
+**8. Smaller, current security surface.** First-contact personal identification number (PIN) encryption uses Node’s own crypto, not a third-party library. Helmet 8 with tests around referrer policy and content-security-policy nonces. GitHub Actions on current majors. Known-noisy transitives lifted on purpose. Personally identifiable information scanning was already upstream; I made it discoverable and kept the Playwright security specs typed.
 
-**9. Toolchain on supported majors, without an explosive rewrite.** TypeScript 6, ESLint 10, Node 24 Jest that actually finishes (Sparkplug workaround), Application Insights 3, LaunchDarkly 9, i18next 26, jquery 4. Non-prod telemetry samples at one hundred percent so diagnosis is not silently dropped. We deliberately did **not** take config 5, connect-redis 10, Ministry of Justice Frontend 10, or Babel 8 with Jest 30 — completable upgrades beat a single big-bang.
+**9. Toolchain on supported majors, without an explosive rewrite.** TypeScript 6, ESLint 10, Node 24 Jest that actually finishes (Sparkplug workaround), Application Insights 3, LaunchDarkly 9, i18next 26, jquery 4. Non-prod telemetry samples at one hundred percent so diagnosis is not silently dropped. I deliberately did **not** take config 5, connect-redis 10, Ministry of Justice Frontend 10, or Babel 8 with Jest 30 — completable upgrades beat a single big-bang.
 
-**10. People can find how the app works.** Human docs are five times the file count and seven times the line count of upstream’s specialised notes. Standing conventions live in AGENTS.md so any person or coding agent follows the same rules — GOV.UK macros, Express and TypeScript, exact pins — not a particular editor. Thirty-two pages of directory context. A service-assessment snapshot so we can say no to a citizen Single Page Application or hand-rolled GOV.UK from the manuals, not from memory. Structured guidance is about fourteen times upstream.
+**10. People can find how the app works.** Human docs are five times the file count and seven times the line count of upstream’s specialised notes. Standing conventions live in AGENTS.md so any person or coding agent follows the same rules — GOV.UK macros, Express and TypeScript, exact pins — not a particular editor. Thirty-two pages of directory context. A service-assessment snapshot so I can say no to a citizen Single Page Application or hand-rolled GOV.UK from the manuals, not from memory. Structured guidance is about fourteen times upstream.
 
-### If you have thirty more seconds — what we are honest about
+### If you have thirty more seconds — what I am honest about
 
 Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still needs a tagged functional run on preview or AAT. TypeScript strict mode is still off; turning it on is a separate piece of work. The preview login allowlist is for the laptop stack only and must not land in production. This branch is one commit behind `hmcts/master` (`DTSCCI-5978`).
 
@@ -207,15 +207,15 @@ Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still
 - Preview fixtures no longer show `£NaN`, `Invalid DateTime`, `Created []`, or an empty **Messages to the court** table.
 - `yarn test` runs 8,997 tests. Upstream’s script runs none.
 - Coverage: 97.91% statements across the whole application tree, with a CI floor.
-- 89% of upstream package specifiers were floating ranges. We have none.
+- 89% of upstream package specifiers were floating ranges. This tree has none.
 - 692 GOV.UK fixture assertions. Upstream has none.
 - Application TypeScript and JavaScript plus 1%. Unit tests plus 15%. Same product.
 
 ---
 
-## Key benefits for the Civil development team
+## Key benefits if you use this tree
 
-What you get if you look at this fork. Same citizen product; the journeys and Express + Nunjucks shape are unchanged.
+What you get if you look at this tree. Same citizen product; the journeys and Express + Nunjucks shape are unchanged.
 
 | If you… | You get… |
 | --- | --- |
