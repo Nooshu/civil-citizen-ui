@@ -2,7 +2,7 @@
 
 This fork is still His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI): Express 5, TypeScript, Nunjucks, GOV.UK Frontend. Citizens still issue and respond to money claims through the same journeys. What changed is how the service is **seen, tested, secured, documented, and kept current**.
 
-Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9` (19 August 2026). This tree is branch `complete-macros`: last commit `08f1b30da0` plus uncommitted Design System, fixture, and preview-render work as of 19 August 2026. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — not yet rebased here. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
+Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is branch `complete-macros`: last commit `08f1b30da0` plus uncommitted Design System, fixture, and preview-render work as of 19 August 2026. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — not yet rebased here. Application TypeScript and JavaScript grew about **1%**. Unit tests grew **15%**. The product was not rewritten.
 
 The rest of this note is the story of that gap. Counts and pins sit at the end for anyone who wants receipts.
 
@@ -18,7 +18,7 @@ The catalogue lists **315** Ready GET links (eligibility, claim issue, response,
 
 Ready means a useful GET of that Nunjucks template with fixture data. Omitted on purpose: document downloads, GOV.UK Pay returns, unregistered URL constants, PIN-gated first-contact claim summary, check-your-answers and confirmations that redirect until a journey is complete, query create (needs a share-query session), and N245 (not a strike-out type). Small production-safe guards keep those GETs honest: defendant timeline passes `today` and empty `rows`; evidence check-your-answers tolerates a missing upload form; continue-claiming-interest passes a **string** legend into `yesNoRadioButton` (nested HTML as `title` 500s).
 
-### Preview screens that used to look broken (19 August 2026)
+### Preview screens that used to look broken
 
 These are production-safe guards plus fixture data, not preview-only hacks:
 
