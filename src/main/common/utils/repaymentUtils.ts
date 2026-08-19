@@ -132,3 +132,35 @@ export const getRepaymentLength = (claim: Claim, lng: string): string => {
 
   return repaymentLength;
 };
+
+/**
+ * Length of a repayment plan for the claimant/defendant instalments form.
+ * Matches calculate-length-repayment.js (count hidden when there are exactly two instalments).
+ */
+export const getRepaymentScheduleDisplay = (
+  totalAmount: number,
+  paymentAmount: number,
+  frequency: string,
+): {numberOfInstalments: string; visibleScheduleId: string} | undefined => {
+  if (!(Number(paymentAmount) > 0) || !(Number(totalAmount) > 0) || !frequency) {
+    return undefined;
+  }
+  let numberOfInstalments = Math.ceil(Number(totalAmount) / Number(paymentAmount));
+  if (frequency === TransactionSchedule.TWO_WEEKS) {
+    numberOfInstalments = numberOfInstalments * 2;
+  }
+  const numberText = numberOfInstalments === 1 || numberOfInstalments > 2 ? String(numberOfInstalments) : '';
+  let visibleScheduleId: string;
+  switch (frequency) {
+    case TransactionSchedule.WEEK:
+    case TransactionSchedule.TWO_WEEKS:
+      visibleScheduleId = numberOfInstalments === 1 ? 'week_schedule' : numberOfInstalments === 2 ? 'two-weeks_schedule' : 'weeks_schedule';
+      break;
+    case TransactionSchedule.MONTH:
+      visibleScheduleId = numberOfInstalments === 1 ? 'month_schedule' : numberOfInstalments === 2 ? 'two-months_schedule' : 'months_schedule';
+      break;
+    default:
+      return undefined;
+  }
+  return {numberOfInstalments: numberText, visibleScheduleId};
+};

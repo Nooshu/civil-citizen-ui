@@ -437,6 +437,22 @@ export class Claim {
     return this.partialAdmission?.howMuchDoYouOwe?.amount;
   }
 
+  /**
+   * Amount the defendant admitted, in pounds, for the claimant “settle admitted” page.
+   * Full-defence already-paid is stored in pence; part-admission how-much-do-you-owe and full admission are pounds.
+   */
+  amountDefendantAdmittedInPounds(): number {
+    if (this.isFullDefence()) {
+      const paidPence = this.isRejectAllOfClaimAlreadyPaid();
+      return Number.isFinite(paidPence) ? paidPence / 100 : undefined;
+    }
+    const partAdmitted = this.partialAdmissionPaymentAmount();
+    if (Number.isFinite(partAdmitted)) {
+      return partAdmitted;
+    }
+    return this.totalClaimAmount;
+  }
+
   partialAdmissionPaidAmount(): number {
     return this.partialAdmission?.howMuchHaveYouPaid?.amount;
   }

@@ -34,7 +34,7 @@ PII redaction (`piiRedaction`) is installed in `server.ts` **before** `app` load
 
 ## `mappers/` and `utils/`
 
-Shared formatters (dates, URLs, file upload, monthly income/expense calculators, task-list tasks, CYA helpers). Prefer adding a util here over copying logic between services.
+Shared formatters (dates, URLs, file upload, monthly income/expense calculators, task-list tasks, CYA helpers). Prefer adding a util here over copying logic between services. `formatDateToFullDate` returns an empty string for missing or invalid dates — never Luxon’s `Invalid DateTime` (claimant-response confirmation panel). Defendant-response document hints use `respondent1ResponseDate` or the DEFENDANT_DEFENCE `createdDatetime`; pass that formatted string into `addCreateFileInformation` **without** wrapping it in `t()` (that interpolation yields `Created []`).
 
 Income/expense calculators also have a **route** under `src/main/routes/calculateMonthlyIncomeExpense/` used by client JS.
 

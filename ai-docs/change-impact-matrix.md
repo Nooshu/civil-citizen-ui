@@ -30,7 +30,16 @@ OIDC: if the page must work logged-out (eligibility, first-contact, static legal
 5. Pact if the interaction is already a consumer: `src/test/contract/consumers/`
 6. Chart WireMock **only** if the call is in the reduced-stack **create-claim** set: `charts/civil-citizen-ui/wiremock/` then `yarn wiremock:validate`
 
-Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mappings/`.
+Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mappings/`. Empty or `£NaN` preview pages: seed both WireMock and `uiPreviewRedisData.json` when both stores are read; see [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md).
+
+## UI Preview fixtures
+
+| Change | Also |
+| --- | --- |
+| New catalogue GET | Walk template interpolations; seed CCD/Redis; add `page()` in `pageCatalog.ts`; confirm HTML not only status 200 |
+| WireMock mapping JSON only | `docker compose -f compose/ui-preview.yml restart wiremock` (bind-mounted) |
+| `uiPreviewRedisData.json` / TypeScript / Nunjucks | Rebuild `citizen-ui` |
+| Query management list | `queries.caseMessages` on `GET /cases/1645882162449603`; `createdBy` `someID` |
 
 ## Redis / draft store
 

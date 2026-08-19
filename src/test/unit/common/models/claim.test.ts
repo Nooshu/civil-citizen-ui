@@ -814,6 +814,35 @@ describe('Claim partialAdmissionPaymentAmount', () => {
   });
 });
 
+describe('Claim amountDefendantAdmittedInPounds', () => {
+  it('should use total claim amount for full admission', () => {
+    const claim = new Claim();
+    claim.totalClaimAmount = 1000;
+    claim.respondent1 = new Party();
+    claim.respondent1.responseType = ResponseType.FULL_ADMISSION;
+    expect(claim.amountDefendantAdmittedInPounds()).toEqual(1000);
+  });
+
+  it('should use how much they owe for part admission', () => {
+    const claim = new Claim();
+    claim.totalClaimAmount = 1000;
+    claim.respondent1 = new Party();
+    claim.respondent1.responseType = ResponseType.PART_ADMISSION;
+    claim.partialAdmission = new PartialAdmission();
+    claim.partialAdmission.howMuchDoYouOwe = new HowMuchDoYouOwe(400, 1000);
+    expect(claim.amountDefendantAdmittedInPounds()).toEqual(400);
+  });
+
+  it('should convert already-paid pence for full defence', () => {
+    const claim = new Claim();
+    claim.respondent1 = new Party();
+    claim.respondent1.responseType = ResponseType.FULL_DEFENCE;
+    claim.rejectAllOfClaim = new RejectAllOfClaim();
+    claim.rejectAllOfClaim.howMuchHaveYouPaid = Object.assign(new HowMuchHaveYouPaid(), {amount: 50000});
+    expect(claim.amountDefendantAdmittedInPounds()).toEqual(500);
+  });
+});
+
 describe('Claim Reject - Dispute', () => {
   const claim = new Claim();
   it('should be undefined with empty claim', () => {

@@ -15,7 +15,7 @@ Run `nvm use` first so Node matches `.nvmrc` (`>=24.18.0`).
 | `yarn start:redis` | Docker Redis on `6379` | |
 | `yarn start` | `ts-node` `src/main/server.ts`; `NODE_ENV` defaults to production | HTTP, not HTTPS |
 | `yarn start:e2e` | `NODE_ENV=e2eTest` | Fake session, in-memory Redis, no OpenID Connect (OIDC) |
-| `yarn preview` / `yarn start:ui-preview` | `bin/ui-preview.sh` | **http://localhost:3001/ui-preview**. Frees 3001/1111, rebuilds in Docker. Fixture user `someID`; claims `1645882162449409` / `9601` full admit by instalments / `9602` part admit by instalments / `9603` case progression / `9604` general application (GA) |
+| `yarn preview` / `yarn start:ui-preview` | `bin/ui-preview.sh` | **http://localhost:3001/ui-preview**. Frees 3001/1111, rebuilds in Docker. Fixture user `someID`; claims `1645882162449409` / `9601` full admit by instalments / `9602` part admit by instalments / `9603` case progression (includes ten query threads) / `9604` general application (GA) / `9605` statement of means. Empty pages: [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) |
 | `yarn start:ui-preview:down` | Stop preview compose | |
 | `yarn startwin` / `yarn startwin:dev` | Windows variants | |
 | `yarn build` | webpack → `src/main/public/` | Required after SCSS/JS/entry changes |

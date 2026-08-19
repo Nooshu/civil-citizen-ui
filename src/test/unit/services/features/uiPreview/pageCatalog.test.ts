@@ -7,6 +7,7 @@ import {
   UI_PREVIEW_FULL_ADMIT_CLAIM_ID,
   UI_PREVIEW_GA_CLAIM_ID,
   UI_PREVIEW_PART_ADMIT_CLAIM_ID,
+  UI_PREVIEW_QM_QUERY_ID,
   UI_PREVIEW_SOM_CLAIM_ID,
 } from 'services/features/uiPreview/pageCatalog';
 import {
@@ -19,6 +20,8 @@ import {
   DEFENDANT_SUMMARY_URL,
   ELIGIBILITY_CLAIMANT_AGE_URL,
   PRIVACY_POLICY_URL,
+  QM_QUERY_DETAILS_URL,
+  QM_VIEW_QUERY_URL,
   UPLOAD_YOUR_DOCUMENTS_URL,
 } from 'routes/urls';
 
@@ -51,11 +54,17 @@ describe('UI Preview page catalog', () => {
     const partAdmitTaskList = CLAIMANT_RESPONSE_TASK_LIST_URL.replace(':id', UI_PREVIEW_PART_ADMIT_CLAIM_ID);
     const uploadDocuments = UPLOAD_YOUR_DOCUMENTS_URL.replace(':id', UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID);
     const applicationType = APPLICATION_TYPE_URL.replace(':id', UI_PREVIEW_GA_CLAIM_ID);
+    const viewQueries = QM_VIEW_QUERY_URL.replace(':id', UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID);
+    const queryDetails = QM_QUERY_DETAILS_URL
+      .replace(':id', UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID)
+      .replace(':queryId', UI_PREVIEW_QM_QUERY_ID);
 
     expect(allPages.find((page) => page.path === fullAdmitTaskList)?.status).toBe('ready');
     expect(allPages.find((page) => page.path === partAdmitTaskList)?.status).toBe('ready');
     expect(allPages.find((page) => page.path === uploadDocuments)?.status).toBe('ready');
     expect(allPages.find((page) => page.path === applicationType)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === viewQueries)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === queryDetails)?.status).toBe('ready');
     expect(allPages.every((page) => page.status === 'ready')).toBe(true);
   });
 
@@ -76,5 +85,7 @@ describe('UI Preview page catalog', () => {
     ].forEach((claimId) => {
       expect(mappingJson).toContain(`/cases/${claimId}`);
     });
+    expect(mappingJson).toContain(UI_PREVIEW_QM_QUERY_ID);
+    expect(mappingJson).toContain('"caseMessages"');
   });
 });

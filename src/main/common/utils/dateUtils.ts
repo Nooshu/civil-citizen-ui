@@ -43,8 +43,14 @@ export const getFutureMonthDate = (numberOfMonths: number): Date => {
   return monthFromNow;
 };
 
-export const formatDateToFullDate = (date: Date, lang?: string): string => {
+export const formatDateToFullDate = (date: Date | string, lang?: string): string => {
+  if (date == null || date === '') {
+    return '';
+  }
   const dateTime = convertDateToLuxonDate(date);
+  if (!dateTime.isValid) {
+    return '';
+  }
   const localeValue = lang === 'cy' ? 'cy' : 'en-gb';
   return dateTime.toLocaleString(DateTime.DATE_FULL, {locale: localeValue});
 };

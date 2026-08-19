@@ -147,6 +147,32 @@
           "version": 1
         }
       }
+    },
+    {
+      "name": "ui-preview-calculate-claim-interest",
+      "priority": 1,
+      "request": {
+        "method": "POST",
+        "urlPath": "/fees/claim/calculate-interest"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": 0
+      }
+    },
+    {
+      "name": "ui-preview-calculate-response-deadline",
+      "priority": 1,
+      "request": {
+        "method": "POST",
+        "urlPath": "/cases/response/deadline"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": "2026-08-26T16:00:00.000Z"
+      }
     }
   ]
 }

@@ -37,7 +37,7 @@ Artificial Intelligence (AI)-oriented notes for each area of the tree. Human map
 | Path | AI notes |
 | --- | --- |
 | [`charts/`](charts-compose-bin.md#charts) | Helm + **validated** WireMock contracts |
-| [`compose/`](charts-compose-bin.md#compose) | Redis + UI Preview (preview stubs ≠ chart contracts) |
+| [`compose/`](charts-compose-bin.md#compose) | Redis + UI Preview (preview stubs ≠ chart contracts). Empty 200s: [playbooks/ui-preview-missing-data.md](../playbooks/ui-preview-missing-data.md) |
 | [`bin/`](charts-compose-bin.md#bin) | Shell helpers; `bin/shared/` is pulled |
 | [`infrastructure/`](infrastructure.md) | Terraform (Key Vault, Redis, App Insights) |
 | [`playwright/`](playwright.md) | API security specs |

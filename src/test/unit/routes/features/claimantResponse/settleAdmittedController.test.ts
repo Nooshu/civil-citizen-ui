@@ -56,6 +56,23 @@ describe('Claimant Response - Settle Part Admit Claim Controller', () => {
       await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
         expect(res.status).toBe(200);
         expect(res.text).toContain('Do you want to settle the claim for the');
+        expect(res.text).toContain('£250');
+      });
+    });
+
+    it('should show the full claim amount when the defendant fully admitted', async () => {
+      const fullAdmitClaim = new Claim();
+      fullAdmitClaim.ccdState = CaseState.AWAITING_APPLICANT_INTENTION;
+      fullAdmitClaim.totalClaimAmount = 1000;
+      fullAdmitClaim.respondent1 = new Party();
+      fullAdmitClaim.respondent1.responseType = ResponseType.FULL_ADMISSION;
+      jest.spyOn(utilService, 'getClaimById').mockResolvedValue(fullAdmitClaim);
+      jest.spyOn(claimantResponseService, 'getClaimantResponse').mockResolvedValueOnce(undefined);
+
+      await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).toContain('£1000');
+        expect(res.text).not.toContain('£NaN');
       });
     });
 
@@ -75,6 +92,7 @@ describe('Claimant Response - Settle Part Admit Claim Controller', () => {
       await request(app).get(CLAIMANT_RESPONSE_SETTLE_ADMITTED_CLAIM_URL).expect((res) => {
         expect(res.status).toBe(200);
         expect(res.text).toContain('Do you want to settle the claim for the');
+        expect(res.text).toContain('£500');
       });
     });
 

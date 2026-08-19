@@ -37,6 +37,7 @@ import {toCUIClaimantMediation} from 'services/translation/convertToCUI/convertT
 import { RepaymentPlan } from 'common/models/repaymentPlan';
 import {
   ApplicationTypeOption,
+  isPersistableApplicationTypeOption,
   selectedApplicationTypeByOptions,
 } from 'common/models/generalApplication/applicationType';
 import {ClaimGeneralApplication, ClaimGeneralApplicationValue} from 'models/generalApplication/claimGeneralApplication';
@@ -79,6 +80,9 @@ export const translateCCDCaseDataToCUIModel = (ccdClaimObj: CCDClaim): Claim => 
   claim.defendantResponseDocuments = ccdClaim.defendantResponseDocuments;
   claim.responseClaimMediationSpecRequired = toCUIYesNo(ccdClaim.responseClaimMediationSpecRequired);
   claim.defendantResponseTimelineDocument = ccdClaim.specResponseTimelineDocumentFiles;
+  if (ccdClaim.respondent1ResponseDate) {
+    claim.respondent1ResponseDate = new Date(ccdClaim.respondent1ResponseDate as unknown as string);
+  }
 
   if (claim.isFullAdmission()) {
     translateFullAdmission(claim, ccdClaim, claimantResponse);
@@ -198,6 +202,19 @@ function toCUIClaimGeneralApplications(ccdClaimGeneralApplications: CCDGeneralAp
   return claimGeneralApplications;
 }
 
+/**
+ * Maps a GA application type from CCD into {@link ApplicationTypeOption}.
+ * CCD `applicationTypes` is the display label (for example “Strike out”).
+ * Some payloads store the enum key instead; both are accepted.
+ */
 export const displayToEnumKey = (displayValue: string): ApplicationTypeOption => {
+  if (!displayValue) {
+    return undefined;
+  }
+  const trimmed = displayValue.trim();
+  if (isPersistableApplicationTypeOption(trimmed)) {
+    return trimmed;
+  }
   return (Object.keys(selectedApplicationTypeByOptions) as Array<keyof typeof selectedApplicationTypeByOptions>)
-    .find(key => selectedApplicationTypeByOptions[key]?.[2] === displayValue) as ApplicationTypeOption | undefined;};
+    .find(key => selectedApplicationTypeByOptions[key]?.[2] === trimmed) as ApplicationTypeOption | undefined;
+};

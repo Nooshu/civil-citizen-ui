@@ -100,7 +100,7 @@
           "last_modified": "2024-11-21T13:01:49.000Z",
           "created_date": "2024-11-21T13:01:49.000Z",
           "case_data": {
-            "applicationTypes": "STRIKE_OUT",
+            "applicationTypes": "Strike out",
             "legacyCaseReference": "000MC604",
             "generalAppType": {
               "types": ["STRIKE_OUT"]
@@ -168,7 +168,7 @@
               "last_modified": "2024-11-21T13:01:49.000Z",
               "created_date": "2024-11-21T13:01:49.000Z",
               "case_data": {
-                "applicationTypes": "STRIKE_OUT",
+                "applicationTypes": "Strike out",
                 "legacyCaseReference": "000MC604",
                 "generalAppType": {
                   "types": ["STRIKE_OUT"]

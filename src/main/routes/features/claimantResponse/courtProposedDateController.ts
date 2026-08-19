@@ -31,11 +31,20 @@ function renderView(form: GenericForm<CourtProposedDate>, paymentDate: string, r
   res.render(courtProposedDateViewPath, { form, paymentDate, pageTitle:'PAGES.CLAIMANT_RESPONSE.COURT_PROPOSED_DATE.PAGE_TITLE' });
 }
 
+/**
+ * Defendant’s proposed pay-by date for the court-offered set-date page.
+ * Skips `new Date(undefined)`, which formats as Luxon’s “Invalid DateTime”.
+ */
+function formatCourtOfferedPaymentDate(claim: Claim, lang: string): string {
+  const proposedDate = getPaymentDate(claim);
+  return formatDateToFullDate(proposedDate ? new Date(proposedDate) : undefined, getLng(lang));
+}
+
 courtProposedDateController.get(CLAIMANT_RESPONSE_COURT_OFFERED_SET_DATE_URL, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const lang = req.query.lang ? req.query.lang : req.cookies.lang;
     const claim: Claim = await getCaseDataFromStore(generateRedisKey(req as unknown as AppRequest));
-    const paymentDate = formatDateToFullDate(new Date(getPaymentDate(claim)), getLng(lang));
+    const paymentDate = formatCourtOfferedPaymentDate(claim, lang);
 
     renderView(new GenericForm(new CourtProposedDate(claim.claimantResponse?.courtProposedDate?.decision)), paymentDate, res);
   } catch (error) {
@@ -51,7 +60,7 @@ courtProposedDateController.post(CLAIMANT_RESPONSE_COURT_OFFERED_SET_DATE_URL, a
     const courtProposedDate = new GenericForm(new CourtProposedDate(req.body.decision));
     courtProposedDate.validateSync();
     if (courtProposedDate.hasErrors()) {
-      const paymentDate = formatDateToFullDate(new Date(getPaymentDate(claim)), getLng(lang));
+      const paymentDate = formatCourtOfferedPaymentDate(claim, lang);
       renderView(courtProposedDate, paymentDate, res);
     } else {
       await saveClaimantResponse(generateRedisKey(req as unknown as AppRequest), courtProposedDate.model.decision, crPropertyName, crParentName);

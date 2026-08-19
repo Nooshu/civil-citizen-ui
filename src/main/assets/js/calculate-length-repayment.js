@@ -44,26 +44,7 @@
 
   hideAll();
 
-  if (repaymentFrequency) {
-
-    window.addEventListener('load', () => {
-      repaymentFrequencyValue = repaymentFrequency.querySelector(repaymentFrequencyRadioBox);
-      if (repaymentFrequencyValue?.value) {
-        getRepaymentSchedule(repaymentFrequencyValue.value);
-      }
-    });
-
-    repaymentInstalments.addEventListener('keyup', () => {
-      repaymentFrequencyValue = repaymentFrequency.querySelector(repaymentFrequencyRadioBox);
-      if (repaymentFrequencyValue?.value) {
-        getRepaymentSchedule(repaymentFrequencyValue.value);
-      }
-    });
-
-    repaymentFrequency.addEventListener('click', (event) => {
-      getRepaymentSchedule(event.target.value);
-    });
-
+  if (repaymentFrequency && repaymentInstalments) {
     const getRepaymentSchedule = (val) => {
       let numberOfInstalments = parseFloat(repaymentInstalments.value) > 0 ? Math.ceil(parseFloat(repaymentAmount.value) / parseFloat(repaymentInstalments.value)) : undefined;
 
@@ -94,5 +75,24 @@
           return undefined;
       }
     };
+
+    const applyCheckedFrequency = () => {
+      repaymentFrequencyValue = repaymentFrequency.querySelector(repaymentFrequencyRadioBox);
+      if (repaymentFrequencyValue?.value) {
+        getRepaymentSchedule(repaymentFrequencyValue.value);
+      }
+    };
+
+    repaymentInstalments.addEventListener('keyup', applyCheckedFrequency);
+
+    repaymentFrequency.addEventListener('click', (event) => {
+      getRepaymentSchedule(event.target.value);
+    });
+
+    if (document.readyState === 'complete') {
+      applyCheckedFrequency();
+    } else {
+      window.addEventListener('load', applyCheckedFrequency);
+    }
   }
 })();

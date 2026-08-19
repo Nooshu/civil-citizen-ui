@@ -21,7 +21,7 @@ Human journey map: [`docs/citizen-journeys.md`](../../docs/citizen-journeys.md).
 | `/dashboard` | `features/dashboard` |
 | `/case/:id/response` | `features/response` |
 | `/case/:id/claimant-response` | `features/claimantResponse` |
-| `/case/:id/general-application` | `features/generalApplication` (applicant) |
+| `/case/:id/general-application` | `features/generalApplication` (applicant). Submit confirmation uses `?appFee=` in pounds when present; otherwise `claim.generalApplication.applicationFee.calculatedAmountInPence`. `?id=` is the GA case id, not the claim id. |
 | `/case/:id/response/general-application/:appId` | General application (GA) respondent |
 | `/case/:id/case-progression` | `features/caseProgression` |
 | `/case/:id/mediation` | `features/mediation` |
@@ -39,7 +39,7 @@ Thin: parse params/body → form validate → service → `res.render` / `res.re
 
 ## `features/` folders (keep names aligned with services/views)
 
-`claim`, `response`, `claimantResponse`, `dashboard`, `caseProgression`, `directionsQuestionnaire`, `mediation`, `generalApplication`, `queryManagement`, `judgmentOnline`, `settlementAgreement`, `document`, `helpWithFees`, `claimAssignment`, `contact`, `public`, `uiPreview`.
+`claim`, `response`, `claimantResponse`, `dashboard`, `caseProgression`, `directionsQuestionnaire`, `mediation`, `generalApplication`, `queryManagement` (`/case/:id/qm/view-query` reads `claim.queries.caseMessages` from civil-service; UI Preview `1645882162449603` seeds ten sample threads), `judgmentOnline`, `settlementAgreement`, `document`, `helpWithFees`, `claimAssignment`, `contact`, `public`, `uiPreview`.
 
 ## `guards/`
 

@@ -222,6 +222,20 @@ describe('General Application Response service', () => {
       //Then
       expect(result).toContain(t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO'));
     });
+
+    it('should use the generic caption when the application type is missing', () => {
+      expect(getRespondToApplicationCaption(undefined, 'en')).toBe(
+        t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO_MULTIPLE'),
+      );
+      expect(getRespondToApplicationCaption([], 'en')).toBe(
+        t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO_MULTIPLE'),
+      );
+    });
+
+    it('should map a CCD display label to the enum caption', () => {
+      const result = getRespondToApplicationCaption(['Strike out'] as unknown as ApplicationTypeOption[], 'en');
+      expect(result).toBe(t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO.STRIKE_OUT'));
+    });
   });
 
   describe('isApplicationVisibleToRespondent', () => {

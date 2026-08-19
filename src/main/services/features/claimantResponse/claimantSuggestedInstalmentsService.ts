@@ -11,16 +11,22 @@ export const getClaimantSuggestedInstalmentsPlan = async (claimId: string): Prom
   try {
     const claim = await getCaseDataFromStore(claimId);
     const claimantSuggestedInstalments = claim.claimantResponse?.suggestedPaymentIntention?.repaymentPlan;
-    const firstRepaymentDate = new Date(claimantSuggestedInstalments?.firstRepaymentDate);
     const claimAmountAccepted : number = claim.hasClaimantAcceptedDefendantAdmittedAmount() ? claim.partialAdmissionPaymentAmount() : claim.totalClaimAmount;
-    return claimantSuggestedInstalments ? new RepaymentPlanForm(
+    const hasSuggestedPlan = Boolean(
+      claimantSuggestedInstalments?.paymentAmount && claimantSuggestedInstalments?.repaymentFrequency,
+    );
+    if (!hasSuggestedPlan) {
+      return new RepaymentPlanForm(claimAmountAccepted);
+    }
+    const firstRepaymentDate = new Date(claimantSuggestedInstalments.firstRepaymentDate);
+    return new RepaymentPlanForm(
       claimAmountAccepted,
       claimantSuggestedInstalments.paymentAmount,
       claimantSuggestedInstalments.repaymentFrequency,
       firstRepaymentDate.getFullYear().toString(),
       (firstRepaymentDate.getMonth() + 1).toString(),
       firstRepaymentDate.getDate().toString(),
-    ) : new RepaymentPlanForm(claimAmountAccepted);
+    );
   } catch (error) {
     logger.error(error);
     throw error;

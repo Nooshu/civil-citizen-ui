@@ -54,6 +54,20 @@ describe('Claiman Suggested Instalments Plan Service', () => {
       expect(form.firstRepaymentDate).toBeUndefined();
     });
 
+    it('should get empty form when suggested repayment plan is an empty object', async () => {
+      mockGetCaseData.mockImplementation(async () => {
+        const claim = new Claim();
+        claim.totalClaimAmount = TOTAL_CLAIM_AMOUNT;
+        claim.claimantResponse = new ClaimantResponse();
+        claim.claimantResponse.suggestedPaymentIntention = {repaymentPlan: {}};
+        return claim;
+      });
+      const form = await getClaimantSuggestedInstalmentsPlan(claimId);
+      expect(form.totalClaimAmount).toBe(TOTAL_CLAIM_AMOUNT);
+      expect(form.paymentAmount).toBeUndefined();
+      expect(form.repaymentFrequency).toBeUndefined();
+    });
+
     it('should return populated form when data provided', async () => {
       //Given
       mockGetCaseData.mockImplementation(async () => {

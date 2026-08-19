@@ -1,5 +1,5 @@
 import {CCDClaim} from 'common/models/civilClaimResponse';
-import {translateCCDCaseDataToCUIModel} from 'services/translation/convertToCUI/cuiTranslation';
+import {translateCCDCaseDataToCUIModel, displayToEnumKey} from 'services/translation/convertToCUI/cuiTranslation';
 import {TimeLineDocument, Document} from 'common/models/document/document';
 import { InterestClaimFromType, InterestEndDateType } from 'common/form/models/claimDetails';
 import { CCDInterestType } from 'common/models/ccdResponse/ccdInterestType';
@@ -457,6 +457,13 @@ describe('translateCCDCaseDataToCUIModel', () => {
     expect(claim.claimantEvidence.evidenceItem).toEqual(evidenceCUI);
   });
 
+  it('should convert respondent1ResponseDate from a CCD ISO string', () => {
+    const claim = translateCCDCaseDataToCUIModel({
+      respondent1ResponseDate: '2022-09-25T13:46:07.287428Z',
+    } as CCDClaim);
+    expect(claim.respondent1ResponseDate).toEqual(new Date('2022-09-25T13:46:07.287428Z'));
+  });
+
   it('should translate the respondent general app details', () => {
     //Given
     const dateString = new Date().toISOString();
@@ -481,5 +488,20 @@ describe('translateCCDCaseDataToCUIModel', () => {
 
     //Then
     expect(claim.respondentGaAppDetails).toEqual([{ generalAppTypes: ['STRIKE_OUT'], gaApplicationId: '1234567', caseState: 'awaiting respondent response', generalAppSubmittedDateGAspec: dateString }]);
+  });
+});
+
+describe('displayToEnumKey', () => {
+  it('should map a CCD display label to the enum key', () => {
+    expect(displayToEnumKey('Strike out')).toBe('STRIKE_OUT');
+  });
+
+  it('should accept an enum key already stored on the payload', () => {
+    expect(displayToEnumKey('STRIKE_OUT')).toBe('STRIKE_OUT');
+  });
+
+  it('should return undefined for an unknown type', () => {
+    expect(displayToEnumKey('not a type')).toBeUndefined();
+    expect(displayToEnumKey(undefined)).toBeUndefined();
   });
 });

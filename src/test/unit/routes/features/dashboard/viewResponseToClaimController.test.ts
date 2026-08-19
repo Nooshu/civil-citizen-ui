@@ -58,6 +58,9 @@ describe('view response to claim controller', () => {
           expect(res.status).toBe(200);
           expect(res.text).toContain('View the response to the claim');
           expect(res.text).toContain(expectedLabel);
+          expect(res.text).toContain('Created [25 September 2022]');
+          expect(res.text).not.toContain('Created []');
+          expect(res.text).not.toContain('Invalid DateTime');
         });
     });
 

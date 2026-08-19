@@ -1,36 +1,44 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-{% macro employerRow(employer, index, errorFor,t, formErrors) %}
-  {% set commonLabel = t('PAGES.WHO_EMPLOYS_YOU.JOB', { indx: index+1 }) %}
-  <div class="row-container govuk-grid-column-two-thirds">
-    <div class="multiple-row">
-      {% set errors = formErrors %}
-      <div class="govuk-form-group {%- if errors.length>0 %} govuk-form-group--error{% endif %}">
-        <div class="govuk-grid-column-one-third govuk-!-display-inline">
-          {{ govukInput({
-              id: 'rows[' + index + '][employerName]',
-              name: 'rows[' + index + '][employerName]',
-              value: employer.employerName,
-              hint: { text: t('COMMON.EMPLOYER_NAME') },
-              label: {
-                text: commonLabel + t('COMMON.EMPLOYER_NAME'),
-                classes: 'govuk-visually-hidden'
-              },
-              errorMessage: { text: t(errorFor('rows[' + index + '][employerName]')) } if errorFor('rows[' + index + '][employerName]') else false
-            }) }}
-          {{ govukInput({
-              id: 'rows[' + index + '][jobTitle]',
-              name: 'rows[' + index + '][jobTitle]',
-              value: employer.jobTitle,
-              hint: { text: t('COMMON.JOB_TITLE') },
-              label: {
-                text: commonLabel + t('COMMON.JOB_TITLE'),
-                classes: 'govuk-visually-hidden'
-              },
-              errorMessage: { text: t(errorFor('rows[' + index + '][jobTitle]')) } if errorFor('rows[' + index + '][jobTitle]') else false
-            }) }}
-        </div>
-      </div>
-    </div>
+{#
+  One employer job for the statement-of-means “Who employs you?” page.
+  `.row-container` is required by append-row.js (clone “Add another job”).
+  Do not wrap these inputs in `govuk-grid-column-*` — grid columns add 15px
+  gutters and are only aligned when they sit in a `govuk-grid-row`. Nested
+  columns here indented the fields relative to the page heading and buttons.
+#}
+{% macro employerRow(employer, index, errorFor, t) %}
+  <div class="row-container">
+    {% call govukFieldset({
+      classes: 'govuk-!-margin-bottom-6',
+      legend: {
+        text: t('PAGES.WHO_EMPLOYS_YOU.JOB', { indx: index + 1 }),
+        classes: 'govuk-visually-hidden table-row-legend-new'
+      }
+    }) %}
+      {{ govukInput({
+        id: 'rows[' + index + '][employerName]',
+        name: 'rows[' + index + '][employerName]',
+        value: employer.employerName,
+        label: {
+          text: t('COMMON.EMPLOYER_NAME')
+        },
+        errorMessage: {
+          text: t(errorFor('rows[' + index + '][employerName]'))
+        } if errorFor('rows[' + index + '][employerName]')
+      }) }}
+      {{ govukInput({
+        id: 'rows[' + index + '][jobTitle]',
+        name: 'rows[' + index + '][jobTitle]',
+        value: employer.jobTitle,
+        label: {
+          text: t('COMMON.JOB_TITLE')
+        },
+        errorMessage: {
+          text: t(errorFor('rows[' + index + '][jobTitle]'))
+        } if errorFor('rows[' + index + '][jobTitle]')
+      }) }}
+    {% endcall %}
   </div>
 {% endmacro %}

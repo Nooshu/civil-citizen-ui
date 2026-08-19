@@ -30,6 +30,7 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 | [change-impact-matrix.md](change-impact-matrix.md) | “I changed X → also update Y, run Z” |
 | [directory-mirror/INDEX.md](directory-mirror/INDEX.md) | Full directory map with links to per-area notes |
 | [playbooks/add-a-screen.md](playbooks/add-a-screen.md) | Adding a citizen page |
+| [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) | Preview GET is 200 but empty/`£NaN`/`Invalid DateTime`/`Created []` |
 | [playbooks/dependency-bump.md](playbooks/dependency-bump.md) | Package.json / lockfile bumps |
 | [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md) | `govuk-frontend` version changes |
 
