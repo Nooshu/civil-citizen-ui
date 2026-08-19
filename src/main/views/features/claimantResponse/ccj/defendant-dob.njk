@@ -33,7 +33,7 @@
               {% set errorHtml %}
               {% if form.hasErrors() and not form.errorFor('option') %}
                 {% for error in errors %}
-                  <span class="govuk-error-message">{{ t(error.text, {maxDate: maxDate}) }}</span>
+                  {{ t(error.text, {maxDate: maxDate}) }}{% if not loop.last %}<br>{% endif %}
                 {% endfor %}
               {% endif %}
               {% endset %}
@@ -86,12 +86,7 @@
             </div>
             {% endset %}
 
-            <fieldset class="govuk-fieldset">
-              <legend class="govuk-visually-hidden">
-                {{ t('PAGES.CCJ_DEFENDANT_DOB.TITLE') }}
-              </legend>
-              {{ yesNoRadioButton(t,id,name, '', form, description, {yesHtml: yesHtml, yes:'COMMON.VARIATION_2.YES', no: 'COMMON.VARIATION_2.NO'}) }}
-            </fieldset>
+            {{ yesNoRadioButton(t, id, name, t('PAGES.CCJ_DEFENDANT_DOB.TITLE'), form, description, {yesHtml: yesHtml, yes:'COMMON.VARIATION_2.YES', no: 'COMMON.VARIATION_2.NO', isPageHeading: false, legendClasses: 'govuk-visually-hidden'}) }}
 
             <div class="govuk-form-group">
               {{ govukButton({

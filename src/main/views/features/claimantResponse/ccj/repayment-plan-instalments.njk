@@ -69,11 +69,7 @@
                   })
                 },
                 errorMessage: {
-                  html: '<p class="govuk-error-message">' + t(form.errorFor('firstPaymentDate[date]')) + '</p>' +
-                  '<p class="govuk-error-message">' + t(form.errorFor('firstPaymentDate[day]')) + '</p>' +
-                  '<p class="govuk-error-message">' + t(form.errorFor('firstPaymentDate[month]')) + '</p>' +
-                  '<p class="govuk-error-message">' + t(form.errorFor('firstPaymentDate[year]')) + '</p>'
-                } if form.hasNestedErrors(),
+                  html: [t(form.errorFor('firstPaymentDate[date]')), t(form.errorFor('firstPaymentDate[day]')), t(form.errorFor('firstPaymentDate[month]')), t(form.errorFor('firstPaymentDate[year]'))] | select | join('<br>')} if form.hasNestedErrors(),
                 items: [
                   {
                     classes: "govuk-input--width-2 govuk-input--error" if form.errorFor('firstPaymentDate[day]') else "govuk-input--width-2",

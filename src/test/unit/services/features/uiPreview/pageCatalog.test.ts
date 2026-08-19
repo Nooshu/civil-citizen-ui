@@ -7,13 +7,17 @@ import {
   UI_PREVIEW_FULL_ADMIT_CLAIM_ID,
   UI_PREVIEW_GA_CLAIM_ID,
   UI_PREVIEW_PART_ADMIT_CLAIM_ID,
+  UI_PREVIEW_SOM_CLAIM_ID,
 } from 'services/features/uiPreview/pageCatalog';
 import {
   APPLICATION_TYPE_URL,
+  CITIZEN_DISABILITY_URL,
   CLAIM_AMOUNT_URL,
   CLAIMANT_RESPONSE_TASK_LIST_URL,
   CLAIMANT_TASK_LIST_URL,
+  DASHBOARD_CLAIMANT_URL,
   DEFENDANT_SUMMARY_URL,
+  ELIGIBILITY_CLAIMANT_AGE_URL,
   PRIVACY_POLICY_URL,
   UPLOAD_YOUR_DOCUMENTS_URL,
 } from 'routes/urls';
@@ -24,6 +28,11 @@ describe('UI Preview page catalog', () => {
     expect(catalog.length).toBeGreaterThan(0);
 
     const allPages = catalog.flatMap((group) => group.pages);
+    expect(allPages.length).toBeGreaterThan(200);
+    expect(allPages.find((page) => page.path.includes('help-with-fees-reference') && page.path.startsWith('/claim/'))).toBeUndefined();
+    expect(allPages.find((page) => page.path === ELIGIBILITY_CLAIMANT_AGE_URL)?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === CITIZEN_DISABILITY_URL.replace(':id', UI_PREVIEW_SOM_CLAIM_ID))?.status).toBe('ready');
+    expect(allPages.find((page) => page.path === DASHBOARD_CLAIMANT_URL.replace(':id', UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID))?.status).toBe('ready');
     const privacy = allPages.find((page) => page.path === PRIVACY_POLICY_URL);
     expect(privacy?.status).toBe('ready');
 
@@ -63,6 +72,7 @@ describe('UI Preview page catalog', () => {
       UI_PREVIEW_PART_ADMIT_CLAIM_ID,
       UI_PREVIEW_CASE_PROGRESSION_CLAIM_ID,
       UI_PREVIEW_GA_CLAIM_ID,
+      UI_PREVIEW_SOM_CLAIM_ID,
     ].forEach((claimId) => {
       expect(mappingJson).toContain(`/cases/${claimId}`);
     });

@@ -1,13 +1,15 @@
-{# This macro has params that include conditional html to show on yes or no.
-To include html on yes add htmlYes in parameter
-for example {yesHtml:'<span>you clicked on yes</span>'}
-To include html on when no is selected add htmlNo parameter
-for example {noHtml:'<span>you clicked on no</span>' #}
+{# Yes/no radios via the official govukRadios macro.
+  Optional params: yes/no i18n keys, yesHtml/noHtml conditionals, yesHint/noHint,
+  classes, errorMessageText, isPageHeading (default true when title is set),
+  legendClasses (default govuk-fieldset__legend--l).
+  Pass title and omit a wrapping <fieldset> — govukRadios already emits one. #}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% macro yesNoRadioButton(t, id, name, title, form, description, params) %}
   {% set yes = params.yes if params.yes else 'COMMON.VARIATION.YES' %}
   {% set no = params.no if params.no else 'COMMON.VARIATION.NO' %}
   {% set errors = form.getAllErrors() %}
+  {% set legendIsPageHeading = params.isPageHeading if params and params.isPageHeading is defined else true %}
+  {% set legendClasses = params.legendClasses if params and params.legendClasses else "govuk-fieldset__legend--l" %}
   {{ govukRadios({
     idPrefix: id,
     name: name,
@@ -15,8 +17,8 @@ for example {noHtml:'<span>you clicked on no</span>' #}
     fieldset: {
       legend: {
         text: title,
-        isPageHeading: true,
-        classes: "govuk-fieldset__legend--l"
+        isPageHeading: legendIsPageHeading,
+        classes: legendClasses
       }
     } if title,
     hint: {

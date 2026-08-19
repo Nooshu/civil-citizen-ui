@@ -22,9 +22,9 @@
           {% if errors %}
             {% for error in errors %}
               {% if error.text == 'ERRORS.FIRST_PAYMENT_MESSAGE' %}
-                <span class="govuk-error-message">{{ t(error.text,{firstPaymentDate:firstPaymentDate}) | safe }}</span>
+                {{ t(error.text,{firstPaymentDate:firstPaymentDate}) }}{% if not loop.last %}<br>{% endif %}
               {% else %}
-                <span class="govuk-error-message">{{ t(error.text) }}</span>
+                {{ t(error.text) }}{% if not loop.last %}<br>{% endif %}
               {% endif %}
             {% endfor %}
           {% endif %}

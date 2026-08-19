@@ -1,7 +1,6 @@
 {% extends "claim-details-tpl.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "../../../macro/contact-us-for-help.njk" import contactUsForHelp with context %}
 {% from "../../../macro/csrf.njk" import csrfProtection %}
 {% from "../../../macro/page-title.njk" import setPageTitle %}
@@ -33,19 +32,11 @@
         <div class="govuk-grid-column-two-thirds">
           <form method="post" novalidate>
             {{ csrfProtection(csrf) }}
-              {% call govukFieldset({
-                 legend: {
-                    text: title,
-                    classes: "govuk-fieldset__legend--l",
-                    isPageHeading: true
-                 }
-              }) %}
-            <div class="govuk-form-group {% if form.hasErrors() %} govuk-form-group--error{% endif %}">
-              {% if form.hasErrors() %}
+              {% set dateErrorHtml %}
                 {% for error in errors %}
-                  <span class="govuk-error-message">{{ t(error.text, {maxDate: maxDate}) }}</span>
+                  {{ t(error.text, {maxDate: maxDate}) }}{% if not loop.last %}<br>{% endif %}
                 {% endfor %}
-              {% endif %}
+              {% endset %}
               {{ govukDateInput({
                 id: "date",
                 type: "number",
@@ -54,9 +45,13 @@
                 fieldset: {
                   legend: {
                     text: title,
-                    classes: 'govuk-visually-hidden'
+                    classes: "govuk-fieldset__legend--l",
+                    isPageHeading: true
                   }
                 },
+                errorMessage: {
+                  html: dateErrorHtml
+                } if form.hasErrors(),
                 hint: {
                   text: t('COMMON.DATE_EXAMPLE', {
                     date: today.getDate() + ' ' + (today.getMonth() + 1) + ' ' + (today.getFullYear() - 18)
@@ -89,12 +84,10 @@
                   }
                 ]
               }) }}
-            </div>
             {{ govukButton({
                 text: t("COMMON.BUTTONS.SAVE_AND_CONTINUE"),
                 attributes: { 'aria-label': t('COMMON.BUTTONS.SAVE_AND_CONTINUE') }
                 }) }}
-            {% endcall %}
           </form>
         </div>
       </div>

@@ -28,19 +28,19 @@
           {% if errors %}
            {% if form.hasFieldError('date') %}
              {% if form.errorFor('date') == 'ERRORS.VALID_DATE_IN_PAST' %}
-               <span class="govuk-error-message">{{ t(form.errorFor('date'),{dateToday: dateToday}) }}</span>
+               {{ t(form.errorFor('date'),{dateToday: dateToday}) }}
              {% else %}
-               <span class="govuk-error-message">{{ t(form.errorFor('date')) }}</span>
+               {{ t(form.errorFor('date')) }}
              {% endif %}
            {% endif %}
             {% if form.hasFieldError('day') %}
-              <span class="govuk-error-message">{{ t(form.errorFor('day')) }}</span>
+              {% if form.hasFieldError('date') %}<br>{% endif %}{{ t(form.errorFor('day')) }}
             {% endif %}
             {% if form.hasFieldError('month') %}
-              <span class="govuk-error-message">{{ t(form.errorFor('month')) }}</span>
+              {% if form.hasFieldError('date') or form.hasFieldError('day') %}<br>{% endif %}{{ t(form.errorFor('month')) }}
             {% endif %}
             {% if form.hasFieldError('year') %}
-              <span class="govuk-error-message">{{ t(form.errorFor('year')) }}</span>
+              {% if form.hasFieldError('date') or form.hasFieldError('day') or form.hasFieldError('month') %}<br>{% endif %}{{ t(form.errorFor('year')) }}
             {% endif %}
           {% endif %}
         {% endset -%}
@@ -50,9 +50,7 @@
         <div class="govuk-grid-column-two-thirds">
           <form method="post" novalidate>
             {{ csrfProtection(csrf) }}
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-              <h1 class="govuk-fieldset__heading">{{ title }}</h1>
-            </legend>
+            <h1 class="govuk-heading-l">{{ title }}</h1>
             <p class="govuk-body-m">{{ description }}</p>
             {{ govukInput({
               id: "amount",
@@ -68,7 +66,7 @@
               label: {
                 text: t('PAGES.PARTIAL_ADMISSION_HOW_MUCH_HAVE_YOU_PAID.HOW_MUCH'),
                 classes: "govuk-label--s",
-                isPageHeading: true
+                isPageHeading: false
               },
               classes: "govuk-!-width-two-thirds",
               errorMessage: {

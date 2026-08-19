@@ -7,6 +7,7 @@
 {% from "../../../../macro/error-summary.njk" import errorSummary %}
 {% from "../../../../macro/page-title.njk" import setPageTitle %}
 {% from "./court-order.njk" import courtOrder %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, 'PAGES.COURT_ORDERS.PAGE_TITLE') }}
@@ -36,9 +37,10 @@
                 <div
                   class="govuk-form-group {% if atLeastOneCourtOrderError %} govuk-form-group--error {% endif %}">
                   {% if atLeastOneCourtOrderError %}
-                    <p class="govuk-error-message">
-                      <span class="govuk-visually-hidden">{{ t('ERRORS.ERROR') }} :</span> {{ t(atLeastOneCourtOrderError) }}
-                    </p>
+                    {{ govukErrorMessage({
+                      visuallyHiddenText: t('ERRORS.ERROR'),
+                      text: t(atLeastOneCourtOrderError)
+                    }) }}
                   {% endif %}
 
                   {% for row in form.model.rows %}

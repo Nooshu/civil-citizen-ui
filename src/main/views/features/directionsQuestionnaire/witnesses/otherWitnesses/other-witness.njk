@@ -1,6 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% macro otherWitnessItem(index, t, form, witnessItems, removeButton) %}
   {% set firstName = "witnessItems[" + index + "][firstName]" %}
   {% set lastName = "witnessItems[" + index + "][lastName]" %}
@@ -8,8 +9,12 @@
   {% set telephone = "witnessItems[" + index + "][telephone]" %}
   {% set details = "witnessItems[" + index + "][details]" %}
   <div class="row-container">
-    <fieldset class="govuk-fieldset">
-     <legend class="govuk-visually-hidden">{{ t('PAGES.OTHER_WITNESSES.PAGE_TITLE') }}</legend>
+    {% call govukFieldset({
+      legend: {
+        text: t('PAGES.OTHER_WITNESSES.PAGE_TITLE'),
+        classes: 'govuk-visually-hidden'
+      }
+    }) %}
       <div class="multiple-row">
       {{ govukInput({
         id: firstName,
@@ -85,6 +90,6 @@
         type: "button"
       }) }}
     </div>
-    </fieldset>
+    {% endcall %}
   </div>
 {% endmacro %}

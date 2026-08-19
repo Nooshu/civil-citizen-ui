@@ -14,6 +14,7 @@ import {UnemploymentCategory} from 'common/form/models/statementOfMeans/unemploy
 import {TransactionSchedule} from 'common/form/models/statementOfMeans/expensesAndIncome/transactionSchedule';
 import {EvidenceType} from 'common/models/evidence/evidenceType';
 import {addDaysFilter, addDaysFilterTranslated, dateFilter, formatDate} from './filters/dateFilter';
+import {toDashboardGovukTaskListItems, toGovukTaskListItems} from './filters/govukTaskListItems';
 import {SignatureType} from 'common/models/signatureType';
 import {ClaimSummaryType} from 'common/form/models/claimSummarySection';
 import {FormValidationError} from 'common/form/validationErrors/formValidationError';
@@ -163,6 +164,8 @@ export class Nunjucks {
     nunjucksEnv.addGlobal('nonceValue', nonceValue);
     nunjucksEnv.addGlobal('nonceDataLayer', nonceDataLayer);
     nunjucksEnv.addGlobal('TaskStatus', TaskStatus);
+    nunjucksEnv.addGlobal('toGovukTaskListItems', toGovukTaskListItems);
+    nunjucksEnv.addGlobal('toDashboardGovukTaskListItems', toDashboardGovukTaskListItems);
     nunjucksEnv.addGlobal('ApplicationTypeOption', ApplicationTypeOption);
     nunjucksEnv.addGlobal('HearingTypeOptions', HearingTypeOptions);
     nunjucksEnv.addGlobal('ProposedPaymentPlanOption', ProposedPaymentPlanOption);

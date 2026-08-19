@@ -8,10 +8,12 @@
   {% set indexPlusOne = (index + 1) %}
 
   {% set singleDateHTML %}
-    {% set singleDateError = '<p class="govuk-error-message">' + t(errorFor('items[' +index+ '][from]')) + '</p>' +
-      '<p class="govuk-error-message">' + t(errorFor('items[' +index+ '][startDay]')) + '</p>' +
-      '<p class="govuk-error-message">' + t(errorFor('items[' +index+ '][startMonth]')) + '</p>' +
-      '<p class="govuk-error-message">' + t(errorFor('items[' +index+ '][startYear]')) + '</p>' %}
+    {% set singleDateError = [
+      t(errorFor('items[' +index+ '][from]')),
+      t(errorFor('items[' +index+ '][startDay]')),
+      t(errorFor('items[' +index+ '][startMonth]')),
+      t(errorFor('items[' +index+ '][startYear]'))
+    ] | select | join('<br>') %}
   {{ govukDateInput({
     id: 'items[' + index + '][from]' if unavailableDate.type === UnavailableDateType.SINGLE_DATE else 'items[' + index + '][from]-single',
     type: 'number',
@@ -61,17 +63,18 @@
 {% endset -%}
 
 {% set longerPeriodHTML %}
-
-  <div>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][from]')) }} </p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][startDay]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][startMonth]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][startYear]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][until]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][endDay]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][endMonth]')) }}</p>
-    <p class="govuk-error-message">{{ t(errorFor('items['+index+'][endYear]')) }}</p>
-  </div>
+  {% set fromDateError = [
+    t(errorFor('items['+index+'][from]')),
+    t(errorFor('items['+index+'][startDay]')),
+    t(errorFor('items['+index+'][startMonth]')),
+    t(errorFor('items['+index+'][startYear]'))
+  ] | select | join('<br>') %}
+  {% set untilDateError = [
+    t(errorFor('items['+index+'][until]')),
+    t(errorFor('items['+index+'][endDay]')),
+    t(errorFor('items['+index+'][endMonth]')),
+    t(errorFor('items['+index+'][endYear]'))
+  ] | select | join('<br>') %}
   {{ govukDateInput({
     id: 'items[' +index+ '][from]',
     type: "number",
@@ -84,6 +87,9 @@
     hint: {
       text: t('COMMON.DATE_EXAMPLE', { date: exampleDate })
     },
+    errorMessage: {
+      html: fromDateError
+    } if fromDateError,
     items: [
       {
         classes: "govuk-input--width-4 govuk-input--error" if (errorFor('items['+index+'][startDay]') or errorFor('items['+index+'][from]') or (not unavailableDate.from and errorFor('items['+index+'][until]'))) else "govuk-input--width-4",
@@ -133,6 +139,9 @@
     hint: {
       text: t('COMMON.DATE_EXAMPLE', { date: exampleDate })
     },
+    errorMessage: {
+      html: untilDateError
+    } if untilDateError,
     items: [
       {
         classes: "govuk-input--width-4 govuk-input--error" if (errorFor('items['+index+'][endDay]') or errorFor('items['+index+'][until]')) else "govuk-input--width-4",

@@ -44,7 +44,7 @@
       fieldset: {
         legend: {
           text: t('PAGES.EXPERT_REPORT_DETAILS.REPORT_DATE'),
-          isPageHeading: true,
+          isPageHeading: false,
           classes: "govuk-label"
         }
       },
@@ -52,10 +52,12 @@
         text: dateHint
       },
       errorMessage: {
-            html: '<p class="govuk-error-message">' + t(errorFor('reportDetails['+reportDetailIndex+'][reportDate]')) + '</p>' +
-            '<p class="govuk-error-message">' + t(errorFor('reportDetails['+reportDetailIndex+'][day]')) + '</p>' +
-            '<p class="govuk-error-message">' + t(errorFor('reportDetails['+reportDetailIndex+'][month]')) + '</p>' +
-            '<p class="govuk-error-message">' + t(errorFor('reportDetails['+reportDetailIndex+'][year]')) + '</p>'
+            html: [
+              t(errorFor('reportDetails['+reportDetailIndex+'][reportDate]')),
+              t(errorFor('reportDetails['+reportDetailIndex+'][day]')),
+              t(errorFor('reportDetails['+reportDetailIndex+'][month]')),
+              t(errorFor('reportDetails['+reportDetailIndex+'][year]'))
+            ] | select | join('<br>')
           } if errorFor('reportDetails['+reportDetailIndex+'][reportDate]') or
           errorFor('reportDetails['+reportDetailIndex+'][day]') or
           errorFor('reportDetails['+reportDetailIndex+'][month]') or

@@ -69,11 +69,7 @@
         })
       },
       errorMessage: {
-        html: '<p class="govuk-error-message">' + t(form.errorFor('proposedSetDate')) + '</p>' +
-        '<p class="govuk-error-message">' + t(form.errorFor('day')) + '</p>' +
-        '<p class="govuk-error-message">' + t(form.errorFor('month')) + '</p>' +
-        '<p class="govuk-error-message">' + t(form.errorFor('year')) + '</p>'
-      } if (form.hasFieldError('proposedSetDate') or form.hasFieldError('day') or form.hasFieldError('month') or form.hasFieldError('year')),
+        html: [t(form.errorFor('proposedSetDate')), t(form.errorFor('day')), t(form.errorFor('month')), t(form.errorFor('year'))] | select | join('<br>')} if (form.hasFieldError('proposedSetDate') or form.hasFieldError('day') or form.hasFieldError('month') or form.hasFieldError('year')),
       items: [
         {
           classes: "govuk-input--width-2 govuk-input--error" if form.hasFieldError('day') else "govuk-input--width-2",
