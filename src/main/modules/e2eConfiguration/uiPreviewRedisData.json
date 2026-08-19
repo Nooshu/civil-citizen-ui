@@ -185,7 +185,7 @@
       "submittedDate": "2022-05-23T17:02:02.38407",
       "claimIssuedDate": "2022-03-01T13:29:24.971Z",
       "issueDate": "2023-06-03",
-      "responseClaimTrack": "SMALL_CLAIM",
+      "responseClaimTrack": "FAST_CLAIM",
       "claimFee": {
         "code": "FEE0205",
         "version": "6",
@@ -221,9 +221,41 @@
           }
         }
       },
+      "caseProgressionHearing": {
+        "hearingDate": "2026-11-12T10:00:00.000Z",
+        "hearingDuration": "MINUTES_60",
+        "hearingFeeInformation": {
+          "hearingFee": {
+            "code": "FEE0204",
+            "version": "4",
+            "calculatedAmountInPence": "7000"
+          },
+          "hearingDueDate": "2026-10-15"
+        }
+      },
       "caseProgression": {
         "claimantLastUploadDate": "2022-06-21T14:15:19",
-        "defendantLastUploadDate": "2022-06-21T14:15:19"
+        "defendantLastUploadDate": "2022-06-21T14:15:19",
+        "claimantDocuments": {},
+        "defendantDocuments": {},
+        "helpFeeReferenceNumberForm": {
+          "option": "yes",
+          "referenceNumber": "HWF-A1B-23C"
+        },
+        "claimantTrialArrangements": {
+          "isCaseReady": "yes",
+          "hasAnythingChanged": {
+            "option": "no",
+            "textArea": "No changes to witnesses or experts since the last hearing."
+          },
+          "otherTrialInformation": "The claimant will need a hearing loop."
+        },
+        "requestForReviewClaimant": {
+          "textArea": "The order did not take into account the witness statement uploaded on 21 June 2022."
+        },
+        "requestForReviewDefendant": {
+          "textArea": "The claimant's comments do not match the hearing notes."
+        }
       }
     }
   },
@@ -279,6 +311,57 @@
         }
       },
       "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
+      "generalApplication": {
+        "applicationTypes": [
+          {
+            "option": "STRIKE_OUT"
+          }
+        ],
+        "agreementFromOtherParty": "no",
+        "informOtherParties": {
+          "option": "yes"
+        },
+        "applicationCosts": "no",
+        "wantToUploadDocuments": "no",
+        "hasUnavailableDatesHearing": "no",
+        "hearingContactDetails": {
+          "telephoneNumber": "01632960001",
+          "emailAddress": "defendant@example.com"
+        },
+        "hearingArrangement": {
+          "option": "PERSON_AT_COURT",
+          "reasonForPreferredHearingType": "I need to speak to the judge in person about the strike-out.",
+          "courtLocation": "7a99abd0-314b-487d-8de4-87455d96ba86"
+        },
+        "orderJudges": [
+          {
+            "text": "Strike out the claimant's statement of case."
+          }
+        ],
+        "requestingReasons": [
+          {
+            "text": "The claim has no real prospect of success."
+          }
+        ],
+        "certificateOfSatisfactionOrCancellation": {
+          "defendantFinalPaymentDate": {
+            "year": "2025",
+            "month": "3",
+            "day": "12",
+            "date": "2025-03-12T00:00:00.000Z"
+          },
+          "debtPaymentEvidence": {
+            "debtPaymentOption": "UNABLE_TO_PROVIDE_EVIDENCE_OF_FULL_PAYMENT",
+            "provideDetails": "Paid the remaining £400 in cash on 12 March 2025. The receipt has been lost."
+          }
+        },
+        "uploadEvidenceForApplication": [],
+        "applicationFee": {
+          "code": "FEE0442",
+          "version": "1",
+          "calculatedAmountInPence": "10800"
+        }
+      },
       "generalApplications": [
         {
           "id": "717871d3-8ff9-47d3-80c9-f4f211410e6e",
@@ -291,6 +374,104 @@
           }
         }
       ]
+    }
+  },
+  {
+    "id": "1645882162449605someID",
+    "jurisdiction": "CIVIL",
+    "case_type_id": "CIVIL",
+    "created_date": "2022-03-01T13:29:22.447",
+    "last_modified": "2022-03-01T13:29:24.971",
+    "security_classification": "PUBLIC",
+    "case_data": {
+      "id": "1645882162449605",
+      "ccdState": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
+      "caseRole": "[DEFENDANT]",
+      "legacyCaseReference": "000MC605",
+      "totalClaimAmount": 1000,
+      "submittedDate": "2022-05-23T17:02:02.38407",
+      "claimIssuedDate": "2022-03-01T13:29:24.971Z",
+      "responseClaimTrack": "SMALL_CLAIM",
+      "claimFee": {
+        "code": "FEE0204",
+        "version": "4",
+        "calculatedAmountInPence": "7000"
+      },
+      "applicant1": {
+        "type": "INDIVIDUAL",
+        "partyDetails": {
+          "title": "Ms",
+          "firstName": "Jane",
+          "lastName": "Claimant",
+          "partyName": "Jane Claimant",
+          "primaryAddress": {
+            "AddressLine1": "1 Claimant Road",
+            "PostTown": "London",
+            "PostCode": "SW1A 1AA"
+          }
+        },
+        "emailAddress": {
+          "emailAddress": "claimant@example.com"
+        }
+      },
+      "respondent1": {
+        "type": "INDIVIDUAL",
+        "responseType": "PART_ADMISSION",
+        "dateOfBirth": {
+          "date": "1985-06-15T00:00:00.000Z"
+        },
+        "partyDetails": {
+          "title": "Mr",
+          "firstName": "John",
+          "lastName": "Defendant",
+          "partyName": "John Defendant",
+          "primaryAddress": {
+            "AddressLine1": "Defendant House",
+            "AddressLine2": "21",
+            "AddressLine3": "Church Road",
+            "PostTown": "Berkshire",
+            "PostCode": "RG4 7AD"
+          }
+        },
+        "emailAddress": {
+          "emailAddress": "defendant@example.com"
+        },
+        "partyPhone": {
+          "phone": "01632960001"
+        }
+      },
+      "partialAdmission": {
+        "alreadyPaid": {
+          "option": "no"
+        },
+        "howMuchDoYouOwe": {
+          "amount": 400,
+          "totalAmount": 1000
+        },
+        "whyDoYouDisagree": {
+          "text": "I only owe part of the amount claimed."
+        },
+        "paymentIntention": {
+          "paymentOption": "INSTALMENTS",
+          "repaymentPlan": {
+            "paymentAmount": 100,
+            "repaymentFrequency": "MONTH",
+            "firstRepaymentDate": "2026-09-18T00:00:00.000Z"
+          }
+        }
+      },
+      "statementOfMeans": {
+        "disability": {
+          "option": "no"
+        },
+        "residence": {
+          "type": "OWN_HOME"
+        },
+        "explanation": {
+          "text": "I cannot afford to pay the full amount at once."
+        }
+      },
+      "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z"
     }
   }
 ]

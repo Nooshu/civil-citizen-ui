@@ -19,9 +19,15 @@ import {getRouteParam} from 'common/utils/routeParamUtils';
 const defendantTimelineController = Router();
 const defendantTimelineView = 'features/response/timelineOfEvents/defendant-timeline';
 
+/**
+ * Renders the defendant timeline form.
+ *
+ * @remarks
+ * The Nunjucks date hint calls `today.getDate()`. Pass a Date or the GET 500s.
+ */
 function renderView(form: GenericForm<DefendantTimeline>, theirTimeline: TimeLineOfEvents[], pdfUrl: string, res: Response) {
   res.render(defendantTimelineView, {
-    form, theirTimeline, pdfUrl,
+    form, theirTimeline: theirTimeline || [], pdfUrl, today: new Date(),
   });
 }
 

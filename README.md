@@ -106,7 +106,7 @@ Same as `yarn start:ui-preview`. When ready, open **http://localhost:3001/ui-pre
 Stop preview with `yarn start:ui-preview:down`.
 
 Compose file: [`compose/ui-preview.yml`](compose/ui-preview.yml). Preview WireMock stubs live in
-[`compose/ui-preview-mappings/`](compose/ui-preview-mappings/) (dashboard plus full admit, part admit, case progression, and general application files), deliberately separate from the
+[`compose/ui-preview-mappings/`](compose/ui-preview-mappings/) (dashboard plus full admit, part admit, case progression, general application, statement of means, and shared API stubs), deliberately separate from the
 validated reduced-stack contracts in `charts/civil-citizen-ui/wiremock/mappings` (see
 [reduced-stack WireMock contracts](docs/reduced-stack-wiremock-contracts.md)). The compose stack mounts the preview
 stubs as the WireMock mappings root and the chart contracts as a nested `reduced-stack/` directory, so both sets load.

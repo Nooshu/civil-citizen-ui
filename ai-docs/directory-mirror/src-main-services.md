@@ -28,7 +28,7 @@ services/
 | `generalApplication/` | Types, hearings, N245, fees, Certificate of Satisfaction or Cancellation (COSC), respondent, written reps |
 | `queryManagement/` | Create query, check your answers (CYA) |
 | `dashboard/` | Claim summary / latest update **content builders** |
-| `helpWithFees/`, `judgmentOnline/`, `settlementAgreement/`, `document/`, `eligibility/`, `feePayment/`, `uiPreview/` | Catalogue + fixture claim IDs for `yarn preview`. Extra claims: `uiPreviewRedisData.json` + `compose/ui-preview-mappings/`. Admit Redis fixtures need `claimantResponse` (getClaimById reads Redis first) and an INSTALMENTS `repaymentPlan` for **How they want to pay**. |
+| `helpWithFees/`, `judgmentOnline/`, `settlementAgreement/`, `document/`, `eligibility/`, `feePayment/`, `uiPreview/` | Catalogue + fixture claim IDs for `yarn preview`. Extra claims: `uiPreviewRedisData.json` + `compose/ui-preview-mappings/`. Admit Redis fixtures need `claimantResponse` (getClaimById reads Redis first) and an INSTALMENTS `repaymentPlan` for **How they want to pay**. Statement-of-means screens need defendant `PART_ADMISSION`/`FULL_ADMISSION` plus a non-immediate payment option (`1645882162449605`). The catalogue lists only GETs that render the intended template with those fixtures (no PIN-gated first-contact summary, no unregistered URLs, no CYA that redirect to incomplete-submission). |
 
 Content builders return objects for Nunjucks (summary rows, task lists). Reuse `services/features/common/` (e.g. support-required lists) instead of copying.
 

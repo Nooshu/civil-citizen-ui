@@ -1,31 +1,30 @@
 {
   "mappings": [
     {
-      "name": "ui-preview-case-progression-case-details",
+      "name": "ui-preview-som-case-details",
       "priority": 1,
       "request": {
         "method": "GET",
-        "urlPath": "/cases/1645882162449603"
+        "urlPath": "/cases/1645882162449605"
       },
       "response": {
         "status": 200,
         "headers": {"Content-Type": "application/json"},
         "jsonBody": {
-          "id": "1645882162449603",
-          "state": "CASE_PROGRESSION",
+          "id": "1645882162449605",
+          "state": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
           "last_modified": "2022-03-01T13:29:24.971Z",
           "case_data": {
-            "legacyCaseReference": "000MC603",
-            "totalClaimAmount": 1500,
-            "ccdState": "CASE_PROGRESSION",
+            "legacyCaseReference": "000MC605",
+            "totalClaimAmount": 1000,
+            "ccdState": "AWAITING_RESPONDENT_ACKNOWLEDGEMENT",
             "submittedDate": "2022-05-23T17:02:02.38407",
             "claimIssuedDate": "2022-03-01T13:29:24.971Z",
-            "issueDate": "2023-06-03",
-            "responseClaimTrack": "FAST_CLAIM",
+            "responseClaimTrack": "SMALL_CLAIM",
             "claimFee": {
-              "code": "FEE0205",
-              "version": "6",
-              "calculatedAmountInPence": "8000"
+              "code": "FEE0204",
+              "version": "4",
+              "calculatedAmountInPence": "7000"
             },
             "applicant1": {
               "type": "INDIVIDUAL",
@@ -55,39 +54,25 @@
                 "PostCode": "RG4 7AD"
               }
             },
-            "hearingDate": "2026-11-12",
-            "hearingTimeHourMinute": "10:00",
-            "hearingDuration": "MINUTES_60",
-            "hearingFee": {
-              "code": "FEE0204",
-              "version": "4",
-              "calculatedAmountInPence": "7000"
-            },
-            "hearingDueDate": "2026-10-15",
-            "hearingHelpFeesReferenceNumber": "HWF-A1B-23C",
-            "trialReadyApplicant": "Yes",
-            "applicantRevisedHearingRequirements": {
-              "revisedHearingRequirements": "No",
-              "revisedHearingComments": "No changes to witnesses or experts since the last hearing."
-            },
-            "applicantHearingOtherComments": {
-              "hearingOtherComments": "The claimant will need a hearing loop."
-            }
+            "respondent1ClaimResponseTypeForSpec": "PART_ADMISSION",
+            "respondToAdmittedClaimOwingAmount": "40000",
+            "defenceAdmittedRequestPayBySetDate": null,
+            "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z"
           }
         }
       }
     },
     {
-      "name": "ui-preview-case-progression-user-case-roles",
+      "name": "ui-preview-som-user-case-roles",
       "priority": 1,
       "request": {
         "method": "GET",
-        "urlPath": "/cases/1645882162449603/userCaseRoles"
+        "urlPath": "/cases/1645882162449605/userCaseRoles"
       },
       "response": {
         "status": 200,
         "headers": {"Content-Type": "application/json"},
-        "jsonBody": ["[CLAIMANT]"]
+        "jsonBody": ["[DEFENDANT]"]
       }
     }
   ]

@@ -83,6 +83,141 @@
         "headers": {"Content-Type": "application/json"},
         "jsonBody": ["[DEFENDANT]"]
       }
+    },
+    {
+      "name": "ui-preview-ga-application-case",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1732194111758649"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "id": "1732194111758649",
+          "state": "AWAITING_RESPONDENT_RESPONSE",
+          "last_modified": "2024-11-21T13:01:49.000Z",
+          "created_date": "2024-11-21T13:01:49.000Z",
+          "case_data": {
+            "applicationTypes": "STRIKE_OUT",
+            "legacyCaseReference": "000MC604",
+            "generalAppType": {
+              "types": ["STRIKE_OUT"]
+            },
+            "generalAppUrgencyRequirement": {
+              "generalAppUrgency": "No"
+            },
+            "generalAppRespondentAgreement": {
+              "hasAgreed": "No"
+            },
+            "generalAppInformOtherParty": {
+              "isWithNotice": "Yes"
+            },
+            "generalAppAskForCosts": "No",
+            "generalAppDetailsOfOrder": "Strike out the claimant's statement of case.",
+            "generalAppReasonsOfOrder": "The claim has no real prospect of success.",
+            "generalAppEvidenceDocument": [],
+            "gaAddlDoc": [],
+            "generalAppStatementOfTruth": {
+              "name": "John Defendant"
+            },
+            "generalAppPBADetails": {
+              "fee": {
+                "code": "FEE0442",
+                "version": "1",
+                "calculatedAmountInPence": "10800"
+              },
+              "paymentDetails": {
+                "status": "SUCCESS",
+                "reference": "RC-1234-5678-9012"
+              }
+            },
+            "applicationFeeAmountInPence": "10800",
+            "parentClaimantIsApplicant": "No",
+            "generalAppHearingDetails": {
+              "HearingPreferencesPreferredType": "IN_PERSON",
+              "ReasonForPreferredHearingType": "I need to speak to the judge in person about the strike-out.",
+              "HearingPreferredLocation": null,
+              "HearingDetailsTelephoneNumber": "01632960001",
+              "HearingDetailsEmailID": "defendant@example.com",
+              "unavailableTrialRequiredYesOrNo": "No",
+              "generalAppUnavailableDates": [],
+              "SupportRequirement": []
+            },
+            "judicialDecision": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ui-preview-ga-applications-by-case",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/cases/1645882162449604/ga/applications"
+      },
+      "response": {
+        "status": 200,
+        "headers": {"Content-Type": "application/json"},
+        "jsonBody": {
+          "cases": [
+            {
+              "id": "1732194111758649",
+              "state": "AWAITING_RESPONDENT_RESPONSE",
+              "last_modified": "2024-11-21T13:01:49.000Z",
+              "created_date": "2024-11-21T13:01:49.000Z",
+              "case_data": {
+                "applicationTypes": "STRIKE_OUT",
+                "legacyCaseReference": "000MC604",
+                "generalAppType": {
+                  "types": ["STRIKE_OUT"]
+                },
+                "generalAppUrgencyRequirement": {
+                  "generalAppUrgency": "No"
+                },
+                "generalAppRespondentAgreement": {
+                  "hasAgreed": "No"
+                },
+                "generalAppInformOtherParty": {
+                  "isWithNotice": "Yes"
+                },
+                "generalAppAskForCosts": "No",
+                "generalAppDetailsOfOrder": "Strike out the claimant's statement of case.",
+                "generalAppReasonsOfOrder": "The claim has no real prospect of success.",
+                "generalAppEvidenceDocument": [],
+                "gaAddlDoc": [],
+                "generalAppStatementOfTruth": {
+                  "name": "John Defendant"
+                },
+                "generalAppPBADetails": {
+                  "fee": {
+                    "code": "FEE0442",
+                    "version": "1",
+                    "calculatedAmountInPence": "10800"
+                  },
+                  "paymentDetails": {
+                    "status": "SUCCESS",
+                    "reference": "RC-1234-5678-9012"
+                  }
+                },
+                "applicationFeeAmountInPence": "10800",
+                "parentClaimantIsApplicant": "No",
+                "generalAppHearingDetails": {
+                  "HearingPreferencesPreferredType": "IN_PERSON",
+                  "ReasonForPreferredHearingType": "I need to speak to the judge in person about the strike-out.",
+                  "HearingDetailsTelephoneNumber": "01632960001",
+                  "HearingDetailsEmailID": "defendant@example.com",
+                  "unavailableTrialRequiredYesOrNo": "No",
+                  "generalAppUnavailableDates": [],
+                  "SupportRequirement": []
+                },
+                "judicialDecision": null
+              }
+            }
+          ]
+        }
+      }
     }
   ]
 }

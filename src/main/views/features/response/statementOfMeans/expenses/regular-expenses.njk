@@ -19,72 +19,72 @@
   {% set scheduleLabel = t('PAGES.REGULAR_EXPENSES.PAID_EVERY') %}
   {% set expenseSourceLabel = t('PAGES.REGULAR_EXPENSES.SOURCE_OF_EXPENSES') %}
   {% set checkedMortgageHtml %}
-  <div id="conditional-mortgage" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MORTGAGE') }}">
+  <div id="conditional-mortgage" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MORTGAGE') }}">
   {{ transactionDetails(t,'PAGES.REGULAR_EXPENSES.INCLUDE_ALL_MORTGAGES', 'model[mortgage][transactionSource]',  form.model.mortgage.transactionSource, {amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedRentHtml %}
-  <div id="conditional-rent" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.RENT') }}">
+  <div id="conditional-rent" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.RENT') }}">
   {{ transactionDetails(t,'', 'model[rent][transactionSource]',  form.model.rent.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedCouncilTaxHtml %}
-  <div id="conditional-councilTax" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.COUNCIL_TAX') }}">
+  <div id="conditional-councilTax" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.COUNCIL_TAX') }}">
   {{ transactionDetails(t,'', 'model[councilTax][transactionSource]',  form.model.councilTax.transactionSource, {amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedGasHtml %}
-  <div id="conditional-gas" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.GAS') }}">
+  <div id="conditional-gas" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.GAS') }}">
   {{ transactionDetails(t,'', 'model[gas][transactionSource]', form.model.gas.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedElectricityHtml %}
-  <div id="conditional-electricity" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.ELECTRICITY') }}">
+  <div id="conditional-electricity" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.ELECTRICITY') }}">
   {{ transactionDetails(t,'', 'model[electricity][transactionSource]', form.model.electricity.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedWaterHtml %}
-  <div id="conditional-water" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.WATER') }}">
+  <div id="conditional-water" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.WATER') }}">
   {{ transactionDetails(t,'PAGES.REGULAR_EXPENSES.INCLUDE_SEWERAGE_PAYMENTS', 'model[water][transactionSource]', form.model.water.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedTravelHtml %}
-  <div id="conditional-travel" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.TRAVEL') }}">
+  <div id="conditional-travel" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.TRAVEL') }}">
   {{ transactionDetails(t,'', 'model[travel][transactionSource]', form.model.travel.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedSchoolHtml %}
-  <div id="conditional-schoolCosts" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.SCHOOL_COSTS') }}">
+  <div id="conditional-schoolCosts" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.SCHOOL_COSTS') }}">
   {{ transactionDetails(t,'', 'model[schoolCosts][transactionSource]', form.model.schoolCosts.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedFoodHtml %}
-  <div id="conditional-foodAndHousekeeping" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.FOOD_AND_HOUSEKEEPING') }}">
+  <div id="conditional-foodAndHousekeeping" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.FOOD_AND_HOUSEKEEPING') }}">
   {{ transactionDetails(t,'', 'model[foodAndHousekeeping][transactionSource]',  form.model.foodAndHousekeeping.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedTvHtml %}
-  <div id="conditional-tvAndBroadband" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.TV_AND_BROADBAND') }}">
+  <div id="conditional-tvAndBroadband" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.TV_AND_BROADBAND') }}">
   {{ transactionDetails(t,'', 'model[tvAndBroadband][transactionSource]',  form.model.tvAndBroadband.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedHirePurchaseHtml %}
-  <div id="conditional-hirePurchase" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.HIRE_PURCHASE') }}">
+  <div id="conditional-hirePurchase" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.HIRE_PURCHASE') }}">
   {{ transactionDetails(t,'', 'model[hirePurchase][transactionSource]',  form.model.hirePurchase.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedMobileHtml %}
-  <div id="conditional-mobilePhone" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MOBILE_PHONE') }}">
+  <div id="conditional-mobilePhone" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MOBILE_PHONE') }}">
   {{ transactionDetails(t,'', 'model[mobilePhone][transactionSource]', form.model.mobilePhone.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedMaintenanceHtml %}
-  <div id="conditional-maintenance" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MAINTENANCE') }}">
+  <div id="conditional-maintenance" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.MAINTENANCE') }}">
   {{ transactionDetails(t,'', 'model[maintenance][transactionSource]', form.model.maintenance.transactionSource,{amountLabel: amountLabel, scheduleLabel:scheduleLabel}, form) }}
   </div>
   {% endset -%}
   {% set checkedOtherHtml %}
-  <div id="conditional-other" class="govuk-checkboxes__conditional" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.OTHER') }}">
+  <div id="conditional-other" aria-label="{{ t('COMMON.CHECKBOX_FIELDS.OTHER') }}">
   <div class="govuk-form-group">
     {% for transactionSource in form.model.other.transactionSources %}
       {% if form.model.other.transactionSources.length < rowNumberToShowRemoveButton %}

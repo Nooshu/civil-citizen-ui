@@ -147,11 +147,7 @@
           },
           attributes: { 'aria-describedby': 'firstRepaymentDate-hint' },
           errorMessage: {
-            html: '<p class="govuk-error-message">' + t(form.errorFor('firstRepaymentDate'),{firstPaymentDate:firstPaymentDate}) + '</p>' +
-            '<p class="govuk-error-message">' + t(form.errorFor('day')) + '</p>' +
-            '<p class="govuk-error-message">' + t(form.errorFor('month')) + '</p>' +
-            '<p class="govuk-error-message">' + t(form.errorFor('year')) + '</p>'
-          } if (form.hasFieldError('firstRepaymentDate') or form.hasFieldError('day') or form.hasFieldError('month') or form.hasFieldError('year')),
+            html: [t(form.errorFor('firstRepaymentDate'),{firstPaymentDate:firstPaymentDate}), t(form.errorFor('day')), t(form.errorFor('month')), t(form.errorFor('year'))] | select | join('<br>')} if (form.hasFieldError('firstRepaymentDate') or form.hasFieldError('day') or form.hasFieldError('month') or form.hasFieldError('year')),
           items: [
             {
               label: t('COMMON.DAY'),

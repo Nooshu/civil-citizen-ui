@@ -21,11 +21,11 @@ New pages: `{% extends "layout.njk" %}` (or the layout neighbours use). Import m
 
 ## `macro/` — app macros (reuse)
 
-Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode (`postcode-address-form.njk` — keep `.postcode-container` / `.postcode-val` for `postcode-lookup.js`), uploaded files (`uploaded-files-summary.njk`), query message cards (`query-message-card.njk`), task list, cookie banner, contact-us, statement of truth, timeline rows, GA macros under `macro/generalApplication/`, etc.
+Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode (`postcode-address-form.njk` — keep `.postcode-container` / `.postcode-val` / hidden `.govuk-error-message` for `postcode-lookup.js`), uploaded files (`uploaded-files-summary.njk`), query message cards (`query-message-card.njk`), `task-list.njk` (`govukTaskList`; extra class `app-task-list__item` for Codecept locators), cookie banner, contact-us (`govukDetails`, including `open: true`), statement of truth, timeline rows, GA macros under `macro/generalApplication/`, etc. `yesNoGenericForm.njk` already emits `govukRadios` with a fieldset — pass a **string** `title` plus `isPageHeading` / `legendClasses`; do not wrap it again and do not pass nested HTML as `title`.
 
 If the same block appears on two pages, **extract** here or under `features/common/`.
 
-Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`, `govukTabs`, `govukSummaryList`, `govukTag`, `govukInput`.
+Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`, `govukTabs`, `govukSummaryList`, `govukTag`, `govukInput`, `govukRadios`, `govukTaskList`, `govukErrorMessage`, `govukDetails`, `govukDateInput`.
 
 ## `features/`
 

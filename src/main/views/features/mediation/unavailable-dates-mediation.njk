@@ -36,15 +36,11 @@
                 <form method="post" novalidate>
                     {{ csrfProtection(csrf) }}
 
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-visually-hidden">{{ pageText }}</legend>
-
                     {% for unavailableDate in form.model.items %}
                       {{ unavailableDateRow(unavailableDate, 'PAGES.UNAVAILABILITY_SELECT_DATES_MEDIATION.PAGE_TEXT', loop.index0, form.errorFor, t, {hidden:isRemoveButtonHidden}, today, true) }}
                     {% else %}
                       {{ unavailableDateRow(unavailableDate, 'PAGES.UNAVAILABILITY_SELECT_DATES_MEDIATION.PAGE_TEXT', 0, form.errorFor, t, {hidden:true}, today, true) }}
                     {% endfor %}
-                    </fieldset>
 
                     <div class="govuk-!-margin-top-6">
                         {{ govukButton({

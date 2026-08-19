@@ -172,6 +172,18 @@
               "ocmc": false,
               "numberOfDays": 10,
               "numberOfDaysOverdue": 0
+            },
+            {
+              "claimId": "1645882162449605",
+              "claimNumber": "000MC605",
+              "claimantName": "Jane Claimant",
+              "defendantName": "John Defendant",
+              "claimAmount": "1000",
+              "responseDeadline": "2026-12-31T16:00:00.000Z",
+              "status": "NO_RESPONSE",
+              "ocmc": false,
+              "numberOfDays": 10,
+              "numberOfDaysOverdue": 0
             }
           ],
           "totalPages": 1
@@ -201,7 +213,34 @@
       "response": {
         "status": 200,
         "headers": {"Content-Type": "application/json"},
-        "jsonBody": []
+        "jsonBody": [
+          {
+            "id": "preview-task-hearing-upload",
+            "categoryEn": "Hearing",
+            "categoryCy": "Gwrandawiad",
+            "taskNameEn": "<a href=\"/case/1645882162449603/case-progression/upload-your-documents\" class=\"govuk-link\">Upload hearing documents</a>",
+            "taskNameCy": "<a href=\"/case/1645882162449603/case-progression/upload-your-documents\" class=\"govuk-link\">Uwchlwytho dogfennau gwrandawiad</a>",
+            "currentStatusEn": "Action needed",
+            "currentStatusCy": "Angen gweithredu",
+            "hintTextEn": "The court needs your documents.",
+            "hintTextCy": "Mae angen eich dogfennau ar y llys.",
+            "role": "claimant",
+            "taskOrder": 10
+          },
+          {
+            "id": "preview-task-view-claim",
+            "categoryEn": "Claim",
+            "categoryCy": "Hawliad",
+            "taskNameEn": "<a href=\"/dashboard/1645882162449603/claimantNewDesign\" class=\"govuk-link\">View this claim</a>",
+            "taskNameCy": "<a href=\"/dashboard/1645882162449603/claimantNewDesign\" class=\"govuk-link\">Gweld y hawliad hwn</a>",
+            "currentStatusEn": "Incomplete",
+            "currentStatusCy": "Anghyflawn",
+            "hintTextEn": "",
+            "hintTextCy": "",
+            "role": "claimant",
+            "taskOrder": 20
+          }
+        ]
       }
     }
   ]

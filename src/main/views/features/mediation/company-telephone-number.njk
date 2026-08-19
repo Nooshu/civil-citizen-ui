@@ -51,17 +51,13 @@
           <form method="post" novalidate>
             {{ csrfProtection(csrf) }}
             <input type="hidden" name="contactPerson" value="{{contactPerson}}">
-            <fieldset class="govuk-fieldset">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">{{ title }}</h1>
-              </legend>
               {% if contactPerson %}
-                {{ yesNoRadioButton(t,id,name,'',form,'',{yesHtml:yesHtml, noHtml:noHtml}) }}
+                {{ yesNoRadioButton(t,id,name,title,form,'',{yesHtml:yesHtml, noHtml:noHtml}) }}
               {% else %}
+                <h1 class="govuk-heading-l">{{ title }}</h1>
                 {{ yesNoRadioButton(t,id,name,'',form,'',{classes:"govuk-!-display-none"}) }}
                 {{ canWeUseCompanyInputs(form, t) }}
               {% endif %}
-            </fieldset>
             <div class="govuk-form-group">
               {{ govukButton({
                 text: t('COMMON.BUTTONS.SAVE_AND_CONTINUE')

@@ -11,7 +11,7 @@ const getDefendantTimeline = (claim: Claim): DefendantTimeline => {
   const timeline: DefendantTimeline = claim.isPartialAdmission()
     ? claim.partialAdmission?.timeline
     : claim.rejectAllOfClaim?.timeline;
-  if (timeline) {
+  if (Array.isArray(timeline?.rows)) {
     return DefendantTimeline.buildPopulatedForm(timeline.rows, timeline.comment);
   }
   return DefendantTimeline.buildEmptyForm();

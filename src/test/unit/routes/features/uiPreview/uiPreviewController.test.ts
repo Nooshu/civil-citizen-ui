@@ -19,6 +19,9 @@ describe('UI Preview controller', () => {
         expect(res.text).toContain('Part admission');
         expect(res.text).toContain('Case progression');
         expect(res.text).toContain('General application');
+        expect(res.text).toContain('Statement of means');
+        expect(res.text).toContain('Over 18');
+        expect(res.text).toContain('Directions questionnaire');
       });
   });
 });

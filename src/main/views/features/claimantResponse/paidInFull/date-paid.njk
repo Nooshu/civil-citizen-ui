@@ -27,12 +27,12 @@
         <div class="govuk-grid-column-two-thirds">
           <form method="post" novalidate>
             {{ csrfProtection(csrf) }}
-            <div class="govuk-form-group {% if form.hasErrors() %} govuk-form-group--error{% endif %}">
-              {% if form.hasErrors() %}
+            <div class="govuk-form-group">
+              {% set dateErrorHtml %}
                 {% for error in errors %}
-                  <span class="govuk-error-message">{{ t(error.text) }}</span>
+                  {{ t(error.text) }}{% if not loop.last %}<br>{% endif %}
                 {% endfor %}
-              {% endif %}
+              {% endset %}
               {{ govukDateInput({
                 id: "dateOfBirth",
                 type: "number",
@@ -49,6 +49,9 @@
                     date: today.getDate() + ' ' + (today.getMonth() + 1) + ' ' + (today.getFullYear() - 1)
                   })
                 },
+                errorMessage: {
+                  html: dateErrorHtml
+                } if form.hasErrors(),
                 items: [
                   {
                     classes: "govuk-input--width-2 govuk-input--error" if form.hasFieldError('day') or form.hasFieldError('date') else "govuk-input--width-2",

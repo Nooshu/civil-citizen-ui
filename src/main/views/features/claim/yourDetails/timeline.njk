@@ -7,6 +7,7 @@
 {% from "../../../macro/timeline-row.njk" import timelineRow %}
 {% from "../../../macro/csrf.njk" import csrfProtection %}
 {% from "../../../macro/error-summary.njk" import errorSummary %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
 
 {% block pageTitle %}
   {{ setPageTitle(t, pageTitle) }}
@@ -36,10 +37,11 @@
             {{ csrfProtection(csrf) }}
             <div id="rows" class="govuk-form-group {% if atLeastOneRequired %} govuk-form-group--error {% endif %}">
               {% if atLeastOneRequired %}
-                <p class="govuk-error-message" id="atLeastOneFieldRequired">
-                  <span class="govuk-visually-hidden">{{ t('ERRORS.ERROR') }} :</span>
-                  {{ t(atLeastOneRequired) }}
-                </p>
+                {{ govukErrorMessage({
+                  id: "atLeastOneFieldRequired",
+                  visuallyHiddenText: t('ERRORS.ERROR'),
+                  text: t(atLeastOneRequired)
+                }) }}
               {% endif %}
               <div class="govuk-grid-column-one-half govuk-!-display-inline govuk-!-padding-left-0">
                 <h3 class="govuk-label-wrapper govuk-label govuk-label--s" id="timeline-date-heading">

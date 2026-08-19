@@ -34,9 +34,10 @@
           <form method="post" novalidate>
             {{ csrfProtection(csrf) }}
             {% if itemsErrors %}
-              <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">{{ t('ERRORS.ERROR') }} :</span> {{ t(itemsErrors) }}
-              </p>
+              {{ govukErrorMessage({
+                visuallyHiddenText: t('ERRORS.ERROR'),
+                text: t(itemsErrors)
+              }) }}
             {% endif %}
 
             {% for expertDetail in form.model.items %}

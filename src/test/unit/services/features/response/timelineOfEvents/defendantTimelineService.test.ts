@@ -58,6 +58,15 @@ describe('defendantTimelineService', () => {
       expect(model.rows[0].description).toBeUndefined();
       expect(model.comment).toBeUndefined();
     });
+    it('should return empty form when partial admission timeline has no rows', () => {
+      const claim = new Claim();
+      claim.respondent1 = new Party();
+      claim.respondent1.responseType = ResponseType.PART_ADMISSION;
+      claim.partialAdmission = new PartialAdmission();
+      claim.partialAdmission.timeline = new DefendantTimeline();
+      const model = getDefendantTimeline(claim);
+      expect(model.rows.length).toBe(4);
+    });
   });
   describe('savePartialAdmitTimeline', () => {
     const mockGetCaseData = draftStoreService.getCaseDataFromStore as jest.Mock;

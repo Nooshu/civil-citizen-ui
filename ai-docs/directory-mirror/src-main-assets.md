@@ -28,7 +28,7 @@ Cookie **config** is a separate webpack entry: `src/main/modules/cookie/cookieCo
 | --- | --- |
 | `main.scss` | Imports GOV.UK Frontend; app extras |
 | `citizen-ui-colours.scss` | Colour tokens / overrides |
-| `task-list.scss` | Task list tweaks |
+| `task-list.scss` | GA summary tag + overdue colour; task lists themselves come from `govukTaskList` |
 
 Sass `loadPaths` live in `webpack/scss.js` (needed after sass-loader 17). Prefer official GOV.UK Sass settings over copying component CSS.
 
