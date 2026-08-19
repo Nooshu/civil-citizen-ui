@@ -28,6 +28,8 @@ export const UI_PREVIEW_GA_CLAIM_ID = '1645882162449604';
 export const UI_PREVIEW_SOM_CLAIM_ID = '1645882162449605';
 export const UI_PREVIEW_GA_APP_ID = '1732194111758649';
 export const UI_PREVIEW_FIXTURE_USER_ID = 'someID';
+/** Parent query id on case-progression fixture `queries.caseMessages` (UI Preview sample threads). */
+export const UI_PREVIEW_QM_QUERY_ID = 'qm-9603-hearing';
 
 const withParams = (template: string, id: string, extras: Record<string, string> = {}): string => {
   let path = template.replace(/:id/g, id).replace(/:appId/g, extras.appId ?? UI_PREVIEW_GA_APP_ID);
@@ -330,7 +332,7 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
       page('Payment date', urls.CLAIMANT_RESPONSE_PAYMENT_DATE_URL, fa),
       page('Payment plan', urls.CLAIMANT_RESPONSE_PAYMENT_PLAN_URL, fa),
       page('Incomplete submission', urls.CLAIMANT_RESPONSE_INCOMPLETE_SUBMISSION_URL, fa),
-      page('Confirmation', urls.CLAIMANT_RESPONSE_CONFIRMATION_URL, fa, 'Contact-us details open by default.'),
+      page('Confirmation', urls.CLAIMANT_RESPONSE_CONFIRMATION_URL, fa, 'Signed settlement agreement; response date 18 August 2026. Contact-us details open by default.'),
       page('CCJ paid amount', urls.CCJ_PAID_AMOUNT_URL, fa),
       page('CCJ paid amount summary', urls.CCJ_PAID_AMOUNT_SUMMARY_URL, fa),
       page('CCJ defendant date of birth', urls.CCJ_DEFENDANT_DOB_URL, fa),
@@ -448,10 +450,11 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
   },
   {
     title: 'Query management, settlement, judgment',
-    description: `Query screens on ${cp}. Settlement on the full-admit claimant claim. Query management is not LaunchDarkly-gated on these GETs.`,
+    description: `Query screens on ${cp} (sample court-message threads on the case). Settlement on the full-admit claimant claim. Query management is not LaunchDarkly-gated on these GETs.`,
     pages: [
       page('Query management start', urls.QM_START_URL, cp),
       page('View queries', urls.QM_VIEW_QUERY_URL, cp),
+      page('Query details', urls.QM_QUERY_DETAILS_URL, cp, undefined, {queryId: UI_PREVIEW_QM_QUERY_ID}),
       page('Share query', urls.QM_SHARE_QUERY_CONFIRMATION, cp),
       page('Query confirmation', urls.QM_CONFIRMATION_URL, cp),
       page('Defendant sign settlement', urls.DEFENDANT_SIGN_SETTLEMENT_AGREEMENT, fa),

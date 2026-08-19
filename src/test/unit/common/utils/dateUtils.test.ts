@@ -6,6 +6,7 @@ import {
   formatStringTimeHMS,
   getDOBforAgeFromCurrentTime,
   isDateOnOrAfterSpecificDate,
+  formatDateToFullDate,
 } from '../../../../main/common/utils/dateUtils';
 
 describe('addDaysBefore4pm', () => {
@@ -248,5 +249,21 @@ describe('dateTimeFormat', () => {
     const formattedDate = dateTimeFormat(dateString, 'cy');
 
     expect(formattedDate).toBe('1 Gorffennaf 2024, 1:00:00 yh');
+  });
+});
+
+describe('formatDateToFullDate', () => {
+  it('should format a valid date in English', () => {
+    expect(formatDateToFullDate(new Date('2026-08-18T10:00:00.000Z'))).toBe('18 August 2026');
+  });
+
+  it('should return an empty string when the date is missing or invalid', () => {
+    expect(formatDateToFullDate(undefined)).toBe('');
+    expect(formatDateToFullDate(new Date('not-a-date'))).toBe('');
+    expect(formatDateToFullDate('')).toBe('');
+  });
+
+  it('should format a CCD ISO date string', () => {
+    expect(formatDateToFullDate('2022-09-25T13:46:07.287428Z')).toBe('25 September 2022');
   });
 });

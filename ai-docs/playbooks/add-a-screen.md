@@ -48,6 +48,7 @@ Keys in `src/main/modules/i18n/locales/en.json` **and** `cy.json`. Use `t('…')
 - Route unit test with supertest if HTTP behaviour matters
 - Integration test if middleware/session is involved
 - Functional CodeceptJS only if the journey is user-visible in preview/AAT (HMCTS acceptance environment) and neighbours already cover it
+- If the screen is on `/ui-preview`, seed WireMock + Redis so the GET is useful (not empty/`£NaN`) — [playbooks/ui-preview-missing-data.md](ui-preview-missing-data.md)
 
 ## 8. Verify
 
@@ -63,4 +64,4 @@ Server TS compile errors: fix in the same change.
 
 ## 9. Docs
 
-Update human `docs/citizen-journeys.md` if a new journey area. Update this `ai-docs` playbook only if the pattern itself changed.
+Update human `docs/citizen-journeys.md` if a new journey area. Update this `ai-docs` playbook only if the pattern itself changed. Catalogue GETs: add `page()` in `pageCatalog.ts` and follow [ui-preview-missing-data.md](ui-preview-missing-data.md).

@@ -33,6 +33,7 @@ Suggested first reads inside `ai-docs/`:
 - [`ai-docs/directory-mirror/INDEX.md`](ai-docs/directory-mirror/INDEX.md)
 - [`ai-docs/scripts-and-commands.md`](ai-docs/scripts-and-commands.md)
 - [`ai-docs/conventions.md`](ai-docs/conventions.md)
+- [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md) — empty preview pages (`£NaN`, `Invalid DateTime`, empty tables)
 - [`ai-docs/service-assessment.md`](ai-docs/service-assessment.md) — Service Standard / Technology Code of Practice (TCoP) / Design System deviation checklist
 
 ## Project overview
@@ -63,6 +64,7 @@ Suggested first reads inside `ai-docs/`:
   - Fixture claims: `1645882162449409` (awaiting defendant), `1645882162449601` (full admit by instalments), `1645882162449602` (part admit by instalments), `1645882162449603` (case progression), `1645882162449604` (general application), `1645882162449605` (defendant part admit + statement of means)
   - Preview-only WireMock stubs: `compose/ui-preview-mappings/` — keep them out of `charts/civil-citizen-ui/wiremock/mappings`, which is the validated reduced-stack contract set (`yarn wiremock:validate` forbids broad matchers)
   - Stop: `yarn start:ui-preview:down`
+  - **HTTP 200 is not a useful page.** Empty tables, `£NaN`, Luxon `Invalid DateTime`, `Created []`, or leaked keys (`PAGES.…undefined`) mean missing Core Case Data (CCD) / Redis fields or a missing production-safe fallback — not a broken Nunjucks file. Seed `compose/ui-preview-mappings/` **and** `uiPreviewRedisData.json` when the GET reads that store; add a real fallback when the live journey can omit a query string (for example general-application `?appFee=`). Do not hard-code sample citizen copy in templates to fill preview. Mapping JSON: restart WireMock. Redis / TypeScript / Nunjucks: rebuild `citizen-ui`. Checklist: [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md)
 
 ## Before changing code
 
@@ -220,6 +222,7 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 | File | Purpose |
 |------|---------|
 | `ai-docs/README.md` | Agent directory mirror, playbooks, scripts, pre-change protocol |
+| `ai-docs/playbooks/ui-preview-missing-data.md` | Empty or broken `yarn preview` pages (seed CCD/Redis vs production fallbacks) |
 | `ai-docs/conventions.md` | Index of standing conventions (points here) |
 | `docs/glossary.md` | Acronyms expanded on first use (HMCTS, LiP, IDAM, CCD, …) |
 | `ai-docs/service-assessment.md` | Service Standard / TCoP / Design System — flag deviations |

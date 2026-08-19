@@ -48,6 +48,25 @@ describe('GA submission confirmation controller', () => {
       expect(res.status).toBe(200);
       expect(res.text).toContain('Application created');
       expect(res.text).toContain('You need to pay the application fee to submit the application');
+      expect(res.text).toContain('£1');
+      expect(res.text).not.toContain('£NaN');
+    });
+
+    it('should use appFee from the query string when provided', async () => {
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      claim.generalApplication.applicationFee = {
+        calculatedAmountInPence: 100,
+        code: 'test',
+        version: 1,
+      };
+      (getClaimById as jest.Mock).mockResolvedValueOnce(claim);
+      const res = await request(app)
+        .get(GENERAL_APPLICATION_CONFIRM_URL)
+        .query({appFee: '108'});
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('£108');
+      expect(res.text).not.toContain('£NaN');
     });
 
     it('should use language from the query string', async () => {

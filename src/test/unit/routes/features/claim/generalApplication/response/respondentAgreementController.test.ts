@@ -56,6 +56,8 @@ describe('General Application - inform other parties', () => {
           expect(res.status).toBe(200);
           expect(res.text).toContain(t('PAGES.GENERAL_APPLICATION.RESPONDENT_AGREEMENT.TITLE'));
           expect(res.text.toLowerCase()).toContain(t('PAGES.GENERAL_APPLICATION.SELECTED_APPLICATION_TYPE.PAUSE').toLowerCase());
+          expect(res.text).not.toContain('Money Claims undefined');
+          expect(res.text).not.toContain('RESPOND_TO.undefined');
         });
     });
 

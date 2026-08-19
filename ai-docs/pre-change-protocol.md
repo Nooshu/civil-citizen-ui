@@ -60,6 +60,7 @@ Plus a unit test that mirrors the path under `src/test/unit/`.
 | Server TypeScript | Focused Jest on the module + fix compile errors (`AGENTS.md` Testing and coverage) |
 | Routes / middleware | `yarn test:integration` as well as unit tests |
 | Nunjucks / GOV.UK / macros | `yarn test:govuk-fixtures` after Frontend or Nunjucks-env changes; `yarn build` if webpack entries/SCSS/JS changed |
+| UI Preview fixtures / catalogue | Confirm the live HTML (rows, amounts, dates), not only HTTP 200. Mapping JSON: restart WireMock. Redis/TS: rebuild CUI. [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) |
 | Chart WireMock mappings | `yarn wiremock:validate` and `yarn test:wiremock-contracts` |
 | Dependencies | `yarn deps:check` then `yarn deps:audit` then `yarn test:coverage` after all bumps (`AGENTS.md` Dependencies) |
 | Logging | No PII; see `docs/pii-logging-check.md` and `.semgrep/` |

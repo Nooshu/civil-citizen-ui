@@ -17,6 +17,7 @@ import {AppRequest} from 'models/AppRequest';
 import {Claim} from 'models/claim';
 import {getClaimById} from 'modules/utilityService';
 import {getRouteParam} from 'common/utils/routeParamUtils';
+import {getRepaymentScheduleDisplay} from 'common/utils/repaymentUtils';
 
 const claimantSuggestedInstalmentsViewPath = 'features/claimantResponse/instalments-plan';
 const claimantSuggestedInstalmentsController = Router();
@@ -26,7 +27,12 @@ const crPropertyName = 'repaymentPlan';
 function renderView(form: GenericForm<RepaymentPlanForm>, res: Response, req: Request, claim:Claim): void {
   const lang = req.query.lang ? req.query.lang : req.cookies.lang;
   const financialDetails = getFinancialDetails(claim, lang);
-  res.render(claimantSuggestedInstalmentsViewPath, {form, claim, financialDetails, pageTitle: 'PAGES.CCJ_REPAYMENT_PLAN_INSTALMENTS.TITLE'});
+  const repaymentSchedule = getRepaymentScheduleDisplay(
+    form.model.totalClaimAmount,
+    form.model.paymentAmount,
+    form.model.repaymentFrequency,
+  );
+  res.render(claimantSuggestedInstalmentsViewPath, {form, claim, financialDetails, repaymentSchedule, pageTitle: 'PAGES.CCJ_REPAYMENT_PLAN_INSTALMENTS.TITLE'});
 }
 
 claimantSuggestedInstalmentsController.get(CLAIMANT_RESPONSE_PAYMENT_PLAN_URL,  (async (req, res, next: NextFunction) => {

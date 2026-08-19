@@ -50,12 +50,24 @@ export const saveRespondentAgreeToOrder = async (redisKey: string, agreeToOrder:
   }
 };
 
+/**
+ * Caption above respondent GA screens. Types are usually enum keys saved when the respondent
+ * views the application; catalogue GETs and CCD labels can omit or display-name them.
+ */
 export function getRespondToApplicationCaption(generalAppTypes: ApplicationTypeOption[], lng: string): string {
-  if (generalAppTypes?.length > 1) {
-    return t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO_MULTIPLE', { lng: getLng(lng) });
+  const language = getLng(lng);
+  const types = Array.isArray(generalAppTypes)
+    ? generalAppTypes
+    : (generalAppTypes ? [generalAppTypes] as ApplicationTypeOption[] : []);
+  if (types.length > 1) {
+    return t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO_MULTIPLE', { lng: language });
   }
-  const applicationType = getLast(generalAppTypes);
-  return t(`PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO.${applicationType}`,{ lng: getLng(lng) });
+  const rawType = getLast(types);
+  const applicationType = rawType ? displayToEnumKey(String(rawType)) : undefined;
+  if (!applicationType) {
+    return t('PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO_MULTIPLE', { lng: language });
+  }
+  return t(`PAGES.GENERAL_APPLICATION.AGREE_TO_ORDER.RESPOND_TO.${applicationType}`, { lng: language });
 }
 
 export function getUnavailableHearingDateCaption(lng: string): string {

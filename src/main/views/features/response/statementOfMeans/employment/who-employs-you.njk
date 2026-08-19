@@ -1,8 +1,7 @@
 {% extends "claim-details-tpl.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "../../../../macro/error-summary.njk" import errorSummary %}
 {% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+{% from "../../../../macro/error-summary.njk" import errorSummary %}
 {% from "../../../../macro/employer.njk" import employerRow %}
 {% from "../../../../macro/contact-us-for-help.njk" import contactUsForHelp with context %}
 {% from "../../../../macro/csrf.njk" import csrfProtection %}
@@ -13,34 +12,34 @@
 {% endblock %}
 
 {% block content %}
-      {% set formErrors = form.getAllErrors() %}
-      {% set atLeastOneRequired = form.errorFor('rows') %}
+  {% set formErrors = form.getAllErrors() %}
+  {% set atLeastOneRequired = form.errorFor('rows') %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
       {% if form.hasErrors() %}
         {{ errorSummary(formErrors, t) }}
       {% endif %}
       <h1 class="govuk-heading-l">{{ t('PAGES.WHO_EMPLOYS_YOU.WHO_EMPLOYS') }}</h1>
       <form method="post" novalidate>
         {{ csrfProtection(csrf) }}
-        <div id="rows" class="govuk-form-group-!-margin-9 {%- if atLeastOneRequired %} govuk-form-group--error{% endif %}">
+        <div id="rows" class="govuk-form-group {%- if atLeastOneRequired %} govuk-form-group--error{% endif %}">
           {% if atLeastOneRequired %}
             {{ govukErrorMessage({
               id: "atLeastOneFieldRequired",
               visuallyHiddenText: t('ERRORS.ERROR'),
               text: t(atLeastOneRequired)
             }) }}
-           {% endif %}
+          {% endif %}
           {% for employer in form.model.rows %}
-            {{employerRow(employer, loop.index0, form.errorFor,t, formErrors)}}
+            {{ employerRow(employer, loop.index0, form.errorFor, t) }}
           {% endfor %}
         </div>
-        <div class="govuk-grid-row">
-          <div class="govuk-form-group govuk-grid-column-two-thirds">
-            {{ govukButton({
-              text: t('PAGES.WHO_EMPLOYS_YOU.ADD_ANOTHER_JOB'),
-              classes: "govuk-button--secondary append-row"
-            }) }}
-          </div>
-        </div>
+        {{ govukButton({
+          text: t('PAGES.WHO_EMPLOYS_YOU.ADD_ANOTHER_JOB'),
+          classes: "govuk-button--secondary append-row",
+          type: "button"
+        }) }}
+        {# Buttons are inline-block; a form-group puts Save and continue on the next line. #}
         <div class="govuk-form-group">
           {{ govukButton({
             text: t('COMMON.BUTTONS.SAVE_AND_CONTINUE')
@@ -48,5 +47,6 @@
           {{ contactUsForHelp(t) }}
         </div>
       </form>
-
+    </div>
+  </div>
 {% endblock %}

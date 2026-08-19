@@ -23,7 +23,7 @@ const settleClaimViewPath = 'features/claimantResponse/settle-admitted';
 async function renderView(form: GenericForm<GenericYesNo>, claim:Claim, res: Response): Promise<void> {
 
   const admittedAmount = noGroupingCurrencyFormatWithNoTrailingZeros(
-    claim.isFullDefence() ? (claim.isRejectAllOfClaimAlreadyPaid() / 100) : claim.partialAdmissionPaymentAmount());
+    claim.amountDefendantAdmittedInPounds());
   res.render(settleClaimViewPath, {
     form,
     totalAmount: currencyFormatWithNoTrailingZeros(claim.totalClaimAmount),

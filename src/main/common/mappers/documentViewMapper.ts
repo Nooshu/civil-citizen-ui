@@ -33,12 +33,25 @@ export const mapperDefendantResponseToDocumentView = (documentTitle: string, fil
   return new DocumentsViewComponent(documentTitle, Array.of(
     new DocumentInformation(
       fileName,
-      formatDateToFullDate(claim.respondent1ResponseDate, lang),
+      formatDateToFullDate(getDefendantResponseCreatedAt(claim), lang),
       new DocumentLinkInformation(
         CASE_DOCUMENT_VIEW_URL.replace(':id', claimId)
           .replace(':documentId',
             getDocumentId(claim, 'Stitched')),
         `defendant-response-${caseId}.pdf`))));
+};
+
+/**
+ * The document hint uses the response date, then the defence PDF timestamp if CCD omitted the former.
+ */
+const getDefendantResponseCreatedAt = (claim: Claim): Date | string | undefined => {
+  if (claim.respondent1ResponseDate) {
+    return claim.respondent1ResponseDate;
+  }
+  const defenceDocument = claim.systemGeneratedCaseDocuments?.find(
+    (doc) => doc.value?.documentType === DocumentType.DEFENDANT_DEFENCE,
+  );
+  return defenceDocument?.value?.createdDatetime;
 };
 
 export const mapperMediationDocumentsToDocumentView = (documentTitle: string, mediationDocuments: MediationUploadDocumentsCCD[] , claimId: string, lang: string) => {

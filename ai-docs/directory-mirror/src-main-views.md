@@ -25,7 +25,11 @@ Shared fragments: CSRF (`csrf.njk`), error summary wrappers, address/postcode (`
 
 If the same block appears on two pages, **extract** here or under `features/common/`.
 
+The claimant-response settle-admitted heading uses `Claim.amountDefendantAdmittedInPounds()` (full defence already-paid in pence, part admission `howMuchDoYouOwe`, otherwise `totalClaimAmount`). Do not format `partialAdmissionPaymentAmount()` alone on a full-admission claim — that is `undefined` and becomes `£NaN`. Court-offered set date uses `getPaymentDate(claim)` (`paymentIntention.paymentDate`); preview admit seeds include that date so the page is not `Invalid DateTime`. GA respondent-agreement must set `{% block pageTitle %}` (the dashboard layout otherwise interpolates `claimId` as `undefined`). Caption text comes from `getRespondToApplicationCaption` — never `RESPOND_TO.${undefined}`. Document tables pass **already formatted** `item.uploadDate` into `addCreateFileInformation` — do not wrap that date in `t()` (`Created []`).
+
 Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`, `govukTabs`, `govukSummaryList`, `govukTag`, `govukInput`, `govukRadios`, `govukTaskList`, `govukErrorMessage`, `govukDetails`, `govukDateInput`.
+
+`govuk-grid-column-*` only belongs **inside** a `govuk-grid-row`. Columns have 15px gutters that only cancel against the row’s negative margin. Nested columns (for example `two-thirds` wrapping `one-third` on `macro/employer.njk` / `who-employs-you.njk`) indent inputs relative to the heading. Repeating rows keep `.row-container` for `append-row.js`; width comes from one page-level `govuk-grid-column-two-thirds`.
 
 ## `features/`
 

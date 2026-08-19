@@ -46,12 +46,20 @@ describe('calculate-length-repayment', () => {
     require(scriptPath);
   }
 
-  it('hides all schedule containers on load', () => {
-    setupDom();
+  it('hides all schedule containers when amount or frequency cannot be calculated', () => {
+    setupDom({instalments: ''});
     const schedule = document.querySelector('.schedule')!;
     Array.from(schedule.children).forEach((child) => {
       expect(child.classList.contains('hide')).toBe(true);
     });
+    expect(document.getElementById('numberOfInstalments')!.innerHTML).toBe('');
+  });
+
+  it('shows the schedule as soon as the script runs when the form is already filled', () => {
+    setupDom({amount: '1000', instalments: '100', frequency: 'MONTH'});
+
+    expect(document.getElementById('numberOfInstalments')!.innerHTML).toBe('10');
+    expect(document.getElementById('months_schedule')!.classList.contains('hide')).toBe(false);
   });
 
   it('shows singular week schedule when WEEK frequency yields one instalment', () => {

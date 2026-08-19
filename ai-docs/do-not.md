@@ -27,6 +27,8 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not copy `compose/ui-preview-mappings/` into `charts/civil-citizen-ui/wiremock/mappings`.
 - Do not loosen chart mapping matchers to make UI Preview work. Preview stubs are a separate set.
 - Do not combine GitHub labels `pr-values:reducedStack` and `pr-values:fullDeployment` in advice.
+- Do not treat a catalogue HTTP 200 as a finished screen. Do not fill empty preview pages with hard-coded sample copy in Nunjucks — seed WireMock/Redis or add a production-safe fallback ([playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md)).
+- Do not wrap an already formatted date in `t()` (yields `Created []`). Do not stringify Luxon `Invalid DateTime` into the page.
 
 ## Security, personally identifiable information (PII), secrets
 

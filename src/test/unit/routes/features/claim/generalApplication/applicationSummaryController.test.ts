@@ -118,6 +118,33 @@ describe('General Application - Application costs', () => {
         });
     });
 
+    it('should show Strike out when the GA payload stores the enum key', async () => {
+      const enumKeyApplication = structuredClone(applicationMock);
+      enumKeyApplication.case_data.applicationTypes = 'STRIKE_OUT';
+      enumKeyApplication.case_data.parentClaimantIsApplicant = YesNoUpperCamelCase.NO;
+      const ccdClaim = new Claim();
+      ccdClaim.generalApplications = [{
+        id: 'test',
+        value: {
+          caseLink: {CaseReference: enumKeyApplication.id},
+          generalAppSubmittedDateGAspec: new Date(enumKeyApplication.created_date),
+        },
+      }];
+      mockGetCaseData.mockResolvedValue(new Claim());
+      jest.spyOn(GaServiceClient.prototype, 'getApplicationsByCaseId')
+        .mockResolvedValueOnce([enumKeyApplication]);
+      jest.spyOn(CivilServiceClient.prototype, 'retrieveClaimDetails')
+        .mockResolvedValue(ccdClaim);
+
+      await request(app)
+        .get(GA_APPLICATION_SUMMARY_URL)
+        .expect((res) => {
+          expect(res.status).toBe(200);
+          expect(decode(res.text)).toContain('Strike out');
+          expect(decode(res.text)).not.toContain('APPLICATION_TYPE_CCD.undefined');
+        });
+    });
+
     it('should use language from cookie when query is absent', async () => {
       const ccdClaim = new Claim();
       ccdClaim.generalApplications = [

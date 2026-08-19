@@ -6,6 +6,8 @@ import {t} from 'i18next';
 import {getClaimById} from 'modules/utilityService';
 import {
   getCoScGeneralApplicationConfirmationContent,
+  resolveGeneralApplicationFeePounds,
+  resolveGeneralApplicationId,
 } from 'services/features/generalApplication/submitGeneralApplicationConfirmationContent';
 import {AppRequest} from 'models/AppRequest';
 import {getRouteParam} from 'common/utils/routeParamUtils';
@@ -16,10 +18,10 @@ const submitCoScApplicationConfirmationController = Router();
 submitCoScApplicationConfirmationController.get(GA_COSC_CONFIRM_URL, (async (req: AppRequest, res: Response, next: NextFunction) => {
   try {
     const lng = req.query.lang ? req.query.lang : req.cookies.lang;
-    const applicationFee = Number(req.query.appFee);
     const claimId = getRouteParam(req, 'id');
-    const genAppId = req.query.id as string;
     const claim = await getClaimById(claimId, req, true);
+    const applicationFee = resolveGeneralApplicationFeePounds(req.query.appFee, claim);
+    const genAppId = resolveGeneralApplicationId(req.query.id, claim);
     res.render(submitCoScApplicationConfirmationViewPath, {
       confirmationTitle : t('PAGES.GENERAL_APPLICATION.CONFIRMATION_PAGE.TITLE', {lng}),
       confirmationContent: await getCoScGeneralApplicationConfirmationContent(claimId, genAppId, claim, lng,applicationFee),

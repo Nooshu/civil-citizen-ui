@@ -35,6 +35,26 @@ describe('Claimant court proposed date Controller', () => {
       await request(app).get(CLAIMANT_RESPONSE_COURT_OFFERED_SET_DATE_URL).expect((res) => {
         expect(res.status).toBe(200);
         expect(res.text).toContain(t('PAGES.CLAIMANT_RESPONSE.COURT_PROPOSED_DATE.TITLE'));
+        expect(res.text).toContain('1 June 2025');
+        expect(res.text).not.toContain('Invalid DateTime');
+      });
+    });
+
+    it('should not show Invalid DateTime when the defendant has no pay-by date', async () => {
+      app.locals.draftStoreClient = {
+        ...mockCivilClaim,
+        get: jest.fn(() => Promise.resolve(JSON.stringify({
+          ...civilClaimResponseMock,
+          case_data: {
+            ...civilClaimResponseMock.case_data,
+            fullAdmission: {paymentIntention: {paymentOption: 'INSTALMENTS'}},
+            partialAdmission: {paymentIntention: {}},
+          },
+        }))),
+      };
+      await request(app).get(CLAIMANT_RESPONSE_COURT_OFFERED_SET_DATE_URL).expect((res) => {
+        expect(res.status).toBe(200);
+        expect(res.text).not.toContain('Invalid DateTime');
       });
     });
 

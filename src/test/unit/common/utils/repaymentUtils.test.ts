@@ -17,6 +17,7 @@ import {
   getPaymentOptionType,
   getRepaymentFrequency,
   getRepaymentLength,
+  getRepaymentScheduleDisplay,
 } from 'common/utils/repaymentUtils';
 import {createClaimWithBasicRespondentDetails} from '../../../utils/mockClaimForCheckAnswers';
 import {t} from 'i18next';
@@ -632,6 +633,27 @@ describe('repaymentUtils', () => {
       const repaymentLength = getRepaymentLength(claim, 'en');
       //Then
       expect(repaymentLength).toContain('20');
+    });
+  });
+
+  describe('getRepaymentScheduleDisplay', () => {
+    it('should return undefined when amount or frequency is missing', () => {
+      expect(getRepaymentScheduleDisplay(1000, 0, TransactionSchedule.MONTH)).toBeUndefined();
+      expect(getRepaymentScheduleDisplay(1000, 100, undefined)).toBeUndefined();
+    });
+
+    it('should show 10 months for £1000 at £100 a month', () => {
+      expect(getRepaymentScheduleDisplay(1000, 100, TransactionSchedule.MONTH)).toEqual({
+        numberOfInstalments: '10',
+        visibleScheduleId: 'months_schedule',
+      });
+    });
+
+    it('should hide the number when there are exactly two weekly instalments', () => {
+      expect(getRepaymentScheduleDisplay(100, 50, TransactionSchedule.WEEK)).toEqual({
+        numberOfInstalments: '',
+        visibleScheduleId: 'two-weeks_schedule',
+      });
     });
   });
 });

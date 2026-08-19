@@ -109,5 +109,56 @@ describe('Test of Document View Mapper', () => {
     //Then
     expect(expected).toEqual(result);
   });
+
+  it('should not format a missing response date as Invalid DateTime', () => {
+    const claim = new Claim();
+    claim.legacyCaseReference = '000MC603';
+    const result = mapperDefendantResponseToDocumentView(
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.TABLE_TITLE',
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.DOCUMENT_LABEL',
+      claim,
+      '1645882162449603',
+      'en',
+    );
+    expect(result.documents[0].uploadDate).toBe('');
+    expect(result.documents[0].uploadDate).not.toContain('Invalid DateTime');
+  });
+
+  it('should format a CCD ISO response date string', () => {
+    const claim = new Claim();
+    claim.legacyCaseReference = '000MC603';
+    claim.respondent1ResponseDate = '2022-09-25T13:46:07.287428Z' as unknown as Date;
+    const result = mapperDefendantResponseToDocumentView(
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.TABLE_TITLE',
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.DOCUMENT_LABEL',
+      claim,
+      '1645882162449603',
+      'en',
+    );
+    expect(result.documents[0].uploadDate).toBe('25 September 2022');
+  });
+
+  it('should use the defence document timestamp when the response date is missing', () => {
+    const claim = new Claim();
+    claim.legacyCaseReference = '000MC603';
+    claim.systemGeneratedCaseDocuments = [
+      {
+        value: {
+          documentLink: {document_binary_url: '/a1b2c3d4-9603-4e5f-8a9b-000000000603/binary'},
+          documentName: 'defendant-response-000MC603.pdf',
+          documentType: DocumentType.DEFENDANT_DEFENCE,
+          createdDatetime: '2022-09-25T13:46:07.287428Z' as unknown as Date,
+        },
+      },
+    ] as SystemGeneratedCaseDocuments[];
+    const result = mapperDefendantResponseToDocumentView(
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.TABLE_TITLE',
+      'PAGES.VIEW_RESPONSE_TO_THE_CLAIM.DOCUMENT_LABEL',
+      claim,
+      '1645882162449603',
+      'en',
+    );
+    expect(result.documents[0].uploadDate).toBe('25 September 2022');
+  });
 });
 

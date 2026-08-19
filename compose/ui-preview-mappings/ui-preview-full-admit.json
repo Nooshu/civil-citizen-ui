@@ -62,7 +62,12 @@
               }
             },
             "respondent1ResponseDeadline": "2026-12-31T16:00:00.000Z",
-            "respondent1ResponseDate": "2022-09-25T13:46:07.287428"
+            "respondent1ResponseDate": "2022-09-25T13:46:07.287428",
+            "applicant1ResponseDate": "2026-08-18T10:00:00.000Z",
+            "applicant1AcceptFullAdmitPaymentPlanSpec": "Yes",
+            "applicant1LiPResponse": {
+              "applicant1ChoosesHowToProceed": "SIGN_A_SETTLEMENT_AGREEMENT"
+            }
           }
         }
       }

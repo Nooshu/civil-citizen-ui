@@ -7,8 +7,8 @@ Never edit `node_modules/govuk-frontend`. Conventions: [`AGENTS.md`](../../AGENT
 | File | Purpose |
 | --- | --- |
 | `postcode-lookup.js` | OS Places via CUI `/postcode-lookup`; binds to macro-rendered address markup |
-| `append-row.js` / `reindex-add-another-actions.js` / `conditionally-hide-add-button.js` | Repeatable rows (timeline, expenses, …) |
-| `calculate-amount.js` / `calculate-total-amount.js` / `calculate-length-repayment.js` | Progressive enhancement calculators |
+| `append-row.js` / `reindex-add-another-actions.js` / `conditionally-hide-add-button.js` | Repeatable rows (timeline, expenses, employers). Bind to `.row-container` / `.append-row` on macro-rendered markup — do not nest extra `govuk-grid-column-*` inside the clone target |
+| `calculate-amount.js` / `calculate-total-amount.js` / `calculate-length-repayment.js` | Progressive enhancement calculators. Length of repayment runs as soon as `document.readyState` is `complete` (not only on `window` `load`), so a pre-filled instalments form shows the schedule without waiting. |
 | `remove-error-content.js` | Clears errors when user edits |
 | `select-toggle.js` | Show/hide |
 | `language-toggle.js` | EN/CY |

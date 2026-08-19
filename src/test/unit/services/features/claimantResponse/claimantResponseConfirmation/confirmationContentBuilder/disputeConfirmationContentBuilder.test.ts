@@ -23,6 +23,14 @@ describe('disputeConfirmationContentBuilder', () => {
     const result = getClaimantResponseStatus(claim, 'PAGES.CLAIMANT_RESPONSE_CONFIRMATION.RC_DISPUTE.NOT_PROCEED_WITH_CLAIM', lang);
     expect(result[0].data?.title).toContain('PAGES.CLAIMANT_RESPONSE_CONFIRMATION.RC_DISPUTE.NOT_PROCEED_WITH_CLAIM');
     expect(result[0].data?.html).toContain('000MC009');
+    expect(result[0].data?.html).toContain('1 May 2024');
+  });
+
+  it('should not print Invalid DateTime when the claimant response date is missing', () => {
+    const claim = new Claim();
+    claim.legacyCaseReference = '000MC009';
+    const result = getClaimantResponseStatus(claim, 'PAGES.CLAIMANT_RESPONSE_CONFIRMATION.SIGN_SETTLEMENT_AGREEMENT.TITLE', lang);
+    expect(result[0].data?.html).not.toContain('Invalid DateTime');
   });
 
   it('should build not continue next steps', () => {
