@@ -30,7 +30,7 @@ Start here: **[docs/README.md](docs/README.md)**.
 | [Configuration](docs/configuration.md) | `node-config`, env vars, Redis time to live (TTL) |
 | [Citizen journeys](docs/citizen-journeys.md) | Claim, response, general application (GA), and related flows |
 | [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend, assets, internationalisation (i18n) |
-| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, jQuery removal, and related guidance from this fork |
+| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, jQuery-free app JS (MoJ peer note), and related guidance from this fork |
 | [Integrations](docs/integrations.md) | civil-service, Identity and Access Management (IDAM), Redis, payments |
 | [Security and privacy](docs/security-and-privacy.md) | Cross-Site Request Forgery (CSRF), Helmet, OpenID Connect (OIDC), personally identifiable information (PII) logging |
 | [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |

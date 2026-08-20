@@ -94,26 +94,19 @@ Renovate / Dependabot GOV.UK bumps are incomplete until those checks pass.
 
 ---
 
-## 5. Gradual removal of jQuery
+## 5. App JavaScript is jQuery-free (MoJ peer remains)
 
-**Current state:** `jquery@4.0.0` is pinned and installable on Node 24. Only two app modules still import it:
+**Done:** Every app-owned module under `src/main/assets/js/` uses native DOM / `fetch` APIs. `postcode-lookup.js` and `select-toggle.js` no longer import jQuery.
 
-| File | Role |
-| --- | --- |
-| `postcode-lookup.js` | DOM query, option building, show/hide for address lookup |
-| `select-toggle.js` | Select-driven panel visibility and MoJ “add another” hooks |
-
-Other `src/main/assets/js/` modules already run without jQuery.
+**Still required:** `jquery@4.0.0` stays pinned because the vendored MoJ Frontend bundle (`mojAll.js`) and `@ministryofjustice/frontend`’s peerDependency expect global `$`. `src/main/index.js` imports jQuery **only** to set `window.$` / `window.jQuery` before `mojAll`.
 
 ### Recommendations
 
-1. **No new jQuery.** New progressive-enhancement scripts use `document.querySelector` / `querySelectorAll`, `addEventListener`, and GOV.UK Frontend APIs only.
-2. **Migrate one module at a time.** Prefer rewriting `select-toggle.js` first (smaller surface), then `postcode-lookup.js`. Keep behaviour identical; extend unit tests under `src/test/unit/assets/js/`.
-3. **Drop the dependency when both imports are gone.** Remove `jquery` from `package.json`, refresh the lockfile, re-run `yarn deps:check`, `yarn deps:audit`, and asset unit tests.
+1. **No new jQuery in app modules.** Progressive-enhancement scripts use `document.querySelector` / `querySelectorAll`, `addEventListener`, `fetch`, and GOV.UK Frontend APIs only.
+2. **Do not reintroduce jQuery imports** in `postcode-lookup.js`, `select-toggle.js`, or other app files. Keep the sole import in `src/main/index.js` next to `mojAll`.
+3. **Do not drop `jquery` from `package.json` while `mojAll.js` still runs.** Removing the pin breaks MoJ “add another” and the `mojAll` smoke test. A dedicated MoJ Frontend upgrade/replacement is the path to removing the dependency.
 4. **Do not expand MoJ Frontend coupling** to replace jQuery with another large client library. Stay on the existing `@ministryofjustice/frontend` pin unless there is a dedicated UI migration.
 5. **Keep webpack ESM.** App asset JS should remain importable modules (`import` / `export`), consistent with the rest of the frontend pipeline.
-
-This is a deliberate, gradual removal — not a big-bang rewrite of every calculator in one pull request.
 
 ---
 
@@ -201,7 +194,7 @@ Use this as the baseline; new work should extend it, not undo it.
 3. Tabs, tables, summary lists/cards, Find address, details, radios fieldsets, date errors, task lists on official macros
 4. `yarn test:govuk-fixtures` (**692** assertions / **37** components)
 5. Progressive enhancement kept (postcode AJAX, row cloning, calculators) on macro DOM
-6. All **13** asset JS modules unit-tested; jquery **4** pinned; only two modules still depend on jQuery
+6. All **13** asset JS modules unit-tested; app modules are jQuery-free; `jquery@4` remains only as the MoJ Frontend peer for `mojAll.js`
 7. UI Preview catalogue for offline GOV.UK review without Identity and Access Management (IDAM)
 8. Documented missing-data playbook so empty preview pages get seeds/fallbacks, not fake template copy
 9. Accessibility policy: GOV.UK over axe; real Pa11y command (not a stub in `cichecks`)

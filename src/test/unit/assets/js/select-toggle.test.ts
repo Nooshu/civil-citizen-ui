@@ -7,7 +7,6 @@ const {JSDOM} = require('jsdom');
 describe('select-toggle', () => {
   const scriptPath = '../../../../main/assets/js/select-toggle.js';
   let dom: InstanceType<typeof JSDOM>;
-  let $: typeof import('jquery');
 
   function installDom() {
     dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {url: 'http://localhost/'});
@@ -18,14 +17,12 @@ describe('select-toggle', () => {
   beforeEach(() => {
     jest.resetModules();
     installDom();
-     
-    $ = require('jquery');
-    (dom.window as unknown as {$: typeof $}).$ = $;
-    (global as unknown as {$: typeof $}).$ = $;
+    (global as unknown as {HTMLSelectElement: typeof HTMLSelectElement}).HTMLSelectElement =
+      dom.window.HTMLSelectElement;
   });
 
   function load() {
-    // Nest the select under an intermediate wrapper so parentsUntil('.select-toggle') can find .panel
+    // Nest the select under an intermediate wrapper so closest('.select-toggle') can find .panel
     document.body.innerHTML = `
       <div class="select-toggle">
         <div class="govuk-form-group">
@@ -47,11 +44,15 @@ describe('select-toggle', () => {
     require(scriptPath);
   }
 
+  function changeSelect(select: HTMLSelectElement, selectedIndex: number) {
+    select.selectedIndex = selectedIndex;
+    select.dispatchEvent(new dom.window.Event('change', {bubbles: true}));
+  }
+
   it('shows the panel and matching detail when a value is selected', () => {
     load();
     const select = document.querySelector('.govuk-select') as HTMLSelectElement;
-    select.selectedIndex = 1;
-    $(select).trigger('change');
+    changeSelect(select, 1);
 
     const panel = document.querySelector('.panel')!;
     expect(panel.classList.contains('govuk-visually-hidden')).toBe(false);
@@ -64,12 +65,10 @@ describe('select-toggle', () => {
     const select = document.querySelector('.govuk-select') as HTMLSelectElement;
     const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
 
-    select.selectedIndex = 1;
-    $(select).trigger('change');
+    changeSelect(select, 1);
     textarea.value = 'notes';
 
-    select.selectedIndex = 0;
-    $(select).trigger('change');
+    changeSelect(select, 0);
 
     expect(document.querySelector('.panel')!.classList.contains('govuk-visually-hidden')).toBe(true);
     expect(textarea.value).toBe('');

@@ -2,7 +2,7 @@
 
 ## Source of truth: GOV.UK Frontend
 
-Longer recommendations from this fork (macros, progressive enhancement, fixture suite, gradual jQuery removal): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
+Longer recommendations from this fork (macros, progressive enhancement, fixture suite, jQuery-free app JS with MoJ peer note): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
 
 Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandatory for Design System components. Do not hand-write `govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, `govuk-tabs`, `govuk-summary-list`, `govuk-tag`, `govuk-fieldset`, `govuk-error-message`, `govuk-details`, `govuk-task-list`, footer, skip link, or breadcrumbs when a macro exists. Do not wrap `govukRadios` / `yesNoRadioButton` in a second `<fieldset>`.
 
