@@ -15,7 +15,7 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 5. [Local development](local-development.md) — install, run, user interface (UI) Preview, Docker
 6. [Configuration](configuration.md) — `node-config`, environment variables, Redis time to live (TTL)
 7. [Citizen journeys](citizen-journeys.md) — claim issue, response, claimant response, general application (GA), and related flows
-8. [Frontend](frontend.md) — Nunjucks, GOV.UK Frontend, assets, internationalisation (i18n). Longer recommendations: [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md)
+8. [Frontend](frontend.md) — Nunjucks, GOV.UK Frontend ([latest release](https://github.com/alphagov/govuk-frontend/releases/latest)), Government Digital Service (GDS) compliance for assessment, assets, internationalisation (i18n). Longer recommendations: [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md)
 9. [Integrations](integrations.md) — civil-service, Identity and Access Management (IDAM), Redis, LaunchDarkly, payments, documents
 10. [Security and privacy](security-and-privacy.md) — Cross-Site Request Forgery (CSRF), Helmet, OpenID Connect (OIDC), personally identifiable information (PII) logging
 11. [Testing](testing.md) — Jest, fixtures, functional, Playwright, Pact, accessibility (a11y)
@@ -41,7 +41,7 @@ See also the root [KEYCHANGES.md](../KEYCHANGES.md) for a fork-vs-upstream compa
 | --- | --- |
 | [README.md](../README.md) | Quick start, preview labels, generated test tables |
 | [KEYCHANGES.md](../KEYCHANGES.md) | Fork vs `hmcts/civil-citizen-ui` `master` — tooling, tests, security, docs |
-| [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md) | Frontend recommendations (macros, progressive enhancement, fixtures, jQuery-free app JS) |
+| [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md) | Frontend recommendations (macros, progressive enhancement, fixtures, Government Digital Service (GDS) compliance, jQuery-free app JS) |
 | [AGENTS.md](../AGENTS.md) | Canonical standing conventions for any coding agent (symlink: `AGENT.md`) |
 | [ai-docs/README.md](../ai-docs/README.md) | **AI-only** directory mirror, playbooks, and scripts (not a human product guide) |
 | [catalog-info.yaml](../catalog-info.yaml) | Backstage component metadata (`dts_civil`) |

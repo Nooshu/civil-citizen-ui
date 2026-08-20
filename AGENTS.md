@@ -120,7 +120,7 @@ For server and application logic, use this repository’s platform stack — not
 
 ## GOV.UK Frontend
 
-Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs when upgrading).
+Track the **latest** [GOV.UK Frontend release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest). Pin that **exact** version in `package.json` (no ranges). Prefer staying current; complete the upgrade checklist below after every bump. Government Digital Service (GDS) / Service Standard expectations for frontend code: [`docs/frontend.md`](docs/frontend.md) (GDS compliance section) and [`docs/service-assessment.md`](docs/service-assessment.md).
 
 - **GOV.UK Frontend is the single source of truth** for the user interface
 - All GOV.UK Design System component HTML must come from official Nunjucks macros — do not hand-write component markup when a macro exists
@@ -140,7 +140,7 @@ Pinned dependency: **`govuk-frontend@6.4.0`** (see `package.json`; bump docs whe
   5. `yarn tests:a11y` where practical
   6. Broader functional / Playwright security when the upgrade is large and env allows
   7. Spot-check home, claim issue, response, dashboard if automation misses a layout
-  8. Version notes in README / `docs/` / this file when they mention GOV.UK Frontend
+  8. Docs still link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest); the exact pin lives only in `package.json`
   Dependabot/Renovate GOV.UK bumps are not complete until those checks pass (or a documented exception).
 
 ## Service assessment (GOV.UK / HMCTS)
@@ -228,6 +228,6 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 | `ai-docs/service-assessment.md` | Service Standard / TCoP / Design System — flag deviations |
 | `docs/service-assessment.md` | What passing a GOV.UK service assessment means (mapped to CUI) |
 | `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |
-| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations (macros, progressive enhancement, fixtures, jQuery-free app JS) |
+| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations (macros, progressive enhancement, fixtures, Government Digital Service (GDS) compliance, jQuery-free app JS) |
 | `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
 | `docs/contributing.md` | Human contributing guide (same conventions) |

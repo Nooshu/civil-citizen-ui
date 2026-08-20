@@ -2,9 +2,11 @@
 
 ## Source of truth: GOV.UK Frontend
 
-Longer recommendations from this fork (macros, progressive enhancement, fixture suite, jQuery-free app JS with MoJ peer note): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
+Longer recommendations from this fork (macros, progressive enhancement, fixture suite, jQuery-free app JS with MoJ peer note, Government Digital Service (GDS) compliance): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
 
-Pinned package: **`govuk-frontend@6.4.0`**. Official Nunjucks macros are mandatory for Design System components. Do not hand-write `govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, `govuk-tabs`, `govuk-summary-list`, `govuk-tag`, `govuk-fieldset`, `govuk-error-message`, `govuk-details`, `govuk-task-list`, footer, skip link, or breadcrumbs when a macro exists. Do not wrap `govukRadios` / `yesNoRadioButton` in a second `<fieldset>`.
+Use the **latest** [GOV.UK Frontend release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest). Pin that **exact** version in `package.json` (see `dependencies.govuk-frontend`; never use ranges). Upgrade with the checklist in [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend.
+
+Official Nunjucks macros are mandatory for Design System components. Do not hand-write `govuk-button`, `govuk-error-summary`, `govuk-header`, `govuk-table`, `govuk-inset-text`, `govuk-tabs`, `govuk-summary-list`, `govuk-tag`, `govuk-fieldset`, `govuk-error-message`, `govuk-details`, `govuk-task-list`, footer, skip link, or breadcrumbs when a macro exists. Do not wrap `govukRadios` / `yesNoRadioButton` in a second `<fieldset>`.
 
 ```njk
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -21,6 +23,24 @@ Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assess
 - Extract shared journey chrome instead of copying HTML
 
 Ministry of Justice (MoJ) Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where this service already depends on it. Do not jump major versions without a dedicated user interface (UI) migration.
+
+## Government Digital Service (GDS) compliance — what assessors expect from frontend code
+
+A service assessment that examines the frontend is not a visual preference review. It checks whether the team meets Government Digital Service (GDS) expectations under the [Service Standard](https://www.gov.uk/service-manual/service-standard) — especially **4** (simple / look like GOV.UK), **5** (everyone can use it), **11** (right tools), and **13** (common standards and patterns). See [service-assessment.md](service-assessment.md) for the full map.
+
+**Development team checklist** (do these; keep evidence in PRs / CI):
+
+1. **Design System first** — Implement published [GOV.UK Design System](https://design-system.service.gov.uk/) components and patterns via official Nunjucks macros, not hand-written `govuk-*` HTML.
+2. **Current Frontend package** — Depend on the [latest GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin). After each bump: `yarn build`, `yarn test:govuk-fixtures`, relevant Jest, and `yarn tests:a11y` where practical.
+3. **Prove HTML fidelity** — `yarn test:govuk-fixtures` must pass. Assessors can ask how you know markup matches the Design System; the fixture suite is the answer ([official fixture guidance](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)).
+4. **Progressive enhancement** — Usable server-rendered pages; client JS in `src/main/assets/js/` only enhances macro-rendered DOM; call `initAll()` from `govuk-frontend`.
+5. **Accessibility** — Meet **WCAG 2.2 AA**. Preserve skip link, labels, error summaries, focus order, and keyboard behaviour from macros. Run Pa11y (`yarn tests:a11y`). Do not rewrite GOV.UK to quiet axe.
+6. **Citizen stack** — Keep Express + Nunjucks server-side rendering. Do not introduce a citizen Single Page Application (SPA); that conflicts with [HMCTS citizen frontend practice](https://hmcts.github.io/standards/practices/frontend.html) and Service Standard 11/13.
+7. **Content and i18n** — User-visible copy follows the [GOV.UK style guide](https://www.gov.uk/guidance/style-guide); English and Welsh keys move together.
+8. **Explain divergences** — If a screen cannot use a published pattern, document why (and research if you adapted). Assessors routinely ask where the service diverges from the Design System.
+9. **Secure delivery of UI assets** — Content Security Policy (CSP) nonces for scripts; no `unsafe-inline`; CSRF on state-changing POSTs.
+
+This repository alone cannot prove the whole assessment (research, assisted digital, KPIs). It **can** show that frontend code is GDS-aligned. Flag any PR that weakens the table above as assessment risk.
 
 ## Layouts and views
 

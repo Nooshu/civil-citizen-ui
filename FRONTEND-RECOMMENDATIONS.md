@@ -1,6 +1,6 @@
 # Frontend recommendations (Civil Citizen UI)
 
-Standing recommendations for the His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI) frontend. They capture what this fork completed and what to do next. Canonical rules remain [`AGENTS.md`](AGENTS.md). Day-to-day reference: [`docs/frontend.md`](docs/frontend.md). Service Standard / Design System bar: [`docs/service-assessment.md`](docs/service-assessment.md).
+Standing recommendations for the His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI) frontend. They capture what this fork completed and what to do next. Canonical rules remain [`AGENTS.md`](AGENTS.md). Day-to-day reference: [`docs/frontend.md`](docs/frontend.md). Service Standard / Design System / Government Digital Service (GDS) bar: [`docs/service-assessment.md`](docs/service-assessment.md).
 
 **Stack (do not replace):** Express + TypeScript + Nunjucks + **GOV.UK Frontend** server-side rendering. Do not introduce a citizen Single Page Application (SPA).
 
@@ -8,7 +8,7 @@ Standing recommendations for the His Majesty’s Courts and Tribunals Service (H
 
 ## 1. GOV.UK Frontend is the single source of truth
 
-Pinned package: **`govuk-frontend@6.4.0`**.
+Track the **latest** [GOV.UK Frontend release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest). Pin that exact version in `package.json` (no ranges). Upgrade promptly after the 7-day cooldown unless a security fix requires sooner. Do not leave the pin months behind the latest release without a documented reason.
 
 | Do | Do not |
 | --- | --- |
@@ -18,6 +18,27 @@ Pinned package: **`govuk-frontend@6.4.0`**.
 | Prefer GOV.UK output when axe / axe-core disagrees (disable the scanner rule) | Rewrite GOV.UK markup to silence axe |
 
 **Completed in this fork:** hand-written header/table/inset/button views converted to macros (**19** templates, including the preview catalogue). Shared `item-content.njk` carries table/inset/button macros into **59** other screens.
+
+---
+
+## 1a. Government Digital Service (GDS) compliance — frontend assessment
+
+Assessors examining **frontend code** judge Government Digital Service (GDS) expectations via the [Service Standard](https://www.gov.uk/service-manual/service-standard) (especially points **4**, **5**, **11**, **13**), [Making your service look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk), the [GOV.UK Design System](https://design-system.service.gov.uk/), and [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/). Full mapping: [`docs/service-assessment.md`](docs/service-assessment.md).
+
+**What the development team must do** so frontend code stands up in an assessment:
+
+| Requirement | Concrete evidence in this repo |
+| --- | --- |
+| **Look like GOV.UK** | Official macros for Design System components; GOV.UK typography/layout utilities only for composition; phase banner / content style in locales |
+| **Stay on current Frontend** | Exact pin matches (or is close to) the [latest GitHub release](https://github.com/alphagov/govuk-frontend/releases/latest); upgrade checklist completed |
+| **HTML matches the Design System** | `yarn test:govuk-fixtures` green after every Frontend / Nunjucks-env change ([fixture HTML guidance](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)) |
+| **Progressive enhancement** | Server-rendered Nunjucks first; app JS only enhances macro DOM; `initAll()` from `govuk-frontend`; forms usable without JS where the journey allows |
+| **Accessibility (WCAG 2.2 AA)** | Keep skip link, labels, error summaries, focus, keyboard (including tabs) from macros; run `yarn tests:a11y`; do not break GOV.UK to silence axe |
+| **No citizen SPA / lock-in** | Express + Nunjucks SSR — not React/Vue/Angular for citizen journeys ([HMCTS stack](https://hmcts.github.io/standards/technology-stack/)) |
+| **Document divergences** | If a page cannot use a published pattern, record **why** and any research; assessors ask where you diverged |
+| **Secure frontend delivery** | CSP nonces for GOV.UK / third-party scripts; no `unsafe-inline`; CSRF on POSTs |
+
+Do **not** claim the service “passes” from git alone. Do use this table in pull request / assessment prep when the change touches views, assets, or `govuk-frontend`.
 
 ---
 
@@ -88,7 +109,7 @@ After every `govuk-frontend` pin bump:
 4. Focused Jest + `yarn test` as needed
 5. `yarn tests:a11y` where practical
 6. Spot-check home, claim issue, response, dashboard
-7. Update version notes in README / `docs/` / `AGENTS.md`
+7. Update version notes in README / `docs/` / `AGENTS.md` so they still point at the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest) and the exact pin in `package.json`
 
 Renovate / Dependabot GOV.UK bumps are incomplete until those checks pass.
 
@@ -181,7 +202,7 @@ yarn lint
 yarn tests:a11y
 ```
 
-Also update: human `docs/frontend.md`, version notes in `AGENTS.md` / README when the GOV.UK pin moves, and matching `ai-docs/` mirror pages in the same change.
+Also update: human `docs/frontend.md`, GOV.UK Frontend notes in `AGENTS.md` / README (link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest); keep the exact pin only in `package.json`), and matching `ai-docs/` mirror pages in the same change.
 
 ---
 
@@ -189,15 +210,16 @@ Also update: human `docs/frontend.md`, version notes in `AGENTS.md` / README whe
 
 Use this as the baseline; new work should extend it, not undo it.
 
-1. GOV.UK Frontend **6.4.0** as UI source of truth
+1. GOV.UK Frontend as UI source of truth (exact pin; track the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest))
 2. Macro conversion of hand-written chrome + shared `item-content.njk`
 3. Tabs, tables, summary lists/cards, Find address, details, radios fieldsets, date errors, task lists on official macros
 4. `yarn test:govuk-fixtures` (**692** assertions / **37** components)
-5. Progressive enhancement kept (postcode AJAX, row cloning, calculators) on macro DOM
+5. Progressive enhancement kept (postcode `fetch`, row cloning, calculators) on macro DOM
 6. All **13** asset JS modules unit-tested; app modules are jQuery-free; `jquery@4` remains only as the MoJ Frontend peer for `mojAll.js`
 7. UI Preview catalogue for offline GOV.UK review without Identity and Access Management (IDAM)
 8. Documented missing-data playbook so empty preview pages get seeds/fallbacks, not fake template copy
 9. Accessibility policy: GOV.UK over axe; real Pa11y command (not a stub in `cichecks`)
+10. Documented Government Digital Service (GDS) / Service Standard frontend checklist for assessment prep
 
 ---
 

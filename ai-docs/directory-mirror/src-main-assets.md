@@ -1,6 +1,6 @@
 # `src/main/assets/` — app JS and SCSS only
 
-Never edit `node_modules/govuk-frontend`. Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (app JS and app SCSS only).
+Never edit `node_modules/govuk-frontend`. Track the **latest** [GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin in `package.json`). Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (app JS and app SCSS only). Government Digital Service (GDS) frontend assessment checklist: [`docs/frontend.md`](../../docs/frontend.md).
 
 ## `js/` (webpack via `src/main/index.js`)
 

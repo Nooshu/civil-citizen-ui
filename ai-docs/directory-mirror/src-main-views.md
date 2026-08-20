@@ -1,6 +1,6 @@
 # `src/main/views/` — Nunjucks
 
-GOV.UK Frontend macros are mandatory for Design System components. Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros, partials, axe).
+GOV.UK Frontend macros are mandatory for Design System components. Track the **latest** [GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin in `package.json`). Conventions: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros, partials, axe). Government Digital Service (GDS) / assessment checklist for frontend code: [`docs/frontend.md`](../../docs/frontend.md), [`docs/service-assessment.md`](../../docs/service-assessment.md).
 
 Human guide: [`docs/frontend.md`](../../docs/frontend.md).
 

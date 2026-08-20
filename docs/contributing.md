@@ -31,13 +31,14 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 
 ## UI rules (non-negotiable)
 
-1. GOV.UK Frontend macros for components.
+1. GOV.UK Frontend macros for components — track the **latest** [release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest); exact pin in `package.json` only.
 2. App JS only in `src/main/assets/js/` — never vendor forks.
 3. App theme only in `src/main/assets/scss/`.
 4. Reuse Nunjucks partials; do not duplicate claim-summary chrome.
 5. axe does not override GOV.UK.
+6. After Frontend bumps: `yarn test:govuk-fixtures` must pass; run `yarn tests:a11y` where practical.
 
-These user interface (UI) rules exist so the service can meet the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Full mapping: [service-assessment.md](service-assessment.md).
+These user interface (UI) rules exist so the service can meet Government Digital Service (GDS) expectations under the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Team checklist for an assessment that examines frontend code: [frontend.md](frontend.md) (GDS compliance) and [service-assessment.md](service-assessment.md).
 
 ## Dependencies
 
@@ -55,7 +56,7 @@ These user interface (UI) rules exist so the service can meet the [Service Stand
 
 ## Documentation you must keep in sync
 
-If you change runtime versions, scripts, remotes, GOV.UK version, Redis time to live (TTL), or WireMock ownership, update:
+If you change runtime versions, scripts, remotes, GOV.UK Frontend (keep docs linking the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest); exact pin only in `package.json`), Redis time to live (TTL), or WireMock ownership, update:
 
 - this `docs/` tree
 - [README.md](../README.md) getting-started bits if commands changed
@@ -69,7 +70,7 @@ If you change runtime versions, scripts, remotes, GOV.UK version, Redis time to 
 - [ ] `yarn lint` clean
 - [ ] Unit tests for new branches; integration tests if middleware/routes changed
 - [ ] Nunjucks uses macros; no duplicated journey HTML
-- [ ] Change does not deviate from the Service Standard / His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack ([service-assessment.md](service-assessment.md)) — no Single Page Application (SPA), no hand-rolled GOV.UK components
+- [ ] Change does not deviate from the Service Standard / His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack / Government Digital Service (GDS) frontend bar ([service-assessment.md](service-assessment.md), [frontend.md](frontend.md)) — no Single Page Application (SPA), no hand-rolled GOV.UK components; fixtures green if Frontend or macros changed
 - [ ] No PII in new `logger.*` calls
 - [ ] Config/env documented if you added keys
 - [ ] Chart WireMock still validates if you touched mappings
