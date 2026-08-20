@@ -6,17 +6,17 @@ Never edit `node_modules/govuk-frontend`. Conventions: [`AGENTS.md`](../../AGENT
 
 | File | Purpose |
 | --- | --- |
-| `postcode-lookup.js` | OS Places via CUI `/postcode-lookup`; binds to macro-rendered address markup |
+| `postcode-lookup.js` | OS Places via CUI `/postcode-lookup`; native `fetch` + DOM; binds to macro-rendered address markup |
 | `append-row.js` / `reindex-add-another-actions.js` / `conditionally-hide-add-button.js` | Repeatable rows (timeline, expenses, employers). Bind to `.row-container` / `.append-row` on macro-rendered markup — do not nest extra `govuk-grid-column-*` inside the clone target |
 | `calculate-amount.js` / `calculate-total-amount.js` / `calculate-length-repayment.js` | Progressive enhancement calculators. Length of repayment runs as soon as `document.readyState` is `complete` (not only on `window` `load`), so a pre-filled instalments form shows the schedule without waiting. |
 | `remove-error-content.js` | Clears errors when user edits |
-| `select-toggle.js` | Show/hide |
+| `select-toggle.js` | Show/hide panels from a select; native DOM |
 | `language-toggle.js` | EN/CY |
 | `cookies-controller.js` | Cookie banner behaviour |
 | `disable-submit.js` | Prevent double POST |
-| `mojAll.js` | MoJ frontend init helper — **ESLint-ignored**; do not dump new logic here. Excluded from Jest `collectCoverageFrom` |
+| `mojAll.js` | MoJ frontend init helper — **ESLint-ignored**; do not dump new logic here. Excluded from Jest `collectCoverageFrom`. Needs global `$` from `jquery` (imported in `src/main/index.js` before this file) |
 
-After adding a file, **import it from `src/main/index.js`** or it will not ship in `main`.
+After adding a file, **import it from `src/main/index.js`** or it will not ship in `main`. App modules must not import jQuery; only `index.js` may load it for MoJ.
 
 Cookie **config** is a separate webpack entry: `src/main/modules/cookie/cookieConfig.ts`.
 

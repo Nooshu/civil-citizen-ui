@@ -7,7 +7,6 @@ const {JSDOM} = require('jsdom');
 describe('postcode-lookup', () => {
   const scriptPath = '../../../../main/assets/js/postcode-lookup.js';
   let dom: InstanceType<typeof JSDOM>;
-  let $: typeof import('jquery');
 
   beforeAll(() => {
     dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {url: 'http://localhost/'});
@@ -17,10 +16,6 @@ describe('postcode-lookup', () => {
 
   beforeEach(() => {
     jest.resetModules();
-     
-    $ = require('jquery');
-    (dom.window as unknown as {$: typeof $}).$ = $;
-    (global as unknown as {$: typeof $}).$ = $;
 
     document.body.innerHTML = `
       <div class="wrapper">
@@ -28,7 +23,7 @@ describe('postcode-lookup', () => {
         <div class="postcode-container">
           <button type="button">Find address</button>
           <a href="#">Enter address manually</a>
-          <!-- select must be inside postcode-container so change handler can resolve global.this -->
+          <!-- select must be inside postcode-container so change handler can resolve active container -->
           <div class="govuk-visually-hidden">
             <select>
               <option>addresses found</option>
@@ -47,16 +42,19 @@ describe('postcode-lookup', () => {
     `;
   });
 
-  function mockAjax(result: {resolve?: unknown; reject?: boolean}) {
-    const deferred = $.Deferred();
-    jest.spyOn($, 'ajax').mockImplementation(() => {
-      if (result.reject) {
-        deferred.reject();
-      } else {
-        deferred.resolve(result.resolve);
-      }
-      return deferred.promise() as JQuery.jqXHR;
+  function mockFetch(result: {body?: unknown; ok?: boolean}) {
+    const ok = result.ok !== false;
+    (global as unknown as {fetch: typeof fetch}).fetch = jest.fn().mockResolvedValue({
+      ok,
+      status: ok ? 200 : 500,
+      json: async () => result.body,
     });
+  }
+
+  async function flushAsync() {
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
   }
 
   function load() {
@@ -64,22 +62,29 @@ describe('postcode-lookup', () => {
     require(scriptPath);
   }
 
-  it('shows an error and clears inputs when lookup fails', () => {
-    mockAjax({reject: true});
+  function clickFindAddress() {
+    document.querySelector('.postcode-container button')!.dispatchEvent(
+      new dom.window.MouseEvent('click', {bubbles: true, cancelable: true}),
+    );
+  }
+
+  it('shows an error and clears inputs when lookup fails', async () => {
+    mockFetch({ok: false});
     load();
 
-    $('.postcode-container button').trigger('click');
+    clickFindAddress();
+    await flushAsync();
 
-    expect($('.govuk-error-message').hasClass('govuk-!-display-none')).toBe(false);
-    expect($.ajax).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'GET',
-      url: '/postcode-lookup?postcode=SW1A1AA',
-    }));
+    expect(document.querySelector('.govuk-error-message')!.classList.contains('govuk-!-display-none')).toBe(false);
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/postcode-lookup?postcode=SW1A1AA',
+      expect.objectContaining({method: 'GET'}),
+    );
   });
 
-  it('populates the select menu when lookup succeeds', () => {
-    mockAjax({
-      resolve: {
+  it('populates the select menu when lookup succeeds', async () => {
+    mockFetch({
+      body: {
         addresses: [
           {
             udprn: '1',
@@ -98,19 +103,20 @@ describe('postcode-lookup', () => {
     });
     load();
 
-    $('.postcode-container button').trigger('click');
+    clickFindAddress();
+    await flushAsync();
 
     const options = document.querySelectorAll('select option');
     expect(options).toHaveLength(2);
     expect(options[1].textContent).toBe('1 Test Street');
     expect(options[0].textContent).toContain('1');
-    expect($('.govuk-error-message').hasClass('govuk-!-display-none')).toBe(true);
-    expect($('.address-form').hasClass('govuk-!-display-none')).toBe(true);
+    expect(document.querySelector('.govuk-error-message')!.classList.contains('govuk-!-display-none')).toBe(true);
+    expect(document.querySelector('.address-form')!.classList.contains('govuk-!-display-none')).toBe(true);
   });
 
-  it('fills the address form when an address is selected', () => {
-    mockAjax({
-      resolve: {
+  it('fills the address form when an address is selected', async () => {
+    mockFetch({
+      body: {
         addresses: [
           {
             // select values are strings; match with strict equality in findSelectedAddress
@@ -129,27 +135,30 @@ describe('postcode-lookup', () => {
       },
     });
     load();
-    $('.postcode-container button').trigger('click');
+    clickFindAddress();
+    await flushAsync();
 
     const select = document.querySelector('select') as HTMLSelectElement;
     select.value = '99';
-    $(select).trigger('change');
+    select.dispatchEvent(new dom.window.Event('change', {bubbles: true}));
 
     const inputs = document.querySelectorAll('.address-form input') as NodeListOf<HTMLInputElement>;
     expect(inputs[0].value.trim()).toBe('10 High Street');
     expect(inputs[1].value).toBe('Westminster');
     expect(inputs[3].value).toBe('London');
     expect(inputs[4].value).toBe('SW1A1AA');
-    expect($('.address-form').hasClass('govuk-!-display-none')).toBe(false);
+    expect(document.querySelector('.address-form')!.classList.contains('govuk-!-display-none')).toBe(false);
   });
 
   it('shows the address form when manual entry link is clicked', () => {
-    mockAjax({resolve: {addresses: []}});
+    mockFetch({body: {addresses: []}});
     load();
 
-    $('.postcode-container a').trigger('click');
+    document.querySelector('.postcode-container a')!.dispatchEvent(
+      new dom.window.MouseEvent('click', {bubbles: true, cancelable: true}),
+    );
 
-    expect($('.address-form').hasClass('govuk-!-display-none')).toBe(false);
-    expect($('.address-form').attr('aria-hidden')).toBe('false');
+    expect(document.querySelector('.address-form')!.classList.contains('govuk-!-display-none')).toBe(false);
+    expect(document.querySelector('.address-form')!.getAttribute('aria-hidden')).toBe('false');
   });
 });

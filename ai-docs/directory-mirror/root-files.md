@@ -9,7 +9,7 @@
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
 | `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). Update when a change would alter that comparison. |
-| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations: GOV.UK macros, progressive enhancement, `yarn test:govuk-fixtures`, gradual jQuery removal, a11y, preview data. Pair with `docs/frontend.md`. |
+| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations: GOV.UK macros, progressive enhancement, `yarn test:govuk-fixtures`, jQuery-free app JS (MoJ peer remains), a11y, preview data. Pair with `docs/frontend.md`. |
 | `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`, `docs/functional-test-migration-matrix.md`) |
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |

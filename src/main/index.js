@@ -6,6 +6,11 @@ import './assets/js/calculate-length-repayment.js';
 import './assets/js/calculate-total-amount.js';
 import './assets/js/remove-error-content';
 import './assets/js/conditionally-hide-add-button';
+// MoJ Frontend (`mojAll.js`) still expects global `$` (peerDependency on jquery).
+// App modules no longer import jQuery — keep this import only for MoJ init.
+import $ from 'jquery';
+window.$ = $;
+window.jQuery = $;
 import './assets/js/mojAll';
 import './assets/js/select-toggle';
 import './assets/js/reindex-add-another-actions';

@@ -41,7 +41,7 @@ See also the root [KEYCHANGES.md](../KEYCHANGES.md) for a fork-vs-upstream compa
 | --- | --- |
 | [README.md](../README.md) | Quick start, preview labels, generated test tables |
 | [KEYCHANGES.md](../KEYCHANGES.md) | Fork vs `hmcts/civil-citizen-ui` `master` — tooling, tests, security, docs |
-| [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md) | Frontend recommendations (macros, progressive enhancement, fixtures, jQuery) |
+| [FRONTEND-RECOMMENDATIONS.md](../FRONTEND-RECOMMENDATIONS.md) | Frontend recommendations (macros, progressive enhancement, fixtures, jQuery-free app JS) |
 | [AGENTS.md](../AGENTS.md) | Canonical standing conventions for any coding agent (symlink: `AGENT.md`) |
 | [ai-docs/README.md](../ai-docs/README.md) | **AI-only** directory mirror, playbooks, and scripts (not a human product guide) |
 | [catalog-info.yaml](../catalog-info.yaml) | Backstage component metadata (`dts_civil`) |
