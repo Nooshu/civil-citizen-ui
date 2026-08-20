@@ -228,5 +228,6 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 | `ai-docs/service-assessment.md` | Service Standard / TCoP / Design System — flag deviations |
 | `docs/service-assessment.md` | What passing a GOV.UK service assessment means (mapped to CUI) |
 | `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |
+| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations (macros, progressive enhancement, fixtures, jQuery removal) |
 | `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
 | `docs/contributing.md` | Human contributing guide (same conventions) |
