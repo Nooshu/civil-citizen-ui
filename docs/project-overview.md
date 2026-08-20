@@ -37,7 +37,7 @@ Developers typically work on a fork (`origin`) and sync from the `hmcts` remote.
 | Language | TypeScript `6.0.3` (exact pin) |
 | HTTP framework | Express 5 |
 | Templates | Nunjucks |
-| User interface (UI) kit | GOV.UK Frontend `6.4.0` plus `@ministryofjustice/frontend` |
+| User interface (UI) kit | Latest [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin in `package.json`) plus `@ministryofjustice/frontend` |
 | Session / drafts | Redis (`ioredis` for drafts; `connect-redis` + official `redis` for session) |
 | Feature flags | LaunchDarkly (`@launchdarkly/node-server-sdk`) |
 | Languages | English and Welsh (internationalisation, i18n, via i18next) |

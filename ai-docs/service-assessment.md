@@ -80,10 +80,14 @@ Full narrative: `docs/service-assessment.md`.
 ## Design System / Frontend (implementation)
 
 - [Design System](https://design-system.service.gov.uk/) — components and patterns with published research.
-- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) — package, Nunjucks, Sass, JS API.
-- Fixtures: `node_modules/govuk-frontend/dist/govuk/components/<component>/fixtures.json` — `options` in, `html` out; skip `hidden` for visual tests.
+- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) — package, Nunjucks, Sass, JS API. Track the **latest** [GitHub release](https://github.com/alphagov/govuk-frontend/releases/latest); pin exact in `package.json`.
+- Fixtures: `node_modules/govuk-frontend/dist/govuk/components/<component>/fixtures.json` — `options` in, `html` out; skip `hidden` for visual tests. Suite: `yarn test:govuk-fixtures`.
 - Import JS as modules; initialise with `initAll`/`createAll`; do not ship GOV.UK JS as classic scripts to old IE.
 - Copying `govuk-frontend.min.css` by hand is for trials; production CUI uses the webpack/Sass pipeline and macros.
+
+### Frontend code under assessment (GDS) — agent reminder
+
+When a change touches Nunjucks, assets, or `govuk-frontend`, judge it against Government Digital Service (GDS) / Service Standard **4 / 5 / 11 / 13**. Team checklist (human): [`docs/frontend.md`](../docs/frontend.md) and [`docs/service-assessment.md`](../docs/service-assessment.md) (“If the assessor examines frontend code”). In summaries, say whether the change **aligns** or **deviates**, and name the evidence (`yarn test:govuk-fixtures`, macros, Pa11y, no SPA, documented divergence).
 
 ## HMCTS
 

@@ -29,13 +29,13 @@ Start here: **[docs/README.md](docs/README.md)**.
 | [Local development](docs/local-development.md) | Install, `yarn start:dev`, user interface (UI) Preview |
 | [Configuration](docs/configuration.md) | `node-config`, env vars, Redis time to live (TTL) |
 | [Citizen journeys](docs/citizen-journeys.md) | Claim, response, general application (GA), and related flows |
-| [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend, assets, internationalisation (i18n) |
-| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, jQuery-free app JS (MoJ peer note), and related guidance from this fork |
+| [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend ([latest release](https://github.com/alphagov/govuk-frontend/releases/latest)), Government Digital Service (GDS) compliance, assets, internationalisation (i18n) |
+| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, GDS assessment checklist, jQuery-free app JS (MoJ peer note) |
 | [Integrations](docs/integrations.md) | civil-service, Identity and Access Management (IDAM), Redis, payments |
 | [Security and privacy](docs/security-and-privacy.md) | Cross-Site Request Forgery (CSRF), Helmet, OpenID Connect (OIDC), personally identifiable information (PII) logging |
 | [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |
 | [CI/CD and deployment](docs/ci-cd-and-deployment.md) | Jenkins, Helm, GitHub Actions |
-| [Service assessment](docs/service-assessment.md) | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) stack, Design System |
+| [Service assessment](docs/service-assessment.md) | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) stack, Design System, frontend code checklist |
 | [Contributing](docs/contributing.md) | Coding standards and review checklist |
 | [Key changes vs upstream](KEYCHANGES.md) | This fork compared with `hmcts/civil-citizen-ui` |
 

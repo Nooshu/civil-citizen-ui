@@ -117,9 +117,26 @@ CUI is on a **service.gov.uk** style host, so it **must look like GOV.UK**: desi
 
 ### GOV.UK Frontend (how we implement it)
 
-Canonical: [GOV.UK Frontend docs](https://frontend.design-system.service.gov.uk/). Install via the Node package; use **Nunjucks macros** (not copied precompiled HTML in production); Dart Sass; `initAll` / `createAll` with `type="module"`; do not run GOV.UK JS in unsupported browsers without the `js-enabled` / `govuk-frontend-supported` snippet. CSP must allow that snippet (hash or nonce) — CUI already uses nonces.
+Canonical: [GOV.UK Frontend docs](https://frontend.design-system.service.gov.uk/). Track the **latest** [release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest) and pin that exact version in `package.json`. Install via the Node package; use **Nunjucks macros** (not copied precompiled HTML in production); Dart Sass; `initAll` / `createAll` with `type="module"`; do not run GOV.UK JS in unsupported browsers without the `js-enabled` / `govuk-frontend-supported` snippet. CSP must allow that snippet (hash or nonce) — CUI already uses nonces.
 
 **HTML must match the release fixtures.** For each component, `node_modules/govuk-frontend/dist/govuk/components/<name>/fixtures.json` lists `options` and expected `html`. Pass `options` into the official macro and compare. Ignore only documented framework differences (whitespace). Do not use `hidden` fixtures for visual regression. Official: [Test if your HTML matches GOV.UK Frontend](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files). In this repo: `yarn test:govuk-fixtures`.
+
+### If the assessor examines frontend code (team checklist)
+
+Government Digital Service (GDS) expectations show up as Service Standard points **4**, **5**, **11**, and **13**. Day-to-day frontend guide: [`frontend.md`](frontend.md). Recommendations: [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
+
+| What assessors probe | What the development team must show |
+| --- | --- |
+| Does it look like GOV.UK? | Official Design System macros; no hand-written component chrome; content style guide in locales |
+| Is Frontend current and maintained? | Exact pin aligned with the [latest GitHub release](https://github.com/alphagov/govuk-frontend/releases/latest); upgrade checklist completed |
+| How do you know HTML matches the Design System? | Green `yarn test:govuk-fixtures` in CI; fix fallout via macros, not forks |
+| Progressive enhancement / JS | Server-rendered Nunjucks; app JS enhances macro DOM; `initAll()`; forms work without JS where the journey allows |
+| Accessibility | WCAG 2.2 AA; Pa11y (`yarn tests:a11y`); skip link, labels, error summaries, keyboard (including tabs) preserved; GOV.UK wins over axe |
+| Right tools / no lock-in | Express + Nunjucks citizen SSR — not a citizen SPA |
+| Where did you diverge? | Written rationale (and research) for any non-standard pattern |
+| Secure UI delivery | CSP nonces; no `unsafe-inline`; CSRF on POSTs |
+
+Do not claim a “pass” from the repo alone. Do treat a PR that weakens any row above as **assessment risk**.
 
 ## Accessibility bar (non-negotiable for live users)
 
@@ -140,4 +157,5 @@ Assessors will still ask about user research, assisted digital, call-centre scri
 - [The HMCTS way](https://hmcts.github.io/)
 - [GOV.UK Design System](https://design-system.service.gov.uk/)
 - [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)
+- [GOV.UK Frontend latest release (GitHub)](https://github.com/alphagov/govuk-frontend/releases/latest)
 - [HTML fixture tests](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)
