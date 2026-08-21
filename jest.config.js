@@ -42,8 +42,8 @@ module.exports = {
   ],
   coverageReporters: ['json', 'lcov', 'text', 'clover', 'json-summary'],
   /**
-   * Global floor from the 18 August 2026 collectCoverageFrom run (statements
-   * 97.91%, branches 87.64%, functions 98.64%, lines 97.85%). About one
+   * Global floor from collectCoverageFrom runs (statements ~97.9%, branches
+   * ~87.6%, functions ~98.6%, lines ~97.8% as of 21 August 2026). About one
    * percentage point of slack so machine noise does not fail CI, but a new
    * untested controller of a few hundred lines will.
    */
