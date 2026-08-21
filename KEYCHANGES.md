@@ -62,7 +62,7 @@ Pa11y 9 scans `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`
 
 Upstream `yarn test` echoes a Jest config path and executes **zero** tests. This tree runs the unit suite: **8,997** tests in **1,045** suites, via `node --no-sparkplug` on the Jest binary so Node 24 workers do not segmentation-fault (SIGSEGV) (Sparkplug plus Jest’s `vm` module). Coverage still uses `--maxWorkers=8` for memory.
 
-Those tests are not a single-folder spike. Versus upstream there are **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output and vendored `mojAll.js` is **97.91%** statements, **87.64%** branches, **98.64%** functions, **97.85%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric.
+Those tests are not a single-folder spike. Versus upstream there are **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output and vendored `mojAll.js` is **97.87%** statements, **87.59%** branches, **98.64%** functions, **97.81%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric.
 
 Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. I aliased it to the real Pa11y command and **dropped it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, then `yarn deps:check` and `yarn deps:audit`.
 
@@ -90,11 +90,11 @@ Personally identifiable information (PII) Semgrep and Playwright API-security sp
 
 ## Telemetry and the compiler sit on supported majors
 
-Application Insights software development kit (SDK) **3.15.1** needs a connection string (bare Key Vault instrumentation keys are wrapped), config before `start()`, Promise `flush()`, and a supported sampling API. Non-prod (`LAUNCH_DARKLY_ENV !== prod`) samples at 100% so diagnosis is not silently dropped; production sampling stays the SDK default. LaunchDarkly is **9.13.0**. `@hmcts/properties-volume` is **1.4.1**.
+Application Insights software development kit (SDK) **3.16.0** needs a connection string (bare Key Vault instrumentation keys are wrapped), config before `start()`, Promise `flush()`, and a supported sampling API. Non-prod (`LAUNCH_DARKLY_ENV !== prod`) samples at 100% so diagnosis is not silently dropped; production sampling stays the SDK default. LaunchDarkly is **9.13.0** (patch `9.13.1` still inside the 7-day cooldown). `@hmcts/properties-volume` is **1.4.1**.
 
 TypeScript is **6.0.3** with documented transitional flags (`strict: false` on purpose). i18next is **26**. `uuid` 14 is ECMAScript modules (ESM); Jest transforms it instead of blocking the upgrade. App asset JS no longer imports jQuery (`postcode-lookup.js` / `select-toggle.js` use native DOM and `fetch`); `jquery` **4** remains only as the MoJ Frontend peer for `mojAll.js`. The webpack 7-era loaders stay installable on Node 24.
 
-I assessed a few majors and **left them blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in the [dependency update log](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
+I assessed a few majors and **left them blocked** — `config` 5 (hundreds of CommonJS `require`s), `connect-redis` 10 (drops ioredis), `@ministryofjustice/frontend` 10, Babel 8 with Jest 30. Those reasons live in the [21 August dependency update log](docs/dependency-update-log-2026-08-21.md) and the earlier [18 August log](docs/dependency-update-log-2026-08-18.md). Completable, tested upgrades beat a single explosive toolchain migration.
 
 Citizen journeys stay the same shape: controllers, services, GOV.UK macros. The application-layer diff is preview routes, `cryptoAes`, Insights flush, Nunjucks preview globals, and compiler layout — not a parallel framework.
 
@@ -155,7 +155,7 @@ Method: two-dot `git diff hmcts/master HEAD`, `package.json` pin census, `git ls
 1. [docs/README.md](docs/README.md) — how the service works ([glossary](docs/glossary.md) for acronyms)
 2. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / TCoP / Design System mapped to this app
 3. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular editor)
-4. [Dependency update log](docs/dependency-update-log-2026-08-18.md) — package-by-package upgrade record
+4. [Dependency update log (21 August 2026)](docs/dependency-update-log-2026-08-21.md) — latest 7-day-cooldown pin bumps; earlier [18 August log](docs/dependency-update-log-2026-08-18.md)
 
 ---
 
@@ -252,7 +252,7 @@ What you get if you look at this tree. Same citizen product; the journeys and Ex
 | Configure Helmet | Helmet **8.3.0** with tests that referrer-policy is required and Content Security Policy (CSP) nonce callbacks run |
 | Update GitHub Actions | checkout / setup-node **v7**, stale **v11** — current majors, not v4/v8 |
 | Lift noisy transitives | `tar` 7.5.22, `flat` 6.0.1, `formidable` 3.5.4, `node-fetch` 3 — reviewed, not an accidental install |
-| Send telemetry | Application Insights software development kit (SDK) **3.15.1**; non-prod samples at **100%** so diagnosis is not silently dropped |
+| Send telemetry | Application Insights software development kit (SDK) **3.16.0**; non-prod samples at **100%** so diagnosis is not silently dropped |
 | Use feature flags or Key Vault | LaunchDarkly **9.13.0**; `@hmcts/properties-volume` **1.4.1** |
 | Compile TypeScript | **6.0.3** with documented transitional flags (`strict: false` on purpose) |
 | Use i18n or ESM packages | i18next **26**; `uuid` 14 transformed in Jest instead of blocking the upgrade |
