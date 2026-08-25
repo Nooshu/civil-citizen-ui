@@ -19,14 +19,14 @@ describe('conditionally-hide-add-button', () => {
   });
 
   function itemsHtml(count: number) {
-    return Array.from({length: count}, () => '<div class="moj-add-another__item"></div>').join('');
+    return Array.from({length: count}, () => '<div class="cui-add-another__item"></div>').join('');
   }
 
   it('hides the add button once item count exceeds maximumNumberOfRows - 2', () => {
     // maximumNumberOfRows is 10, so hide when count > 8
     document.body.innerHTML = `
       ${itemsHtml(9)}
-      <button id="add-another-court-order" class="moj-add-another__add-button">Add</button>
+      <button id="add-another-court-order" class="cui-add-another__add-button">Add</button>
     `;
      
     require(scriptPath);
@@ -40,7 +40,7 @@ describe('conditionally-hide-add-button', () => {
   it('does not hide the add button when under the threshold', () => {
     document.body.innerHTML = `
       ${itemsHtml(5)}
-      <button id="add-another-court-order" class="moj-add-another__add-button">Add</button>
+      <button id="add-another-court-order" class="cui-add-another__add-button">Add</button>
     `;
      
     require(scriptPath);

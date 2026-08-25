@@ -13,4 +13,4 @@ Canonical: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros + upgrade 
 9. If axe conflicts with official markup: disable the scanner rule, do not fork GOV.UK
 10. Note any Design System divergence introduced by the bump (assessors ask)
 
-MoJ Frontend (`@ministryofjustice/frontend`) is a separate major; do not jump 1.x → 10.x in the same drive-by.
+MoJ Frontend is **not** a CUI dependency (Add another is app JS). Do not add `@ministryofjustice/frontend` in a GOV.UK bump: [`docs/moj-frontend.md`](../../docs/moj-frontend.md).

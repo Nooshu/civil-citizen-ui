@@ -53,7 +53,7 @@ Express middleware. Path-prefix guards are attached in `app.ts` (e.g. `claimantI
 | `allResponseTasksCompletedGuard` / CYA guards | Submit / CYA |
 | `claimFeePaymentGuard` | Fee payment |
 | `pcqGuard` / `pcqGuardClaim` | PCQ |
-| `uploadRateLimitGuard` | Redis-backed rate limit |
+| `uploadRateLimitGuard` | Redis-backed rate limit. `sendRedisCommand` uses ioredis `.call`, or the command name as a method on `ioredis-mock`. |
 | `generalAplicationGuard.ts` (spelling is historical) | GA LiP enabled |
 | `deleteGAGuard`, `checkYourAnswersGAGuard` | GA specifics |
 | `trackHistory.ts`, `GaTrackHistory.ts` | Back-link / journey history |

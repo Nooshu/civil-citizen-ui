@@ -61,6 +61,7 @@ This page is the onboarding list for people who have not worked in government or
 | **WCAG** | Web Content Accessibility Guidelines (this service targets **2.2 AA**) |
 | **AA** | WCAG conformance level Double-A |
 | **GDS** | Government Digital Service |
+| **MoJ Frontend** | The npm package `@ministryofjustice/frontend`. **Not used** in Civil Citizen UI (CUI). Repeatable rows are app JS (`initAddAnother` / `initAppendRow`). See [moj-frontend.md](moj-frontend.md). |
 | **SS** | Service Standard — the 14-point GOV.UK standard used in a service assessment |
 | **AI** | Artificial Intelligence — including generative models. Do not add unexplained AI decisioning to this citizen service |
 | **SPA** | Single Page Application — a web app (typically React, Vue, or Angular) that loads once and then updates the page in the browser with JavaScript, instead of the server sending a new HTML page for each screen. His Majesty’s Courts and Tribunals Service (HMCTS) **citizen** services, including this one, are Express + Nunjucks **server-side rendering (SSR)**, not SPAs. Professional users (solicitors) use Angular in Expert UI. |

@@ -23,7 +23,7 @@
       {% endif %}
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <div data-module="moj-add-another">
+          <div>
             <form method="post" novalidate>
               {{ csrfProtection(csrf) }}
             {% call govukFieldset({
@@ -35,7 +35,8 @@
             }) %}
               {% set courtOrdersHtml %}
                 <div
-                  class="govuk-form-group {% if atLeastOneCourtOrderError %} govuk-form-group--error {% endif %}">
+                  class="govuk-form-group {% if atLeastOneCourtOrderError %} govuk-form-group--error {% endif %}"
+                  data-module="cui-add-another">
                   {% if atLeastOneCourtOrderError %}
                     {{ govukErrorMessage({
                       visuallyHiddenText: t('ERRORS.ERROR'),
@@ -43,16 +44,18 @@
                     }) }}
                   {% endif %}
 
+                  <div class="cui-add-another__items">
                   {% for row in form.model.rows %}
                     {{ courtOrder(loop.index0, row, form.errorFor, t) }}
                   {% else %}
                     {{ courtOrder(0, '', form.errorFor, t) }}
                   {% endfor %}
+                  </div>
 
-                  <div class="moj-button-action">
+                  <div class="cui-add-another__actions">
                     {{ govukButton({
                       text: t('PAGES.COURT_ORDERS.ADD_ANOTHER'),
-                      classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1',
+                      classes: 'govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1',
                       type: 'button',
                       attributes: {
                         'id': 'add-another-court-order'

@@ -37,7 +37,7 @@ describe('select-toggle', () => {
             <textarea></textarea>
           </div>
         </div>
-        <button type="button" class="moj-add-another__add-button">Add</button>
+        <button type="button" class="cui-add-another__add-button">Add</button>
       </div>
     `;
      

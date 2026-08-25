@@ -2,7 +2,7 @@ import {Response} from 'express';
 import {ipKeyGenerator, rateLimit} from 'express-rate-limit';
 import {RedisStore} from 'rate-limit-redis';
 import {AppRequest} from 'models/AppRequest';
-import {createUploadRateLimitGuard} from '../../../../main/routes/guards/uploadRateLimitGuard';
+import {createUploadRateLimitGuard, sendRedisCommand} from '../../../../main/routes/guards/uploadRateLimitGuard';
 
 jest.mock('express-rate-limit', () => ({
   ipKeyGenerator: jest.fn((ip: string) => `normalised:${ip}`),
@@ -143,5 +143,13 @@ describe('uploadRateLimitGuard', () => {
 
     expect(() => options.logger.warn('warning')).not.toThrow();
     expect(() => options.logger.error('error')).not.toThrow();
+  });
+
+  it('should fall back to a command-named method when Redis call is missing', async () => {
+    const incr = jest.fn().mockResolvedValue(1);
+
+    await expect(sendRedisCommand({incr}, 'INCR', 'upload-rate-limit:user:user-123')).resolves.toBe(1);
+
+    expect(incr).toHaveBeenCalledWith('upload-rate-limit:user:user-123');
   });
 });

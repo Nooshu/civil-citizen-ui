@@ -37,6 +37,7 @@ Package-only version bumps that pass tests may be rebased onto `origin/master` a
 4. Reuse Nunjucks partials; do not duplicate claim-summary chrome.
 5. axe does not override GOV.UK.
 6. After Frontend bumps: `yarn test:govuk-fixtures` must pass; run `yarn tests:a11y` where practical.
+7. Do not add `@ministryofjustice/frontend` or `jquery`. Repeatable rows: one init (`initAddAnother` after GOV.UK `initAll()`) and two markup contracts (`cui-add-another*` + `__items`, or `.row-container` / `.append-row`). Handover: [moj-frontend.md](moj-frontend.md).
 
 These user interface (UI) rules exist so the service can meet Government Digital Service (GDS) expectations under the [Service Standard](https://www.gov.uk/service-manual/service-standard) and look like GOV.UK. Team checklist for an assessment that examines frontend code: [frontend.md](frontend.md) (GDS compliance) and [service-assessment.md](service-assessment.md).
 

@@ -98,20 +98,43 @@
   }
 }
 
-.moj-add-another {
+// Repeatable rows use the `cui-add-another*` app prefix (not MoJ Frontend).
+// App JS in add-another.js clones rows. Templates wrap Add buttons in
+// `.cui-add-another__actions` as a sibling DOM hook (reindex insertBefore);
+// GOV.UK margin classes on the button provide spacing — no extra CSS here.
+.cui-add-another {
+  margin-bottom: govuk-spacing(8);
+
+  &__item {
+    position: relative;
+    margin-top: govuk-spacing(6);
+    margin-right: 0;
+    margin-bottom: govuk-spacing(4);
+    margin-left: 0;
+    padding: 0;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  &__add-button {
+    display: block;
+  }
+
   &__remove-button {
     display: none;
   }
 }
 
 .caseProgression {
-  .moj-add-another__item {
+  .cui-add-another__item {
     margin: 0;
     padding: 0;
     position: relative;
   }
 
-  .moj-add-another__remove-button {
+  .cui-add-another__remove-button {
     display: block;
     position: absolute;
     right: 0;
@@ -120,7 +143,7 @@
   }
 
   /* Hide remove button when only one row */
-  .moj-add-another__item:only-of-type .moj-add-another__remove-button {
+  .cui-add-another__item:only-of-type .cui-add-another__remove-button {
     display: none;
   }
 }

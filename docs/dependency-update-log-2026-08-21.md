@@ -54,7 +54,7 @@ Validated with `yarn deps:check`, `yarn deps:audit`, `yarn build`, and `yarn tes
 | --- | --- | --- |
 | `config` v5 | Blocked | ESM-only; major migration |
 | `connect-redis` v10 | Blocked | Drops `ioredis` support |
-| `@ministryofjustice/frontend` v10 | Blocked | Large UI migration |
+| `@ministryofjustice/frontend` v10 | Removed from the tree (24 August 2026) | v10 was spiked then **dropped**. Add another is app JS. Do not re-add. See [moj-frontend.md](moj-frontend.md). |
 | Babel 8 / Jest 30 / `babel-jest` 30 | Blocked | Coupled toolchain jump |
 | `typescript` 7 | Skipped | Major; transitional TS 6 flags still required |
 | `@types/node` 26 | Skipped | Engines target Node 24; stay on `@types/node` 24.x |
@@ -68,7 +68,7 @@ Validated with `yarn deps:check`, `yarn deps:audit`, `yarn build`, and `yarn tes
 - `yarn deps:check` — passed (exact pins + lockfile checksums)
 - `yarn deps:audit` — production tree clean; 15 accepted toolchain advisories match `yarn-audit-known-issues`
 - `yarn build` — webpack **5.109.2** compiled successfully
-- `yarn test:coverage` — **1047** suites passed, **0** failed; global coverage **97.87%** statements, **87.59%** branches, **98.64%** functions, **97.81%** lines (above CI floor **97 / 86 / 97 / 97**). Jest printed a CoverageReporter threshold TypeError after the run (`Cannot read properties of undefined (reading 'sync')`) but exited **0**; totals were written to `coverage/coverage-summary.json`.
+- `yarn test:coverage` — **1047** suites passed, **0** failed; global coverage **97.87%** statements, **87.59%** branches, **98.64%** functions, **97.81%** lines (above CI floor **97 / 86 / 97 / 97**). Jest printed a CoverageReporter threshold TypeError after the run (`Cannot read properties of undefined (reading 'sync')`) but exited **0**; totals were written to `coverage/coverage-summary.json`. (Later nested `@jest/reporters/glob` at `7.2.3` so that TypeError should not recur; this log still describes the 21 August run.)
 
 ## Risks and unresolved items
 

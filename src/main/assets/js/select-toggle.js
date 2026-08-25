@@ -20,7 +20,7 @@
     child: '.govuk-select',
     panel: '.panel',
     hiddenClass: 'govuk-visually-hidden',
-    mojAddAnotherBTN: '.moj-add-another__add-button',
+    addAnotherButton: '.cui-add-another__add-button',
   };
 
   /**
@@ -93,7 +93,7 @@
    * @param {typeof settings} _settings
    */
   const init = (_settings) => {
-    document.querySelectorAll(`${_settings.parent} ${_settings.mojAddAnotherBTN}`).forEach((button) => {
+    document.querySelectorAll(`${_settings.parent} ${_settings.addAnotherButton}`).forEach((button) => {
       button.addEventListener('click', () => {
         setTimeout(() => {
           setSelectToggle(_settings);

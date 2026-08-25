@@ -29,13 +29,13 @@ describe('reindex-add-another-actions', () => {
   function setupDom() {
     // Build minimal DOM expected by the script
     document.body.innerHTML = `
-      <div data-module="moj-add-another" id="container-1">
-        <div class="moj-add-another__item">
+      <div data-module="cui-add-another" id="container-1">
+        <div class="cui-add-another__item">
           <button name="action" data-value="documentsForDisclosure[%index%][uploadButton]" value="documentsForDisclosure[0][uploadButton]">Upload</button>
           <button name="action" data-value="documentsForDisclosure[%index%][removeButton]" value="documentsForDisclosure[0][removeButton]">Remove</button>
         </div>
-        <div class="moj-button-action">
-          <button type="button" class="govuk-button moj-add-another__add-button" id="add-btn-1">Add another</button>
+        <div class="cui-add-another__actions">
+          <button type="button" class="govuk-button cui-add-another__add-button" id="add-btn-1">Add another</button>
         </div>
       </div>
     `;
@@ -59,7 +59,7 @@ describe('reindex-add-another-actions', () => {
 
     // Simulate MoJ component having cloned a new row as the last item (index 1)
     const newItem = document.createElement('div');
-    newItem.className = 'moj-add-another__item';
+    newItem.className = 'cui-add-another__item';
     const newUpload = document.createElement('button');
     newUpload.setAttribute('name', 'action');
     newUpload.setAttribute('data-value', 'documentsForDisclosure[%index%][uploadButton]');
@@ -68,7 +68,7 @@ describe('reindex-add-another-actions', () => {
     newRemove.setAttribute('data-value', 'documentsForDisclosure[%index%][removeButton]');
     newItem.appendChild(newUpload);
     newItem.appendChild(newRemove);
-    container!.insertBefore(newItem, container!.querySelector('.moj-button-action'));
+    container!.insertBefore(newItem, container!.querySelector('.cui-add-another__actions'));
 
     // Let the scheduled reindex run
     jest.runAllTimers();
@@ -77,7 +77,7 @@ describe('reindex-add-another-actions', () => {
     expect(newRemove.value).toBe('documentsForDisclosure[1][removeButton]');
 
     // Ensure the original first item values are unchanged
-    const firstItem = container!.querySelector('.moj-add-another__item');
+    const firstItem = container!.querySelector('.cui-add-another__item');
     const firstButtons = firstItem!.querySelectorAll('button[name="action"][data-value]');
     expect(firstButtons[0].getAttribute('value')).toBe('documentsForDisclosure[0][uploadButton]');
     expect(firstButtons[1].getAttribute('value')).toBe('documentsForDisclosure[0][removeButton]');
@@ -92,11 +92,11 @@ describe('reindex-add-another-actions', () => {
 
     // Append a new item that has no action buttons with data-value
     const newItem = document.createElement('div');
-    newItem.className = 'moj-add-another__item';
+    newItem.className = 'cui-add-another__item';
     const unrelated = document.createElement('button');
     unrelated.textContent = 'Unrelated';
     newItem.appendChild(unrelated);
-    container.insertBefore(newItem, container.querySelector('.moj-button-action'));
+    container.insertBefore(newItem, container.querySelector('.cui-add-another__actions'));
 
     expect(() => jest.runAllTimers()).not.toThrow();
   });

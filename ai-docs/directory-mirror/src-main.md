@@ -8,7 +8,7 @@
 | `app-instance.ts` | `express()` singleton, `x-powered-by` off | Tests and modules import `{app}` from here or from `app.ts`. |
 | `app.ts` | Middleware + guards + `routes(app)` | Session Redis, i18n, Helmet, Nunjucks, OIDC, CSRF (not in `test`), shutter check, upload rate limits. **Do not** register routes only in a controller file — they must be invoked from `routes.ts`. |
 | `development.ts` | webpack-dev-middleware | Only when `NODE_ENV=development`. |
-| `index.js` | webpack **JS/SCSS entry** | Imports app JS then `initAll()` from `govuk-frontend`. New client behaviour: add a file under `assets/js/` and import it here (except the cookies entry). |
+| `index.js` | webpack **JS/SCSS entry** | Imports app JS, then `initAll()` from `govuk-frontend`, then `initAddAnother()` (also starts `initAppendRow`). New client behaviour: add a file under `assets/js/` and import it here **or** from a module this entry already imports (except the cookies entry). |
 | `HttpError.ts` | Shared HTTP error type | Prefer this over ad-hoc throw shapes in controllers. |
 
 ## `NODE_ENV` matrix

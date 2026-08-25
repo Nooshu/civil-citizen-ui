@@ -3,10 +3,10 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% macro evidence(evidenceIndex, evidenceValue, errorFor, description, t) %}
   {% call govukFieldset({
-      classes: 'moj-add-another__item',
+      classes: 'cui-add-another__item',
       legend: {
         text: t('PAGES.EVIDENCE.EVIDENCE_LIST'),
-        classes: 'moj-add-another__title govuk-fieldset__legend--m govuk-visually-hidden',
+        classes: 'cui-add-another__title govuk-fieldset__legend--m govuk-visually-hidden',
         isPageHeading: false
       }
     }) %}

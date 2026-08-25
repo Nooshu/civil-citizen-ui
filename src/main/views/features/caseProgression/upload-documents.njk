@@ -38,12 +38,13 @@
             <h2 class="govuk-heading-l">{{ disclosure }}</h2>
             {% for disclosureSections in disclosureContent %}
             <div class="row-container">
-              <div data-module="moj-add-another">
+              <div data-module="cui-add-another">
+                <div class="cui-add-another__items">
                 {% for section in disclosureSections %}
                 {% call govukFieldset({
-                classes: 'moj-add-another__item',
+                classes: 'cui-add-another__item',
                 legend: {
-                classes: 'moj-add-another__title govuk-visually-hidden',
+                classes: 'cui-add-another__title govuk-visually-hidden',
                 isPageHeading: false,
                 text: disclosure
                 }
@@ -53,7 +54,8 @@
                   }, t) }}
                 {% endcall %}
                 {% endfor %}
-                <div class="moj-button-action">
+                </div>
+                <div class="cui-add-another__actions">
                     {% set category = disclosureSections[0].contentSections[0].data.category %}
                     {% if category == 'documentsForDisclosure' %}
                       {% set actionValue = 'add_another-disclosure' %}
@@ -62,7 +64,7 @@
                     {% endif %}
                       {{ govukButton({
                         text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),
-                        classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1',
+                        classes: 'govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1',
                         name: 'action',
                         value: actionValue,
                         type: 'submit'
@@ -78,12 +80,13 @@
             <h2 class="govuk-heading-l">{{ witness }}</h2>
             {% for witnessSections in witnessContent %}
             <div class="row-container">
-              <div data-module="moj-add-another">
+              <div data-module="cui-add-another">
+                <div class="cui-add-another__items">
                 {% for section in witnessSections %}
                 {% call govukFieldset({
-                classes: 'moj-add-another__item',
+                classes: 'cui-add-another__item',
                 legend: {
-                classes: 'moj-add-another__title govuk-visually-hidden',
+                classes: 'cui-add-another__title govuk-visually-hidden',
                 isPageHeading: false,
                 text: witness
                 }
@@ -93,7 +96,8 @@
                   }, t) }}
                 {% endcall %}
                 {% endfor %}
-                <div class="moj-button-action">
+                </div>
+                <div class="cui-add-another__actions">
                     {% set category = witnessSections[0].contentSections[0].data.category %}
                     {% if category == 'witnessStatement' %}
                       {% set actionValue = 'add_another-witness' %}
@@ -106,7 +110,7 @@
                     {% endif %}
                       {{ govukButton({
                         text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),
-                        classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1',
+                        classes: 'govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1',
                         name: 'action',
                         value: actionValue,
                         type: 'submit'
@@ -122,12 +126,13 @@
             <h2 class="govuk-heading-l">{{ expert }}</h2>
             {% for expertSections in expertContent %}
             <div class="row-container">
-              <div data-module="moj-add-another">
+              <div data-module="cui-add-another">
+                <div class="cui-add-another__items">
                 {% for section in expertSections %}
                 {% call govukFieldset({
-                classes: 'moj-add-another__item',
+                classes: 'cui-add-another__item',
                 legend: {
-                classes: 'moj-add-another__title govuk-visually-hidden',
+                classes: 'cui-add-another__title govuk-visually-hidden',
                 isPageHeading: false,
                 text: expert
                 }
@@ -137,7 +142,8 @@
                   }, t) }}
                 {% endcall %}
                 {% endfor %}
-                <div class="moj-button-action">
+                </div>
+                <div class="cui-add-another__actions">
                     {% set category = expertSections[0].contentSections[0].data.category %}
                     {% if category == 'expertReport' %}
                       {% set actionValue = 'add_another-expertReport' %}
@@ -150,7 +156,7 @@
                     {% endif %}
                       {{ govukButton({
                         text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),
-                        classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1',
+                        classes: 'govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1',
                         name: 'action',
                         value: actionValue,
                         type: 'submit'
@@ -170,12 +176,13 @@
             {% endif %}
             {% for trialSections in trialContent %}
             <div class="row-container">
-              <div data-module="moj-add-another">
+              <div data-module="cui-add-another">
+                <div class="cui-add-another__items">
                 {% for section in trialSections %}
                 {% call govukFieldset({
-                classes: 'moj-add-another__item',
+                classes: 'cui-add-another__item',
                 legend: {
-                classes: 'moj-add-another__title govuk-visually-hidden',
+                classes: 'cui-add-another__title govuk-visually-hidden',
                 isPageHeading: false,
                 text: hearing if isSmallClaims else trial
                 }
@@ -185,7 +192,8 @@
                   }, t) }}
                 {% endcall %}
                 {% endfor %}
-                <div class="moj-button-action">
+                </div>
+                <div class="cui-add-another__actions">
                     {% set category = trialSections[0].contentSections[0].data.category %}
                     {% if category == 'trialCaseSummary' %}
                       {% set actionValue = 'add_another-trialCaseSummary' %}
@@ -200,7 +208,7 @@
                     {% endif %}
                       {{ govukButton({
                         text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),
-                        classes: 'govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1',
+                        classes: 'govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1',
                         name: 'action',
                         value: actionValue,
                         type: 'submit'

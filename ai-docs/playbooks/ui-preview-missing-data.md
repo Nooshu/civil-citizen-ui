@@ -51,6 +51,8 @@ Fixture user is **`someID`**. Query-management `createdBy` must be `someID` (opt
 | **Court offered set date** blank / Invalid DateTime | No `paymentIntention.paymentDate` on full/part admission |
 | Statement-of-means guard redirect | Wrong claim: need `1645882162449605` (part admit, non-immediate pay) |
 | Trial-arrangement guard redirect | `1645882162449603` must be `FAST_CLAIM` |
+| Case-progression **Upload documents** 500 after Continue | Empty Redis `claimantDocuments: {}` wrapped as a form; `.length` on undefined arrays. Production-safe: optional-chain those arrays. Seed `claimantUploadDocuments.witness[0].selected` on `1645882162449603`. Not an Add another bug — [`moj-frontend.md`](moj-frontend.md). |
+| Mediation **Upload documents** 500 after Continue | Same `.length` pattern plus upload rate-limit store init (`ioredis-mock` has no `.call`). Optional-chain; `config/e2eTest.yaml` turns the limiter off; `sendRedisCommand` falls back to command-named methods. Seed `mediationUploadDocuments` / `YOUR_STATEMENT` on `1645882162449409`. Mediation Add another is a **POST**, not client clone. |
 | **Why do you disagree** / interest total fails | Missing `POST /fees/claim/calculate-interest` in `ui-preview-shared-apis.json` |
 
 Fixture claim ids: [`AGENTS.md`](../../AGENTS.md) Runtime. Catalogue: `src/main/services/features/uiPreview/pageCatalog.ts`. Human story: [`KEYCHANGES.md`](../../KEYCHANGES.md) “Preview screens that used to look broken”.

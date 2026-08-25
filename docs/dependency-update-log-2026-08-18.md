@@ -40,7 +40,7 @@ Each completed update was committed separately and validated with `yarn test:cov
 | `undici` | Skipped | Not a direct dependency |
 | `connect-redis` v10 | Blocked | Drops `ioredis` support and would require migration to the `redis` package |
 | `config` v5 | Blocked | ESM-only and used extensively across the codebase |
-| `@ministryofjustice/frontend` v10 | Blocked | Very large jump from `1.6.3` to `10.x` with likely widespread template breakage |
+| `@ministryofjustice/frontend` v10 | Removed (24 August 2026) | Spiked then **dropped**. Add another is app JS. See [moj-frontend.md](moj-frontend.md). |
 | Babel v8 | Blocked | Tightly coupled with Jest 30 and Babel 8 ESM migration |
 | Jest v30 | Blocked | Requires large-scale matcher alias cleanup and snapshot review |
 
@@ -56,3 +56,4 @@ Each completed update was committed separately and validated with `yarn test:cov
 - `ioredis@6` now uses Redis Serialization Protocol version 3 (RESP3) by default. It preserves legacy reply shapes, but production Redis behavior should still be confirmed in a real environment.
 - `codeceptjs@4` and `webdriverio@9` affect functional/end-to-end (e2e) tooling more than unit coverage, so their runtime behavior should be validated when those suites are next exercised.
 - `connect-redis`, `config`, Babel, and Jest remain open as larger migration tasks rather than routine dependency bumps.
+- `@ministryofjustice/frontend` was removed (24 August 2026) after a v10 spike: Add another is app JS. See [moj-frontend.md](moj-frontend.md).

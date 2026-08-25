@@ -21,6 +21,8 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not fork GOV.UK CSS; theme in `src/main/assets/scss/` only.
 - Do not rewrite GOV.UK output to silence axe. Disable the scanner rule if the conflict is inherent to the Design System.
 - Do not duplicate shared journey chrome across templates; extract a partial under `src/main/views/`.
+- Do not re-add `@ministryofjustice/frontend` or `jquery` for Add another (or any other widget). CUI never used MoJ as a design system; v10 Sass cannot share a compile with GOV.UK `@import`. See [`docs/moj-frontend.md`](../docs/moj-frontend.md).
+- Do not wrap mediation uploads in `.cui-add-another__items` (that journey is a server POST; `initAddAnother` must no-op there).
 
 ## WireMock and preview
 
@@ -44,6 +46,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not treat a SIGSEGV that then passes on a solo re-run as a product bug.
 - Do not use `yarn cichecks` as proof that accessibility ran — Pa11y is `yarn tests:a11y` (Jenkins: `yarn tests:a11y:parallel`).
 - Do not re-run full `yarn test:coverage` after a SIGSEGV-only failure that passed in isolation.
+- Do not blanket-pin `glob` 13 in `resolutions`. Nest `@jest/reporters/glob` at CommonJS `7.2.3` so Jest 29 `CoverageReporter` can call `glob.sync`.
 
 ## Git and identity
 

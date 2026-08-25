@@ -14,6 +14,7 @@ Flag as a **deviation** (and prefer not to do it unless the user explicitly acce
 | --- | --- |
 | React / Vue / Angular / Single Page Application (SPA) for Civil Citizen UI (CUI) | HMCTS **citizen** frontends are Node **Express server-side rendering (SSR)**. Angular is for **professional** users. Service Standard 11 + [HMCTS stack](https://hmcts.github.io/standards/technology-stack/) |
 | Hand-written `govuk-button` / error summary / header / table / inset-text / tabs / summary-list / tag / fieldset / task-list HTML | Service Standard 4 and 13; [look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk); [fixture HTML tests](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files). App chrome, form radios/checkboxes, date errors, details, and journey task lists now use official macros. |
+| Re-add `@ministryofjustice/frontend` or `jquery` for Add another | Second design-system package; v10 Sass cannot share GOV.UK `@import`; CUI never used MoJ as a kit. [`docs/moj-frontend.md`](../docs/moj-frontend.md) |
 | Fork `node_modules/govuk-frontend` or vendor CSS/JS | Same; upgrades and fixture tests become impossible |
 | Build GOV.UK component markup in client JS | Progressive enhancement / Frontend JS docs; assistive tech |
 | Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |
@@ -84,6 +85,7 @@ Full narrative: `docs/service-assessment.md`.
 - Fixtures: `node_modules/govuk-frontend/dist/govuk/components/<component>/fixtures.json` — `options` in, `html` out; skip `hidden` for visual tests. Suite: `yarn test:govuk-fixtures`.
 - Import JS as modules; initialise with `initAll`/`createAll`; do not ship GOV.UK JS as classic scripts to old IE.
 - Copying `govuk-frontend.min.css` by hand is for trials; production CUI uses the webpack/Sass pipeline and macros.
+- Do not add `@ministryofjustice/frontend` as a second kit (Service Standard 4 / 13). Repeatable rows: [`docs/moj-frontend.md`](../docs/moj-frontend.md).
 
 ### Frontend code under assessment (GDS) — agent reminder
 

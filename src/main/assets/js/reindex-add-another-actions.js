@@ -1,12 +1,15 @@
 /**
- * Reindex action buttons (upload/remove) inside newly added MoJ add-another rows.
- * The MoJ component updates inputs using data-name/data-id placeholders, but not button values.
- * This script mirrors that behaviour for buttons that have a `data-value` placeholder.
+ * Reindex action buttons (upload/remove) inside newly added Add another rows.
+ * `add-another.js` updates inputs from data-name/data-id placeholders, but not
+ * button values. This script does the same for buttons with a `data-value`
+ * placeholder.
+ *
+ * This is app JS. It is not Ministry of Justice (MoJ) Frontend.
  */
 (function () {
-  const ADD_BUTTON_SELECTOR = '.moj-add-another__add-button';
-  const CONTAINER_SELECTOR = '[data-module="moj-add-another"]';
-  const ITEM_SELECTOR = '.moj-add-another__item';
+  const ADD_BUTTON_SELECTOR = '.cui-add-another__add-button';
+  const CONTAINER_SELECTOR = '[data-module="cui-add-another"]';
+  const ITEM_SELECTOR = '.cui-add-another__item';
   const ACTION_BUTTON_SELECTOR = 'button[name="action"][data-value]';
 
   const reindexButtonsInItem = (itemEl, newIndex) => {
@@ -24,7 +27,7 @@
     const container = addBtn.closest(CONTAINER_SELECTOR);
     if (!container) return;
 
-    // Allow MoJ component time to clone the new item
+    // Allow add-another.js time to clone the new item
     setTimeout(() => {
       const items = container.querySelectorAll(ITEM_SELECTOR);
       if (!items || items.length === 0) return;

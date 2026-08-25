@@ -33,6 +33,8 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 | [PII logging PR check](pii-logging-check.md) | Personally identifiable information (PII) Semgrep rules for names, contact details, and financial values |
 | [Dependency update log 2026-08-21](dependency-update-log-2026-08-21.md) | Routine 7-day-cooldown pin bumps (patch/minor) and what remains gated or blocked |
 | [Dependency update log 2026-08-18](dependency-update-log-2026-08-18.md) | Earlier bulk dependency pass (completed and blocked majors) |
+| [MoJ Frontend](moj-frontend.md) | Package **removed**; Add another is app JS. What was done, why, standing rules. |
+| [MoJ Frontend v10 migration](moj-frontend-v10-migration.md) | **Stub** — CUI did not stay on MoJ v10; use [moj-frontend.md](moj-frontend.md) |
 
 See also the root [KEYCHANGES.md](../KEYCHANGES.md) for a fork-vs-upstream comparison (tooling, tests, security, documentation).
 

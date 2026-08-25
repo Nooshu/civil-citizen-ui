@@ -251,4 +251,17 @@ describe('Witness service', () => {
     expect(actualContent[0].length).toEqual(2);
   });
 
+  it('should return a default witness statement row when the form exists but arrays are missing', () => {
+    witnessSection.case_data.caseProgression.defendantUploadDocuments.witness.find(
+      (document: { documentType: string; }) => document.documentType === 'WITNESS_STATEMENT',
+    ).selected = true;
+
+    const genericForm = new GenericForm<UploadDocumentsUserForm>(new UploadDocumentsUserForm());
+
+    const actualContent = getWitnessContent(witnessSection.case_data, genericForm);
+
+    expect(actualContent.length).toEqual(1);
+    expect(actualContent[0][0].contentSections[0].data.text).toEqual('PAGES.UPLOAD_DOCUMENTS.WITNESS.STATEMENT');
+  });
+
 });

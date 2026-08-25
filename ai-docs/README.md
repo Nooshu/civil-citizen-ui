@@ -33,6 +33,8 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 | [playbooks/add-a-screen.md](playbooks/add-a-screen.md) | Adding a citizen page |
 | [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) | Preview GET is 200 but empty/`£NaN`/`Invalid DateTime`/`Created []` |
 | [playbooks/dependency-bump.md](playbooks/dependency-bump.md) | Package.json / lockfile bumps |
+| [playbooks/moj-frontend.md](playbooks/moj-frontend.md) | MoJ Frontend **removed**; do not re-add `@ministryofjustice/frontend`; Add another is app JS |
+| [playbooks/moj-frontend-v10-upgrade.md](playbooks/moj-frontend-v10-upgrade.md) | **Historical stub** — CUI did not stay on MoJ v10; use [playbooks/moj-frontend.md](playbooks/moj-frontend.md) |
 
 ## Authority and freshness
 

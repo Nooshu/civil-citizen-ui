@@ -12,7 +12,7 @@ import {buildYourStatementSection} from 'services/features/mediation/uploadDocum
 export const getYourStatementContent = (uploadDocuments: UploadDocuments, form: GenericForm<UploadDocumentsForm>): ClaimSummaryContent[][] => {
   const sectionContent = [];
 
-  const yourStatement = uploadDocuments.typeOfDocuments.find((typeOfDocument) => typeOfDocument.type === TypeOfMediationDocuments.YOUR_STATEMENT && typeOfDocument.checked === true);
+  const yourStatement = uploadDocuments.typeOfDocuments?.find((typeOfDocument) => typeOfDocument.type === TypeOfMediationDocuments.YOUR_STATEMENT && typeOfDocument.checked === true);
 
   if(yourStatement){
     sectionContent.push(documentsForYourStatement(form));
@@ -24,7 +24,7 @@ export const getYourStatementContent = (uploadDocuments: UploadDocuments, form: 
 const documentsForYourStatement = (form: GenericForm<UploadDocumentsForm>): ClaimSummaryContent[] => {
   const sectionContent = [];
 
-  if (form && form.model.documentsForYourStatement.length != 0) {
+  if (form?.model?.documentsForYourStatement?.length) {
     form.model.documentsForYourStatement?.forEach(function (typeOfDocumentYourNameSection: TypeOfDocumentYourNameSection, index: number) {
       sectionContent.push([buildYourStatementSection(typeOfDocumentYourNameSection, index, form)]);
     });

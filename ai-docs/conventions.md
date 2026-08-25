@@ -10,10 +10,12 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | --- | --- |
 | Sync `hmcts` before application changes; package-only origin push | Before changing code; Package-only updates |
 | Exact pins (all deps/resolutions), lockfile SHA (Secure Hash Algorithm) checksums, 7-day `npmMinimalAgeGate`, Renovate `rangeStrategy: pin` + `automerge-minor`, `yarn deps:check`, `yarn deps:audit`, full `yarn test:coverage` after dep bumps, segmentation violation (SIGSEGV) isolation | Dependencies |
+| Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ESM, breaks `CoverageReporter`) | Testing and coverage; [`docs/testing.md`](../docs/testing.md) |
 | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack, Design System, Web Content Accessibility Guidelines (WCAG) 2.2 AA | Service assessment (GOV.UK / HMCTS); [`docs/service-assessment.md`](../docs/service-assessment.md) |
 | Long coverage/install waits — background and poll | Long-running commands |
 | Express/TS under `src/main/`; no Nest/Prisma/Single Page Application (SPA); existing HTTP clients and draft-store | Server / application stack |
 | GOV.UK macros only; app JS/SCSS only; axe does not override GOV.UK; reuse Nunjucks partials | GOV.UK Frontend |
+| Do not re-add `@ministryofjustice/frontend` / `jquery`; Add another is `add-another.js` (`initAddAnother` also starts `initAppendRow`) | GOV.UK Frontend; [`docs/moj-frontend.md`](../docs/moj-frontend.md) |
 | After `govuk-frontend` bumps: build, fixtures, unit, a11y, spot-check | GOV.UK Frontend (upgrade checklist) |
 | Frontend performance, API/Redis cost, accessible UI | Performance and accessibility |
 | Fix TS/Jest compile errors in the same change | Testing and coverage |
@@ -22,7 +24,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | No guessed ticket keys | Git and commits |
 | Preview HTTP 200 with empty/`£NaN`/`Invalid DateTime`/`Created []` — seed CCD/Redis or add a production fallback; do not fake copy in Nunjucks | Runtime (UI Preview missing data); [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) |
 
-Procedures (not standing rules): [playbooks/add-a-screen.md](playbooks/add-a-screen.md), [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md), [playbooks/dependency-bump.md](playbooks/dependency-bump.md), [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md).
+Procedures (not standing rules): [playbooks/add-a-screen.md](playbooks/add-a-screen.md), [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md), [playbooks/dependency-bump.md](playbooks/dependency-bump.md), [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md), [playbooks/moj-frontend.md](playbooks/moj-frontend.md). [playbooks/moj-frontend-v10-upgrade.md](playbooks/moj-frontend-v10-upgrade.md) is a historical stub.
 
 Human pairing: [`docs/contributing.md`](../docs/contributing.md), [`docs/testing.md`](../docs/testing.md), [`docs/frontend.md`](../docs/frontend.md), [`docs/service-assessment.md`](../docs/service-assessment.md), [`docs/glossary.md`](../docs/glossary.md).
 

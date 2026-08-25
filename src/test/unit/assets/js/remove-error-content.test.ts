@@ -10,7 +10,7 @@ describe('remove-error-content', () => {
 
   function installDom() {
     dom = new JSDOM(
-      '<!DOCTYPE html><html><body><button class="moj-add-another__add-button">Add</button></body></html>',
+      '<!DOCTYPE html><html><body><button class="cui-add-another__add-button">Add</button></body></html>',
       {url: 'http://localhost/'},
     );
     const {window} = dom;
@@ -31,7 +31,7 @@ describe('remove-error-content', () => {
 
   it('hides error UI and removes loading/document nodes from added items', async () => {
     const container = document.createElement('div');
-    container.className = 'moj-add-another__item';
+    container.className = 'cui-add-another__item';
     container.innerHTML = `
       <div id="file-loadingContainer">Loading</div>
       <div id="docs[0][documentName]">file.pdf</div>

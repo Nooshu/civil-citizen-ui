@@ -12,7 +12,7 @@ import {
 export const getDocumentsForDocumentsReferred = (uploadDocuments: UploadDocuments, form: GenericForm<UploadDocumentsForm>): ClaimSummaryContent[][] => {
   const sectionContent = [];
 
-  const documentsReferred = uploadDocuments.typeOfDocuments.find((typeOfDocument) => typeOfDocument.type === TypeOfMediationDocuments.DOCUMENTS_REFERRED_TO_IN_STATEMENT && typeOfDocument.checked === true);
+  const documentsReferred = uploadDocuments.typeOfDocuments?.find((typeOfDocument) => typeOfDocument.type === TypeOfMediationDocuments.DOCUMENTS_REFERRED_TO_IN_STATEMENT && typeOfDocument.checked === true);
 
   if(documentsReferred){
     sectionContent.push(documentsForDocumentsReferred(form));
@@ -24,7 +24,7 @@ export const getDocumentsForDocumentsReferred = (uploadDocuments: UploadDocument
 const documentsForDocumentsReferred = (form: GenericForm<UploadDocumentsForm>): ClaimSummaryContent[] => {
   const sectionContent = [];
 
-  if (form && form.model.documentsForDocumentsReferred.length != 0) {
+  if (form?.model?.documentsForDocumentsReferred?.length) {
     form.model.documentsForDocumentsReferred?.forEach(function (documentsForDocumentsReferred: MediationTypeOfDocumentSection, index: number) {
       sectionContent.push([buildDocumentsReferredSection(documentsForDocumentsReferred, index, form)]);
     });

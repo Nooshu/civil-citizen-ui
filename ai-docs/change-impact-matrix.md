@@ -61,7 +61,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 
 ## Client JavaScript / SCSS
 
-- JS: `src/main/assets/js/` and import from `src/main/index.js` if it must ship in `main`
+- JS: `src/main/assets/js/` and import from `src/main/index.js` (or from a module that entry already imports, e.g. `append-row.js` via `add-another.js`) if it must ship in `main`
 - Cookie bundle is a **second** webpack entry: `modules/cookie/cookieConfig.ts`
 - SCSS: `src/main/assets/scss/main.scss` (+ small override files)
 - `yarn build`; unit tests under `src/test/unit/assets/js/` when behaviour is asserted
@@ -74,7 +74,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 | OIDC | `modules/oidc/`, `app/auth/user/oidc` | `src/test/unit/modules/oidc/` |
 | Helmet/CSP | `modules/helmet/` | `src/test/unit/modules/helmet/` — third-party scripts need nonce + CSP |
 | CSRF | `modules/csrf/` | eligibility/first-contact/testing-support skips |
-| Upload rate limit | `uploadRateLimitGuard.ts`, config `uploadRateLimit` | Off in `config/test.yaml` |
+| Upload rate limit | `uploadRateLimitGuard.ts`, config `uploadRateLimit` | Off in `config/test.yaml` and `config/e2eTest.yaml` |
 | PII logs | `common/logging/piiRedaction`, `server.ts` installs **first** | `.semgrep/`, `docs/pii-logging-check.md` |
 
 ## Feature flags
@@ -100,7 +100,11 @@ Exact pins for **all** direct deps and resolutions. 7-day cooldown unless securi
 
 Renovate (`.github/renovate.json`) must keep `rangeStrategy: pin` and must not extend `automerge-all`. Changing that file without `deps:check` + coverage on `renovate/*` PRs re-opens ranged automerges.
 
-Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), `@ministryofjustice/frontend` v10, Babel 8 + Jest 30 coupled. See [`docs/dependency-update-log-2026-08-21.md`](../docs/dependency-update-log-2026-08-21.md) and [`docs/dependency-update-log-2026-08-18.md`](../docs/dependency-update-log-2026-08-18.md).
+Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), Babel 8 + Jest 30 coupled. Do not re-add `@ministryofjustice/frontend` — [`docs/moj-frontend.md`](../docs/moj-frontend.md). See [`docs/dependency-update-log-2026-08-21.md`](../docs/dependency-update-log-2026-08-21.md).
+
+## Repeatable rows (Add another)
+
+Do not restore MoJ Frontend. Client clone is `src/main/assets/js/add-another.js` (`initAddAnother`) and needs `.cui-add-another__items`. Mediation uploads must **not** get that wrapper (server POST). Timeline / expenses / directions questionnaire use `initAppendRow` from the same init (`.row-container` / `.append-row`). Playbook: [playbooks/moj-frontend.md](playbooks/moj-frontend.md).
 
 ## Infrastructure / charts
 

@@ -5,7 +5,7 @@ Civil Citizen UI (CUI) uses [node-config](https://github.com/node-config/node-co
 Load order (simplified):
 
 1. `config/default.yaml`
-2. `config/{NODE_ENV}.yaml` when present (`development`, `test`, `production`, …)
+2. `config/{NODE_ENV}.yaml` when present (`development`, `test`, `e2eTest`, `production`, …)
 3. Environment variables mapped in `custom-environment-variables.yaml`
 4. Optional `NODE_CONFIG` JSON (platform)
 
@@ -18,7 +18,8 @@ There is also `config/dev.yaml` (distinct from `development.yaml`) — check whi
 | `default.yaml` | Local-oriented defaults (localhost civil-service, Identity and Access Management (IDAM), Redis, secrets that are not real) |
 | `development.yaml` | Extra local development overrides |
 | `test.yaml` | Jest: port, dummy citizen JSON Web Token (JWT), fees URL, **upload rate limit off** |
-| `production.yaml` | Deployed defaults |
+| `e2eTest.yaml` | UI Preview (`NODE_ENV=e2eTest`): **upload rate limit off** (`ioredis-mock` cannot run rate-limit-redis `.call`) |
+| `production.yaml` | Empty in git; platform / Helm injects deployed values |
 | `custom-environment-variables.yaml` | Maps process env → config keys |
 | `postcode-lookup-exceptions.json` | Postcode lookup edge cases |
 
@@ -31,7 +32,7 @@ There is also `config/dev.yaml` (distinct from `development.yaml`) — check whi
 - `useCSRFProtection` — true
 - `security.referrerPolicy` — `strict-origin-when-cross-origin` (required by Helmet setup)
 - `cookieMaxAge` — session cookie max age (ms); env `SESSION_COOKIE_MAX_AGE`
-- `uploadRateLimit` — enabled by default; 20 requests / 60 seconds on document upload URLs. Disabled in `test.yaml`.
+- `uploadRateLimit` — enabled by default; 20 requests / 60 seconds on document upload URLs. Disabled in `test.yaml` and `e2eTest.yaml`.
 
 ### Downstream services
 

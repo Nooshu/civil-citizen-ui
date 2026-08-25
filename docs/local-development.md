@@ -58,7 +58,7 @@ Opens **http://localhost:3001/ui-preview**.
 | Auth | None (`e2eTest` fake session user) | IDAM OpenID Connect (OIDC) |
 | Backends | WireMock + in-memory Redis | Real Redis + services |
 | Fixture user id | `someID` | Your IDAM user |
-| Sample claims | `1645882162449409` (awaiting defendant), plus full admit / part admit / case progression / general application (GA) (`1645882162449601`–`9604`) | Whatever exists in your stack |
+| Sample claims | `1645882162449409` (awaiting defendant), plus full admit / part admit / case progression / general application (GA) / statement of means (`1645882162449601`–`9605`) | Whatever exists in your stack |
 | Mappings | `compose/ui-preview-mappings/` | n/a |
 
 Stop with `yarn start:ui-preview:down`.

@@ -7,10 +7,10 @@ module.exports = {
     // App asset scripts may use ESM imports (e.g. postcode-lookup.js).
     '/src/main/assets/js/.+\\.js$': 'babel-jest',
     // ESM-only deps: transform so Jest can load them
-    '.*/node_modules/(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|@asamuzakjp/dom-selector|cssstyle|@csstools|parse5|jsdom|@tootallnate/once|uuid)/.+\\.(js|mjs|cjs)$': 'babel-jest',
+    '.*/node_modules/(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|@asamuzakjp/dom-selector|cssstyle|@csstools|parse5|jsdom|@tootallnate/once|uuid|govuk-frontend)/.+\\.(js|mjs|cjs)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|@asamuzakjp/dom-selector|cssstyle|@csstools|parse5|jsdom|@tootallnate/once|uuid)/)',
+    '/node_modules/(?!(@exodus/bytes|entities|html-encoding-sniffer|@asamuzakjp/css-color|@asamuzakjp/generational-cache|@asamuzakjp/dom-selector|cssstyle|@csstools|parse5|jsdom|@tootallnate/once|uuid|govuk-frontend)/)',
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
@@ -27,14 +27,13 @@ module.exports = {
   setupFilesAfterEnv: ['./jest.setup.redis-mock.js', './jest.setup.js'],
   /**
    * Count every application source file, not only those a test already imported.
-   * Webpack output, the vendored MoJ helper, and the webpack JS/SCSS entry are
-   * excluded so the report measures Civil Citizen UI (CUI) code we maintain.
+   * Webpack output and the webpack JS/SCSS entry are excluded so the report
+   * measures Civil Citizen UI (CUI) code we maintain.
    */
   collectCoverageFrom: [
     'src/main/**/*.{ts,js}',
     '!src/main/public/**',
     '!src/main/index.js',
-    '!src/main/assets/js/mojAll.js',
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/',
@@ -42,8 +41,8 @@ module.exports = {
   ],
   coverageReporters: ['json', 'lcov', 'text', 'clover', 'json-summary'],
   /**
-   * Global floor from collectCoverageFrom runs (statements ~97.9%, branches
-   * ~87.6%, functions ~98.6%, lines ~97.8% as of 21 August 2026). About one
+   * Global floor from collectCoverageFrom runs (statements ~97.8%, branches
+   * ~87.6%, functions ~98.6%, lines ~97.8% as of 25 August 2026). About one
    * percentage point of slack so machine noise does not fail CI, but a new
    * untested controller of a few hundred lines will.
    */

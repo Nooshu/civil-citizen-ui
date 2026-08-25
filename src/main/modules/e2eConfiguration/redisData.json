@@ -992,6 +992,16 @@
         "otherSupportSelected": false,
         "otherSupport": ""
       },
+      "mediationUploadDocuments": {
+        "typeOfDocuments": [
+          {
+            "id": 1,
+            "type": "YOUR_STATEMENT",
+            "checked": true,
+            "uploadDocuments": []
+          }
+        ]
+      },
       "issueDate": "2022-01-08",
       "applicant1": {
         "type": "INDIVIDUAL",

@@ -35,7 +35,6 @@ const config = [
       'src/main/public/**',
       'src/main/types/**',
       'jest.*config.js',
-      'src/main/assets/js/mojAll.js',
       '.semgrep/**',
       'node_modules/**',
     ],

@@ -30,7 +30,8 @@ Start here: **[docs/README.md](docs/README.md)**.
 | [Configuration](docs/configuration.md) | `node-config`, env vars, Redis time to live (TTL) |
 | [Citizen journeys](docs/citizen-journeys.md) | Claim, response, general application (GA), and related flows |
 | [Frontend](docs/frontend.md) | Nunjucks, GOV.UK Frontend ([latest release](https://github.com/alphagov/govuk-frontend/releases/latest)), Government Digital Service (GDS) compliance, assets, internationalisation (i18n) |
-| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, GDS assessment checklist, jQuery-free app JS (MoJ peer note) |
+| [MoJ Frontend](docs/moj-frontend.md) | Package **removed**; repeatable rows are app JS (`initAddAnother` / `initAppendRow`) |
+| [Frontend recommendations](FRONTEND-RECOMMENDATIONS.md) | Macros, progressive enhancement, fixtures, GDS assessment checklist, jQuery-free app JS |
 | [Integrations](docs/integrations.md) | civil-service, Identity and Access Management (IDAM), Redis, payments |
 | [Security and privacy](docs/security-and-privacy.md) | Cross-Site Request Forgery (CSRF), Helmet, OpenID Connect (OIDC), personally identifiable information (PII) logging |
 | [Testing](docs/testing.md) | Jest, fixtures, functional, Playwright, Pact |

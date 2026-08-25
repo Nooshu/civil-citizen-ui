@@ -1,4 +1,4 @@
-const {debounce} = require('./calculate-amount');
+import {debounce} from './calculate-amount.js';
 document.addEventListener('DOMContentLoaded', async function () {
   if (document.getElementsByClassName('civil-amount-breakdown-row')?.length) {
     addTotalClaimAmountCalculationEventListener();

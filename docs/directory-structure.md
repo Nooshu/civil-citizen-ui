@@ -76,7 +76,7 @@ Feature folders match user journeys:
 | Module | Role |
 | --- | --- |
 | `oidc/` | Login, callback, logout, public-path allowlist |
-| `nunjucks/` | View engine, filters, GOV.UK / MoJ search paths |
+| `nunjucks/` | View engine, filters, GOV.UK Frontend search path (app views + `govuk-frontend/dist`) |
 | `helmet/` | CSP and related headers |
 | `csrf/` | `@dr.pogodin/csurf` except eligibility, first-contact, testing-support |
 | `draft-store/` | ioredis client, TTLs, payment session keys, Redis seed data |
@@ -104,7 +104,7 @@ Route integration tests use `jest.functionaltest.config.js` (`yarn test:routes` 
 
 ## `config/`
 
-See [Configuration](configuration.md). Files: `default.yaml`, `development.yaml`, `dev.yaml`, `test.yaml`, `production.yaml`, `custom-environment-variables.yaml`.
+See [Configuration](configuration.md). Files: `default.yaml`, `development.yaml`, `dev.yaml` (empty), `test.yaml`, `e2eTest.yaml` (UI Preview / `NODE_ENV=e2eTest`), `production.yaml` (empty in git), `custom-environment-variables.yaml`, `postcode-lookup-exceptions.json`.
 
 ## `charts/civil-citizen-ui/`
 

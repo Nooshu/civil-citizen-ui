@@ -6,7 +6,7 @@ Output: **`src/main/public/`** (gitignored). Do not commit or hand-edit that tre
 
 | Name | Source |
 | --- | --- |
-| `main` | `src/main/index.js` (SCSS + app JS + `govuk-frontend` `initAll()`) |
+| `main` | `src/main/index.js` (SCSS + app JS + `govuk-frontend` `initAll()` then `initAddAnother()`) |
 | `cookies` | `src/main/modules/cookie/cookieConfig.ts` |
 
 Dev: `main-dev.js`. Prod: `main.[contenthash].js`. `devtool: source-map`.
@@ -17,7 +17,6 @@ Dev: `main-dev.js`. Prod: `main.[contenthash].js`. `devtool: source-map`.
 | --- | --- |
 | `app.js` | Shared app webpack bits |
 | `govukFrontend.js` | Copy GOV.UK assets plugin |
-| `ministryOfJusticeFrontend.js` | MoJ assets |
 | `scss.js` | MiniCssExtract + sass-loader **loadPaths** (required after sass-loader 17) |
 | `htmlWebpack.js` | HTML helpers for hashed tags consumed by `views/webpack/*.njk` |
 
@@ -35,3 +34,7 @@ Dockerfile runtime stage copies `src/main` from the build image and **deletes** 
 ## After GOV.UK upgrades
 
 Rebuild + `yarn test:govuk-fixtures` (`AGENTS.md` GOV.UK Frontend upgrade checklist).
+
+## Removed — do not restore
+
+`webpack/ministryOfJusticeFrontend.js` copied Ministry of Justice (MoJ) Frontend assets. That package is gone. Repeatable rows are app JS: [`docs/moj-frontend.md`](../../docs/moj-frontend.md).

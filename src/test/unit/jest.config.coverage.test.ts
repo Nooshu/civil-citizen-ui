@@ -16,7 +16,6 @@ describe('jest coverage configuration', () => {
       'src/main/**/*.{ts,js}',
       '!src/main/public/**',
       '!src/main/index.js',
-      '!src/main/assets/js/mojAll.js',
     ]));
   });
 
@@ -27,5 +26,15 @@ describe('jest coverage configuration', () => {
       functions: 97,
       lines: 97,
     });
+  });
+
+  it('nests CommonJS glob under @jest/reporters so CoverageReporter can read thresholds', () => {
+    const pkg = require('../../../package.json') as {
+      dependencies?: Record<string, string>;
+      resolutions?: Record<string, string>;
+    };
+    expect(pkg.dependencies?.glob).toBeUndefined();
+    expect(pkg.resolutions?.glob).toBeUndefined();
+    expect(pkg.resolutions?.['@jest/reporters/glob']).toBe('7.2.3');
   });
 });

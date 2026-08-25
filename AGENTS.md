@@ -129,6 +129,7 @@ Track the **latest** [GOV.UK Frontend release on GitHub](https://github.com/alph
 - Client-side UI should show/hide or populate **macro-rendered** markup rather than building GOV.UK component HTML in JavaScript
 - Prefer GOV.UK Frontend HTML, CSS, and JS over **axe** / **axe-core** when they conflict (document/disable the scanner rule; do not rewrite GOV.UK)
 - Interactivity via **app JS overrides only** (`src/main/assets/js/`); keep GOV.UK Frontend init; do not edit `node_modules/govuk-frontend`
+- **Do not add `@ministryofjustice/frontend` or `jquery`.** Repeatable rows use `src/main/assets/js/add-another.js` (`initAddAnother`, which also starts `initAppendRow` for `.append-row` markup). Handover: [`docs/moj-frontend.md`](docs/moj-frontend.md). Agent playbook: [`ai-docs/playbooks/moj-frontend.md`](ai-docs/playbooks/moj-frontend.md).
 - Theming via **app SCSS/CSS overrides only** (`src/main/assets/scss/`); do not fork vendor CSS
 - Reuse Nunjucks partials and GOV.UK macros under `src/main/views/`; **do not duplicate shared journey markup** — extract shared partials instead
 - **HTML fixture accuracy:** every component’s official macros must match the release `fixtures.json` HTML ([GOV.UK docs](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)). Suite: `yarn test:govuk-fixtures` (`src/test/unit/govukFrontend/`)
@@ -188,7 +189,7 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 - Useful commands:
   - `yarn test` — Jest unit tests
   - `yarn test:govuk-fixtures` — GOV.UK Frontend macro HTML vs release fixtures.json
-  - `yarn test:coverage` — Jest with coverage of all `src/main` TypeScript/JavaScript (not only imported files); `coverageThreshold` fails the run if the global floor drops
+  - `yarn test:coverage` — Jest with coverage of all `src/main` TypeScript/JavaScript (not only imported files); `coverageThreshold` fails the run if the global floor drops. Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ECMAScript Modules, breaks `CoverageReporter`)
   - `yarn test:integration` / `yarn test:routes` — route integration tests
   - `yarn build` — webpack assets
   - `yarn lint` — ESLint 10 flat config (`eslint.config.mjs`) + stylelint; Windows: `yarn lint:win`
@@ -229,5 +230,6 @@ Do not block a single wait on `yarn test:coverage`, large installs, or similar f
 | `docs/service-assessment.md` | What passing a GOV.UK service assessment means (mapped to CUI) |
 | `KEYCHANGES.md` | This fork compared with upstream `hmcts/civil-citizen-ui` `master` |
 | `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations (macros, progressive enhancement, fixtures, Government Digital Service (GDS) compliance, jQuery-free app JS) |
+| `docs/moj-frontend.md` | MoJ Frontend **removed**; Add another is app JS — what was done, why, standing rules |
 | `docs/README.md` | Human project documentation (architecture, journeys, testing, CI) |
 | `docs/contributing.md` | Human contributing guide (same conventions) |

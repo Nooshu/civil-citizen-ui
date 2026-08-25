@@ -264,8 +264,17 @@
       "caseProgression": {
         "claimantLastUploadDate": "2022-06-21T14:15:19",
         "defendantLastUploadDate": "2022-06-21T14:15:19",
-        "claimantDocuments": {},
-        "defendantDocuments": {},
+        "claimantUploadDocuments": {
+          "disclosure": [],
+          "witness": [
+            { "documentType": "WITNESS_STATEMENT", "selected": true },
+            { "documentType": "WITNESS_SUMMARY", "selected": false },
+            { "documentType": "NOTICE_OF_INTENTION", "selected": false },
+            { "documentType": "DOCUMENTS_REFERRED", "selected": false }
+          ],
+          "expert": [],
+          "trial": []
+        },
         "helpFeeReferenceNumberForm": {
           "option": "yes",
           "referenceNumber": "HWF-A1B-23C"

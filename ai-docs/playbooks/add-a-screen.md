@@ -36,7 +36,7 @@ Register: import and invoke in `src/main/routes/routes.ts`.
 - GOV.UK macros only for components (`govukButton`, `govukInput`, `govukErrorSummary`, …) — Service Standard 4/13; see [`docs/service-assessment.md`](../../docs/service-assessment.md)
 - Reuse `views/macro/` and claim-details templates
 - CSRF include on POST forms
-- Client JS must bind to **macro-rendered** markup (`src/main/assets/js/`)
+- Client JS must bind to **macro-rendered** markup (`src/main/assets/js/`). Repeatable rows: one init (`initAddAnother` from `index.js`) and two markup contracts — `cui-add-another*` plus `.cui-add-another__items` (client clone) or `.row-container` / `.append-row` (`initAppendRow`). Do not add `@ministryofjustice/frontend` ([`docs/moj-frontend.md`](../../docs/moj-frontend.md)).
 
 ## 6. i18n
 

@@ -1,11 +1,10 @@
 /**
- * This is a workaround for https://github.com/ministryofjustice/moj-frontend/issues/343.
- * The logic below may have to be adjusted if future repeated/added items have different error classes.
- * Future CCUI pages using MoJ add-another component will automatically benefit from this logic
- * Once the issue above addressed, MoJ library can be upgraded and this workaround can be discarded.
+ * Clears error markup when a new Add another row is cloned.
+ * Clone lives in add-another.js; this observer still strips loading/file nodes
+ * on case-progression uploads.
  */
 
-if (document.getElementsByClassName('moj-add-another__add-button')) {
+if (document.getElementsByClassName('cui-add-another__add-button')) {
   const mutationObserver = new MutationObserver((mutations) => {
     const newBlock = mutations
       .filter((mutation) => mutation.type === 'childList')

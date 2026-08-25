@@ -2,7 +2,7 @@
 
 ## Source of truth: GOV.UK Frontend
 
-Longer recommendations from this fork (macros, progressive enhancement, fixture suite, jQuery-free app JS with MoJ peer note, Government Digital Service (GDS) compliance): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
+Longer recommendations from this fork (macros, progressive enhancement, fixture suite, jQuery-free app JS, Government Digital Service (GDS) compliance): [`FRONTEND-RECOMMENDATIONS.md`](../FRONTEND-RECOMMENDATIONS.md).
 
 Use the **latest** [GOV.UK Frontend release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest). Pin that **exact** version in `package.json` (see `dependencies.govuk-frontend`; never use ranges). Upgrade with the checklist in [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend.
 
@@ -22,7 +22,7 @@ Canonical rules: [`AGENTS.md`](../AGENTS.md) — GOV.UK Frontend. Service assess
 - If axe disagrees with GOV.UK output, GOV.UK wins; disable the scanner rule rather than forking markup
 - Extract shared journey chrome instead of copying HTML
 
-Ministry of Justice (MoJ) Frontend (`@ministryofjustice/frontend`, currently a 1.x pin) is used where this service already depends on it. Do not jump major versions without a dedicated user interface (UI) migration.
+Ministry of Justice (MoJ) Frontend is **not** a dependency. Repeatable rows use app JS ([`src/main/assets/js/add-another.js`](../src/main/assets/js/add-another.js)) — `initAddAnother` for `cui-add-another*` rows and `initAppendRow` for `.append-row` / `.row-container`. Do not re-add `@ministryofjustice/frontend`. Handover: [moj-frontend.md](moj-frontend.md). Agent playbook: [`ai-docs/playbooks/moj-frontend.md`](../ai-docs/playbooks/moj-frontend.md).
 
 ## Government Digital Service (GDS) compliance — what assessors expect from frontend code
 
@@ -33,7 +33,7 @@ A service assessment that examines the frontend is not a visual preference revie
 1. **Design System first** — Implement published [GOV.UK Design System](https://design-system.service.gov.uk/) components and patterns via official Nunjucks macros, not hand-written `govuk-*` HTML.
 2. **Current Frontend package** — Depend on the [latest GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin). After each bump: `yarn build`, `yarn test:govuk-fixtures`, relevant Jest, and `yarn tests:a11y` where practical.
 3. **Prove HTML fidelity** — `yarn test:govuk-fixtures` must pass. Assessors can ask how you know markup matches the Design System; the fixture suite is the answer ([official fixture guidance](https://frontend.design-system.service.gov.uk/testing-your-html/#using-the-html-test-files)).
-4. **Progressive enhancement** — Usable server-rendered pages; client JS in `src/main/assets/js/` only enhances macro-rendered DOM; call `initAll()` from `govuk-frontend`.
+4. **Progressive enhancement** — Usable server-rendered pages; client JS in `src/main/assets/js/` only enhances macro-rendered DOM; call `initAll()` from `govuk-frontend`, then `initAddAnother()` (which also starts `initAppendRow`).
 5. **Accessibility** — Meet **WCAG 2.2 AA**. Preserve skip link, labels, error summaries, focus order, and keyboard behaviour from macros. Run Pa11y (`yarn tests:a11y`). Do not rewrite GOV.UK to quiet axe.
 6. **Citizen stack** — Keep Express + Nunjucks server-side rendering. Do not introduce a citizen Single Page Application (SPA); that conflicts with [HMCTS citizen frontend practice](https://hmcts.github.io/standards/practices/frontend.html) and Service Standard 11/13.
 7. **Content and i18n** — User-visible copy follows the [GOV.UK style guide](https://www.gov.uk/guidance/style-guide); English and Welsh keys move together.
@@ -53,7 +53,7 @@ This repository alone cannot prove the whole assessment (research, assisted digi
 | `src/main/views/error.njk` / `not-found.njk` / `unauthorised.njk` | Error states |
 | `src/main/views/service-unavailable.njk` | LaunchDarkly shutter |
 
-Nunjucks is configured in `src/main/modules/nunjucks/index.ts`. Search paths include app `views/`, `govuk-frontend/dist`, and `@ministryofjustice/frontend`. Filters include currency, dates, and translation helpers. Dynatrace and Google Tag Manager (GTM) snippets are injected with Content Security Policy (CSP) nonces.
+Nunjucks is configured in `src/main/modules/nunjucks/index.ts`. Search paths include app `views/` and `govuk-frontend/dist`. Filters include currency, dates, and translation helpers. Dynatrace and Google Tag Manager (GTM) snippets are injected with Content Security Policy (CSP) nonces.
 
 ## Internationalisation (i18n)
 
@@ -72,8 +72,8 @@ LaunchDarkly `enableWelshForMainCase` gates Welsh for the main claim where requi
 Webpack entry `src/main/index.js`:
 
 1. Imports `assets/scss/main.scss`
-2. Imports app helpers (postcode lookup, add-another rows, amount calculators, cookie banner, language toggle, …)
-3. Calls `initAll()` from `govuk-frontend`
+2. Imports app helpers (postcode lookup, amount calculators, cookie banner, language toggle, …) and `initAddAnother` from `add-another.js` (which also starts `initAppendRow` — `append-row.js` is **not** a separate entry import)
+3. Calls `initAll()` from `govuk-frontend`, then `initAddAnother()`
 
 **Do not** edit `node_modules/govuk-frontend`. App behaviour belongs in `src/main/assets/js/`. Prefer showing/hiding macro-rendered markup over building GOV.UK HTML in JS.
 

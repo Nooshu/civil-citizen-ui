@@ -32,7 +32,9 @@ The harness in `src/test/a11y/a11y.mock-test.ts` serves HTML from `src/test/util
 
 Most **route** tests import `{app}` from `src/main/app` and use supertest. That boots Express, Nunjucks, and Redis mocks — suites can take several seconds under coverage. **Service** tests should mock `draftStoreService` and avoid importing `app` when they do not need HTTP.
 
-Coverage: `yarn test:coverage` uses `--maxWorkers=8` (memory). `jest.config.js` sets `collectCoverageFrom` to `src/main/**/*.{ts,js}` (excluding webpack output, `src/main/index.js`, and vendored `mojAll.js`) so untested files count as zero, not as missing from the report. `coverageThreshold` is a global floor; adding an untested controller that pulls the total under the floor fails the run. Sonar reads `coverage/lcov.info` (`sonar-project.properties`).
+Coverage: `yarn test:coverage` uses `--maxWorkers=8` (memory). `jest.config.js` sets `collectCoverageFrom` to `src/main/**/*.{ts,js}` (excluding webpack output and `src/main/index.js`) so untested files count as zero, not as missing from the report. `coverageThreshold` is a global floor; adding an untested controller that pulls the total under the floor fails the run. Sonar reads `coverage/lcov.info` (`sonar-project.properties`).
+
+Jest 29 `@jest/reporters` `CoverageReporter` calls CommonJS `glob.sync` when checking that floor. Glob 13 is ECMAScript Modules (ESM) and has no CommonJS `sync`. Do **not** pin a blanket `glob` 13 in `resolutions`. This repo nests `@jest/reporters/glob` at `7.2.3` instead. That CommonJS glob 7 pulls deprecated `inflight` (toolchain only; listed in `yarn-audit-known-issues`). Guard: `src/test/unit/jest.config.coverage.test.ts`.
 
 ### Node 24 / SIGSEGV
 
@@ -40,7 +42,7 @@ All Jest npm scripts use `node --no-sparkplug ./node_modules/jest/bin/jest.js`. 
 
 ## GOV.UK fixtures
 
-Compares official macros rendered through CUI’s Nunjucks to `govuk-frontend` `fixtures.json`. Must stay green after Frontend upgrades.
+Compares official macros rendered through CUI’s Nunjucks to `govuk-frontend` `fixtures.json` — **692** HTML assertions across **37** components (including `hidden` fixtures; those are HTML checks, not visual regression). Must stay green after Frontend upgrades.
 
 ## Integration / routes
 

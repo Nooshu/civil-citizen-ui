@@ -8,6 +8,7 @@ Load order: `default.yaml` → `config/{NODE_ENV}.yaml` → env from `custom-env
 | `development.yaml` | Overlay for `NODE_ENV=development` |
 | `dev.yaml` | **Empty.** Do not assume it loads. |
 | `test.yaml` | Dummy citizen JWT, `idamUrl`, **uploadRateLimit off** |
+| `e2eTest.yaml` | UI Preview / mocked functional: **uploadRateLimit off** (`ioredis-mock` has no `.call` for rate-limit-redis) |
 | `production.yaml` | **Empty** in git; platform/Helm injects |
 | `custom-environment-variables.yaml` | **Required** for any setting that differs per env |
 | `postcode-lookup-exceptions.json` | OS Places edge cases |

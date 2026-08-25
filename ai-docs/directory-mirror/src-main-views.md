@@ -29,7 +29,7 @@ The claimant-response settle-admitted heading uses `Claim.amountDefendantAdmitte
 
 Typography/layout utilities (`govuk-heading-*`, `govuk-grid-*`, `govuk-!-*-*`) are OK. Component **structure** is not — use `govukTable`, `govukInsetText`, `govukButton`, `govukHeader`, `govukTabs`, `govukSummaryList`, `govukTag`, `govukInput`, `govukRadios`, `govukTaskList`, `govukErrorMessage`, `govukDetails`, `govukDateInput`.
 
-`govuk-grid-column-*` only belongs **inside** a `govuk-grid-row`. Columns have 15px gutters that only cancel against the row’s negative margin. Nested columns (for example `two-thirds` wrapping `one-third` on `macro/employer.njk` / `who-employs-you.njk`) indent inputs relative to the heading. Repeating rows keep `.row-container` for `append-row.js`; width comes from one page-level `govuk-grid-column-two-thirds`.
+`govuk-grid-column-*` only belongs **inside** a `govuk-grid-row`. Columns have 15px gutters that only cancel against the row’s negative margin. Nested columns (for example `two-thirds` wrapping `one-third` on `macro/employer.njk` / `who-employs-you.njk`) indent inputs relative to the heading. Repeatable rows: `cui-add-another*` plus `.cui-add-another__items` (client clone) or `.row-container` / `.append-row` (`initAppendRow`). Width comes from one page-level `govuk-grid-column-two-thirds`. Do not add `.cui-add-another__items` on mediation uploads (server POST).
 
 ## `features/`
 
@@ -43,7 +43,7 @@ Nunjucks snippets that inject hashed `main` / CSS tags (`js.njk`, `css.njk`, tem
 
 ## Client JS contract
 
-Pages that need postcode lookup, add-another rows, or calculators must render the **macro HTML those scripts already bind to**. Do not invent parallel IDs. Scripts are listed in [src-main-assets.md](src-main-assets.md).
+Pages that need postcode lookup, repeatable rows, or calculators must render the **macro HTML those scripts already bind to**. Two row contracts: `cui-add-another*` + `__items`, or `.row-container` / `.append-row`. Do not invent parallel IDs. Scripts are listed in [src-main-assets.md](src-main-assets.md).
 
 ## i18n in templates
 

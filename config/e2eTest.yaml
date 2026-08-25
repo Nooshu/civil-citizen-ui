@@ -1,0 +1,5 @@
+# NODE_ENV=e2eTest (UI Preview and mocked functional tests).
+# ioredis-mock cannot run the Lua scripts rate-limit-redis uses; keep the guard off here.
+# Production still uses default.yaml (enabled).
+uploadRateLimit:
+  enabled: false

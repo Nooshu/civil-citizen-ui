@@ -72,14 +72,16 @@ If the same block appears on two journeys, extract under `src/main/views/macro/`
 1. Server renders complete, usable HTML via Nunjucks macros.
 2. App JS in `src/main/assets/js/` **enhances** that markup (show/hide, populate selects, calculators, prevent double submit).
 3. Forms must work without JavaScript where the journey allows a full POST.
-4. Always call `initAll()` from `govuk-frontend` after app imports (`src/main/index.js`).
+4. Always call `initAll()` from `govuk-frontend` after app imports (`src/main/index.js`), then `initAddAnother()` (which also starts `initAppendRow`; `append-row.js` is not a separate entry import).
 
 Examples already in the tree:
 
 | Module | Enhancement |
 | --- | --- |
 | `postcode-lookup.js` | AJAX address lookup; Find address remains a normal `govukButton` submit if JS fails |
-| `append-row.js` / `reindex-add-another-actions.js` | Clone macro-rendered row markup; bind to `.row-container` / `.append-row` |
+| `append-row.js` | Clone `.row-container` / `.append-row` markup (`initAppendRow`, started from `initAddAnother`) |
+| `add-another.js` | Client clone for evidence / court orders / case-progression uploads (`cui-add-another*` + `.cui-add-another__items`); also starts `initAppendRow` |
+| `reindex-add-another-actions.js` | Reindex `action[add\|remove][…]` names after a client clone |
 | `calculate-amount.js` / `calculate-total-amount.js` / `calculate-length-repayment.js` | Live totals / repayment length without a round-trip |
 | `disable-submit.js` | Prevent double POST |
 | `select-toggle.js` | Show/hide panels from a select |
@@ -115,25 +117,22 @@ Renovate / Dependabot GOV.UK bumps are incomplete until those checks pass.
 
 ---
 
-## 5. App JavaScript is jQuery-free (MoJ peer remains)
+## 5. App JavaScript is jQuery-free (MoJ Frontend is not a dependency)
 
-**Done:** Every app-owned module under `src/main/assets/js/` uses native DOM / `fetch` APIs. `postcode-lookup.js` and `select-toggle.js` no longer import jQuery.
-
-**Still required:** `jquery@4.0.0` stays pinned because the vendored MoJ Frontend bundle (`mojAll.js`) and `@ministryofjustice/frontend`’s peerDependency expect global `$`. `src/main/index.js` imports jQuery **only** to set `window.$` / `window.jQuery` before `mojAll`.
+**Done:** App modules under `src/main/assets/js/` use native DOM / `fetch`. `jquery`, vendored `mojAll.js`, and `@ministryofjustice/frontend` are **removed**. Repeatable evidence / court-order / upload rows use [`src/main/assets/js/add-another.js`](src/main/assets/js/add-another.js) and the `cui-add-another*` markup prefix. Timeline, expenses, employers, and directions questionnaire use the same `initAddAnother()` call via `initAppendRow` (`.row-container` / `.append-row`). A 10.0.1 pin was built first; package Sass cannot load beside GOV.UK `@import`, so the package was dropped instead of kept as a second design system. Handover: [`docs/moj-frontend.md`](docs/moj-frontend.md).
 
 ### Recommendations
 
 1. **No new jQuery in app modules.** Progressive-enhancement scripts use `document.querySelector` / `querySelectorAll`, `addEventListener`, `fetch`, and GOV.UK Frontend APIs only.
-2. **Do not reintroduce jQuery imports** in `postcode-lookup.js`, `select-toggle.js`, or other app files. Keep the sole import in `src/main/index.js` next to `mojAll`.
-3. **Do not drop `jquery` from `package.json` while `mojAll.js` still runs.** Removing the pin breaks MoJ “add another” and the `mojAll` smoke test. A dedicated MoJ Frontend upgrade/replacement is the path to removing the dependency.
-4. **Do not expand MoJ Frontend coupling** to replace jQuery with another large client library. Stay on the existing `@ministryofjustice/frontend` pin unless there is a dedicated UI migration.
-5. **Keep webpack ESM.** App asset JS should remain importable modules (`import` / `export`), consistent with the rest of the frontend pipeline.
+2. **Do not reintroduce jQuery** or `@ministryofjustice/frontend` / `moment` to restore Add another.
+3. **Do not expand MoJ coupling** (no MoJ header, date picker, filters). GOV.UK Frontend is the design system.
+4. **Keep webpack ESM.** App asset JS should remain importable modules (`import` / `export`).
 
 ---
 
 ## 6. Client JavaScript and SCSS hygiene
 
-- App behaviour lives only in `src/main/assets/js/`. Import new files from `src/main/index.js` or they will not ship in `main`.
+- App behaviour lives only in `src/main/assets/js/`. Import new files from `src/main/index.js` **or from a module that entry already imports** (for example `append-row.js` via `add-another.js`) or they will not ship in `main`.
 - Cookie config is a **second** webpack entry (`modules/cookie/cookieConfig.ts` → `cookies` bundle).
 - Pair every asset JS module with a unit test (`src/test/unit/assets/js/`). This fork has **13 / 13** modules covered (upstream had one).
 - SCSS: `main.scss` imports GOV.UK Frontend; overrides in app files only. Keep `sass-loader` `loadPaths` so GOV.UK Sass resolves after sass-loader 17.
@@ -215,7 +214,7 @@ Use this as the baseline; new work should extend it, not undo it.
 3. Tabs, tables, summary lists/cards, Find address, details, radios fieldsets, date errors, task lists on official macros
 4. `yarn test:govuk-fixtures` (**692** assertions / **37** components)
 5. Progressive enhancement kept (postcode `fetch`, row cloning, calculators) on macro DOM
-6. All **13** asset JS modules unit-tested; app modules are jQuery-free; `jquery@4` remains only as the MoJ Frontend peer for `mojAll.js`
+6. All **13** asset JS modules unit-tested; app modules are jQuery-free; Add another is app JS ([`docs/moj-frontend.md`](docs/moj-frontend.md))
 7. UI Preview catalogue for offline GOV.UK review without Identity and Access Management (IDAM)
 8. Documented missing-data playbook so empty preview pages get seeds/fallbacks, not fake template copy
 9. Accessibility policy: GOV.UK over axe; real Pa11y command (not a stub in `cichecks`)
@@ -233,5 +232,7 @@ Use this as the baseline; new work should extend it, not undo it.
 | [`KEYCHANGES.md`](KEYCHANGES.md) | Fork vs upstream story |
 | [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md) | Empty / broken preview pages |
 | [`ai-docs/playbooks/govuk-frontend-upgrade.md`](ai-docs/playbooks/govuk-frontend-upgrade.md) | Pin-bump checklist |
+| [`docs/moj-frontend.md`](docs/moj-frontend.md) | MoJ Frontend removed; what was done, why, standing rules |
+| [`ai-docs/playbooks/moj-frontend.md`](ai-docs/playbooks/moj-frontend.md) | Agent playbook (do not re-add `@ministryofjustice/frontend`) |
 | [`ai-docs/directory-mirror/src-main-views.md`](ai-docs/directory-mirror/src-main-views.md) | Views / macros traps |
 | [`ai-docs/directory-mirror/src-main-assets.md`](ai-docs/directory-mirror/src-main-assets.md) | App JS / SCSS |

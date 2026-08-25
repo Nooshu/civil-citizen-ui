@@ -115,6 +115,8 @@ Canonical: [GOV.UK Design System](https://design-system.service.gov.uk/). [Get s
 
 CUI is on a **service.gov.uk** style host, so it **must look like GOV.UK**: design principles, Design System patterns, [content style guide](https://www.gov.uk/guidance/style-guide), phase banner in alpha/beta, GOV.UK Frontend for typeface and components. If research shows a pattern fails users, you may adapt or create one — but an assessment will demand **evidence**. Do not use the crown/logotype/Government Digital Service (GDS) Transport/brand colours on something that is **not** GOV.UK. Official: [Making your service look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk).
 
+GOV.UK Frontend is the **only** design-system package. Ministry of Justice (MoJ) Frontend (`@ministryofjustice/frontend`) is **not** a dependency. Repeatable rows are app JS — [moj-frontend.md](moj-frontend.md).
+
 ### GOV.UK Frontend (how we implement it)
 
 Canonical: [GOV.UK Frontend docs](https://frontend.design-system.service.gov.uk/). Track the **latest** [release on GitHub](https://github.com/alphagov/govuk-frontend/releases/latest) and pin that exact version in `package.json`. Install via the Node package; use **Nunjucks macros** (not copied precompiled HTML in production); Dart Sass; `initAll` / `createAll` with `type="module"`; do not run GOV.UK JS in unsupported browsers without the `js-enabled` / `govuk-frontend-supported` snippet. CSP must allow that snippet (hash or nonce) — CUI already uses nonces.

@@ -46,8 +46,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
   }
 
   it('clones a row, clears values, increments indexes, and strips errors', () => {
@@ -95,8 +95,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
 
     document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
 
@@ -125,8 +125,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
 
     document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
 
@@ -153,8 +153,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
 
     document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));
 
@@ -189,8 +189,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
 
     const removeButtons = document.querySelectorAll('.remove-row');
     expect(() => {
@@ -214,8 +214,8 @@ describe('append-row', () => {
       <button type="button" class="append-row">Add another</button>
     `;
      
-    require(scriptPath);
-    document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    const {initAppendRow} = require(scriptPath);
+    initAppendRow(document);
 
     expect(() => {
       document.querySelector('.append-row')!.dispatchEvent(new dom.window.MouseEvent('click', {bubbles: true}));

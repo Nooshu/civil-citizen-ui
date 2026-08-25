@@ -9,8 +9,29 @@ const {Logger} = require('@hmcts/nodejs-logging');
 const logger = Logger.getLogger('uploadRateLimitGuard');
 
 interface RedisRateLimitClient {
-  call: (command: string, ...args: string[]) => Promise<RedisReply>;
+  call?: (command: string, ...args: string[]) => Promise<RedisReply>;
+  [command: string]: unknown;
 }
+
+/**
+ * Runs a Redis command on the draft-store client.
+ *
+ * @remarks
+ * Production uses ioredis `.call`. UI Preview / e2eTest uses `ioredis-mock`, which has no `.call`
+ * (rate-limit-redis then fails store init and POSTs to upload URLs 500). Fall back to the command
+ * name as a method (`GET`, `INCR`, `SCRIPT`, …) when `.call` is missing.
+ */
+export const sendRedisCommand = (redisClient: RedisRateLimitClient, command: string, ...args: string[]): Promise<RedisReply> => {
+  if (typeof redisClient.call === 'function') {
+    return redisClient.call(command, ...args);
+  }
+  const method = command.toLowerCase();
+  const fn = redisClient[method];
+  if (typeof fn === 'function') {
+    return (fn as (...commandArgs: string[]) => Promise<RedisReply>)(...args);
+  }
+  return Promise.reject(new Error(`Redis client cannot run ${command}`));
+};
 
 const buildRateLimitKey = (req: AppRequest): string => {
   if (req.session?.user?.id) {
@@ -46,7 +67,7 @@ export const createUploadRateLimitGuard = (
   keyGenerator: req => buildRateLimitKey(req as AppRequest),
   store: new RedisStore({
     prefix: 'upload-rate-limit:',
-    sendCommand: (command: string, ...args: string[]) => redisClient.call(command, ...args),
+    sendCommand: (command: string, ...args: string[]) => sendRedisCommand(redisClient, command, ...args),
   }),
   standardHeaders: true,
   legacyHeaders: false,

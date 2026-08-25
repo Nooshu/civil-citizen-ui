@@ -296,7 +296,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <div data-module="moj-add-another">
+          <div>
             <form method="post" novalidate>
 
   <input type="hidden" name="_csrf" value="">
@@ -335,15 +335,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-declared">
 
                 <div
-                  class="govuk-form-group ">
+                  class="govuk-form-group "
+                  data-module="cui-add-another">
+                  <div class="cui-add-another__items">
 
 
 
 
 
-  <fieldset class="govuk-fieldset moj-add-another__item govuk-!-margin-bottom-6">
+  <fieldset class="govuk-fieldset cui-add-another__item govuk-!-margin-bottom-6">
 
-  <legend class="govuk-fieldset__legend moj-add-another__title govuk-fieldset__legend--m">
+  <legend class="govuk-fieldset__legend cui-add-another__title govuk-fieldset__legend--m">
 
     Court order
 
@@ -397,7 +399,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-                  <div class="moj-button-action">
+                  </div>
+                  <div class="cui-add-another__actions">
 
 
 
@@ -406,7 +409,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<button type="button" class="govuk-button govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-1" data-module="govuk-button" id="add-another-court-order">
+<button type="button" class="govuk-button govuk-button--secondary cui-add-another__add-button govuk-!-margin-bottom-1" data-module="govuk-button" id="add-another-court-order">
   Add another court order
 </button>
 

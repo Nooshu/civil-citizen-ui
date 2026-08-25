@@ -38,4 +38,15 @@ describe('yourStatementService', () => {
     expect(result[0]).toHaveLength(1);
     expect(result[0][0].contentSections.some(s => s.data?.text === 'PAGES.MEDIATION.UPLOAD_DOCUMENTS.TITLE.YOUR_STATEMENT')).toBe(true);
   });
+
+  it('should return a default section when the form exists but statement arrays are missing', () => {
+    const uploadDocuments = new UploadDocuments([
+      new TypeOfDocuments(1, TypeOfMediationDocuments.YOUR_STATEMENT, true, []),
+    ]);
+    const form = new GenericForm(new UploadDocumentsForm());
+
+    const result = getYourStatementContent(uploadDocuments, form);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toHaveLength(1);
+  });
 });
