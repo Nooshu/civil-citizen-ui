@@ -90,7 +90,8 @@ describe('Claim TaskList page', () => {
         .set('Cookie', ['lang=en'])
         .expect((res) => {
           expect(res.status).toBe(200);
-          expect(res.text).toContain(t('PAGES.CLAIM_TASK_LIST.PAGE_TITLE'));
+          expect(res.body.view).toBe('features/claim/task-list');
+          expect(res.body.options.pageTitle).toBe('PAGES.CLAIM_TASK_LIST.PAGE_TITLE');
         });
     });
 
@@ -108,7 +109,7 @@ describe('Claim TaskList page', () => {
         .query({lang: 'en'})
         .expect((res) => {
           expect(res.status).toBe(200);
-          expect(res.text).toContain(t('PAGES.CLAIM_TASK_LIST.APPLICATION_INCOMPLETE', {lng: 'en'}));
+          expect(res.body.options.title).toBe(t('PAGES.CLAIM_TASK_LIST.APPLICATION_INCOMPLETE', {lng: 'en'}));
         });
     });
 

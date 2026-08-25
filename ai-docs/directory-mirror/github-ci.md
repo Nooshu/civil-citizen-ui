@@ -9,7 +9,7 @@
 | `workflows/update-readme-e2e-tables.yml` | Auto-commit README E2E tables on `master` |
 | `workflows/update-readme-ftGroup-tables.yml` | Functional group tables |
 | `CODEOWNERS` | `*` `@hmcts/civil`; charts/infra admins as listed |
-| `renovate.json` | `rangeStrategy: pin`; npm `minimumReleaseAge` 7 days; HMCTS `automerge-minor` (not `automerge-all`). Majors and `govuk-frontend` do not automerge. Security alerts skip the age gate. Do not re-add ranged bumps or major automerge. |
+| `renovate.json` | `rangeStrategy: pin`; npm `minimumReleaseAge` 7 days; HMCTS `automerge-minor` (not `automerge-all`) plus `cnp-jenkins-library`. Majors and `govuk-frontend` do not automerge. Security alerts skip the age gate. Do not re-add ranged bumps or major automerge. |
 | `PULL_REQUEST_TEMPLATE.md`, `CONTRIBUTING.md`, `ISSUE_TEMPLATE.md` | Humans; do not invent JIRA keys in PR titles |
 
 ## Jenkins (repo root)

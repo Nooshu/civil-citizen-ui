@@ -69,7 +69,7 @@ Scripts:
 - `yarn test:fullfunctional` → full suite helper (legacy `yarn test:e2e` aliases this)
 - `yarn test:payments` — `@ui-payments`
 
-Diagnostics published by Jenkins: [functional-test-diagnostics.md](functional-test-diagnostics.md).
+Diagnostics published by Jenkins: [functional-test-diagnostics.md](functional-test-diagnostics.md). Scenario inventory: [functional-test-migration-matrix.md](functional-test-migration-matrix.md) and `docs/functional-test-scenario-classification.csv` (`yarn test:generate:functional-classification`; `yarn test:functional-classification` is the stale-CSV check in `cichecks`).
 
 ### Mocked / reduced-stack
 
@@ -115,6 +115,8 @@ Also run when relevant:
 - `yarn test:govuk-fixtures` after GOV.UK or Nunjucks/macro changes
 - `yarn test:integration` after middleware/route wiring changes
 - `yarn wiremock:validate` and `yarn test:wiremock-contracts` after chart mappings change
+- `yarn test:functional-classification` after adding, removing, or renaming Codecept scenarios
+- `yarn test:civil-shared-import-consumers` after editing Camunda/CCD import wrappers in `bin/`
 - `yarn build` after webpack, SCSS, or client JS changes
 
 Server TypeScript changes should not be left with `tsc` / Jest transform errors (`AGENTS.md` Testing and coverage).

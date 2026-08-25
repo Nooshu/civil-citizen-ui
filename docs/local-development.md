@@ -89,7 +89,7 @@ Then browse https://localhost:3001.
 | `yarn test:integration` | Route integration tests (alias `test:routes`) |
 | `yarn deps:check` | Exact pins + lockfile SHA checksums |
 | `yarn deps:audit` | `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean |
-| `yarn cichecks` | install, deps:check, deps:audit, build, lint, WireMock validate + contracts, coverage, routes |
+| `yarn cichecks` | install, deps:check, deps:audit, build, lint, civil-shared import consumers, WireMock validate + contracts, functional-test classification, coverage, routes |
 
 Jest unit/coverage scripts pass `--no-sparkplug` because Sparkplug + Jest’s `vm` module can SIGSEGV Node 24 workers. Do not move that flag into `NODE_OPTIONS` (Node rejects V8 flags there). Details: [AGENTS.md](../AGENTS.md) and [Testing](testing.md).
 

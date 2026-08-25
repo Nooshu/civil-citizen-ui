@@ -2,7 +2,7 @@
 
 This fork is still His Majesty’s Courts and Tribunals Service (HMCTS) **Civil Citizen UI** (CUI): Express 5, TypeScript, Nunjucks, GOV.UK Frontend. Citizens still issue and respond to money claims through the same journeys. I did this work alone. What changed is how the service is **seen, tested, secured, documented, and kept current**.
 
-Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `3bb804c4f9`. This tree is `master` at `d7419c2888`. The extra work is on the order of **621 files** and **71 commits** ahead of `hmcts/master`. Upstream is **one commit ahead** (`DTSCCI-5978`, Civil Service Camunda import scripts) — I have not rebased onto that commit yet. Application TypeScript and JavaScript (excluding webpack output) is **73,118** lines as of 25 August 2026 versus **71,039** on that upstream SHA (**+2.9%**). Unit-test extras versus that SHA were **+15%** `it()` cases at the last file grep (see the numbers table). The product was not rewritten.
+Upstream `hmcts/civil-citizen-ui` `master` at this comparison is `5351e5b603`. This tree is rebased onto that SHA: **0 behind**. The extra work is on the order of **681 files**. Application TypeScript and JavaScript (excluding webpack output) is **73,303** lines as of 25 August 2026 versus **72,153** on that upstream SHA (**+1.6%**). Unit-test extras versus that SHA are **+23%** `it()` cases (see the numbers table). The product was not rewritten.
 
 The rest of this note is the story of that gap. Counts and pins sit at the end if you want receipts.
 
@@ -62,9 +62,9 @@ Pa11y 9 scans `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`
 
 Upstream `yarn test` echoes a Jest config path and executes **zero** tests. This tree runs the unit suite: **9,050** tests in **1,047** suites (25 August 2026 `yarn test:coverage`), via `node --no-sparkplug` on the Jest binary so Node 24 workers do not segmentation-fault (SIGSEGV) (Sparkplug plus Jest’s `vm` module). Coverage still uses `--maxWorkers=8` for memory.
 
-Those tests are not a single-folder spike. Versus upstream at `3bb804c4f9` there were **203** extra unit files (**+24%**) and **1,444** extra `it()` cases (**+23%**) at that compare (a grep of `it()`, not Jest’s full test count): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output is **97.81%** statements, **87.59%** branches, **98.58%** functions, **97.75%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric. Jest 29 `CoverageReporter` needs CommonJS `glob.sync`; this tree nests `@jest/reporters/glob` at `7.2.3` so a glob 13 (ECMAScript Modules) hoist cannot fail the run after green suites.
+Those tests are not a single-folder spike. Versus upstream at `5351e5b603` there are **203** extra unit files (**+24%**) and **1,478** extra `it()` cases (**+23%**) (a grep of `it()`, not Jest’s full test count): 82 in forms and validators, 80 in journey services, 12 in client JavaScript, the rest in modules, routes, HTTP clients, preview catalogue, and the `govukTaskList` item filter. **All thirteen** client JS modules now have a paired unit file (upstream had one). Latest `yarn test:coverage` on every `src/main` TypeScript and JavaScript file except webpack output is **97.81%** statements, **87.59%** branches, **98.58%** functions, **97.75%** lines, with a continuous integration (CI) floor of **97 / 86 / 97 / 97**. Journey services sit in the mid-90s to 100% on statements and lines. Branches remain the hardest metric. Jest 29 `CoverageReporter` needs CommonJS `glob.sync`; this tree nests `@jest/reporters/glob` at `7.2.3` so a glob 13 (ECMAScript Modules) hoist cannot fail the run after green suites.
 
-Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. I aliased it to the real Pa11y command and **dropped it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, then `yarn deps:check` and `yarn deps:audit`.
+Upstream coverage only reports files a test already imported, and has no floor. An untested controller here counts as zero and can fail the run. `yarn test:a11y` used to echo that accessibility ran in GitHub Actions — it does not; Pa11y is Jenkins `tests:a11y:parallel` — and that stub always passed. I aliased it to the real Pa11y command and **dropped it from `yarn cichecks`**, so a green aggregate run cannot pretend accessibility ran. `cichecks` still builds, lints, covers, runs route integration, civil-shared import consumers, functional-test classification, WireMock checks, then `yarn deps:check` and `yarn deps:audit`.
 
 ESLint is **10** (flat config). Sass-loader **17** keeps GOV.UK Sass resolving. Playwright specs have their own `tsconfig.json` so they type-check without clashing with Jest globals. CodeceptJS 4, WebdriverIO 9, Playwright 1.62, and Pact 17 are on maintained majors; they still need a dedicated AAT or preview functional run.
 
@@ -118,21 +118,20 @@ These are honest gaps, not hidden work:
 2. A tagged **CodeceptJS 4 / WebdriverIO 9** run on preview or AAT. Reduced-stack browser selection is `@reduced-stack` — see [docs/functional-test-migration-matrix.md](docs/functional-test-migration-matrix.md).
 3. TypeScript **`strict` remains false**; turning it on is a separate, large effort.
 4. The preview OpenID Connect (OIDC) allowlist is intentional for `e2eTest` and must not be copied into production path policy.
-5. Rebase or merge **`hmcts/master` `3bb804c4f9`** (`DTSCCI-5978` Camunda import scripts) — this branch is one commit behind.
 
-The rebase onto `hmcts/master` skipped this tree’s copy of DTSCCI-5972 (already upstream) and includes DTSCCI-5973 (reduced-stack create-claim coverage classification).
+This tree is rebased onto `hmcts/master` `5351e5b603` and includes the Camunda import-consumer scripts, functional-test classification check, draft-claim Redis time to live (TTL) of **30** days (`journeyCache` / `gaJourney` stay 180), postcode-lookup exceptions, and the CVE resolution pins from that SHA.
 
 ---
 
 ## In numbers
 
-Like-for-like extras vs `hmcts/master` at `3bb804c4f9` (unit files, `it()` grep) were last computed at that SHA and are **not** re-diffed here. This-tree absolute counts (Jest run, coverage, `docs/` / `ai-docs/` lines, pins, `src/main` loc, Yarn scripts) are as of **25 August 2026**. Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**. PII Semgrep exists upstream and is not counted as a gain here. `yarn.lock` churn is omitted from the prose counts above.
+Like-for-like extras vs `hmcts/master` at `5351e5b603` (unit files, `it()` grep) were computed at that SHA. This-tree absolute counts (Jest run, coverage, `docs/` / `ai-docs/` lines, pins, `src/main` loc, Yarn scripts) are as of **25 August 2026**. Percentages are file, specifier, and test counts — not estimated hours saved or a claim that the live service is “X% more secure”. Upstream Codecov currently publishes **unknown**. PII Semgrep exists upstream and is not counted as a gain here. `yarn.lock` churn is omitted from the prose counts above.
 
-| | Upstream (`3bb804c4f9`) | This tree |
+| | Upstream (`5351e5b603`) | This tree |
 | --- | --- | --- |
 | `yarn test` | Echoes a config path (0 tests) | **9,050** tests / **1,047** suites |
-| Unit test files (last compare) | 843 | 1,046 (**+24%**) |
-| `it()` cases (last compare grep) | 6,356 | 7,800 (**+23%**) |
+| Unit test files (last compare) | 845 | 1,048 (**+24%**) |
+| `it()` cases (last compare grep) | 6,400 | 7,878 (**+23%**) |
 | Client JS modules with a paired unit file | 1 / 13 | 13 / 13 |
 | GOV.UK `fixtures.json` HTML assertions | 0 | 692 (37 components) |
 | Hand-written header/table/inset/button views | 18 templates | 0 (19 converted, including preview) |
@@ -140,11 +139,11 @@ Like-for-like extras vs `hmcts/master` at `3bb804c4f9` (unit files, `it()` grep)
 | UI Preview Ready GET links | absent | **315** (crawl: all HTTP 200) |
 | `package.json` version ranges (`dependencies` + `devDependencies`) | 151 / 169 (**89%**) | **0 / 121** |
 | Exact pins (`dependencies` + `devDependencies`) | 9% | 100% |
-| Human `docs/*.md` | 4 files, 269 lines | **23** files, **2,147** lines |
-| `AGENTS.md` + `ai-docs/` | absent | **235** + **1,727** lines |
-| `src/main` TypeScript/JavaScript (excl. public) | 71,039 | **73,118** (**+2.9%**) |
+| Human `docs/*.md` | 4 files, 269 lines | **23** files, **2,216** lines |
+| `AGENTS.md` + `ai-docs/` | absent | **237** + **1,732** lines |
+| `src/main` TypeScript/JavaScript (excl. public) | 72,153 | **73,303** (**+1.6%**) |
 | Coverage (stmts / branch / funcs / lines) | not published | **97.81% / 87.59% / 98.58% / 97.75%** |
-| Yarn scripts | 56 | **60** runnable (`preview`, fixture tests, pin check, audit) plus two `_comment:*` notes |
+| Yarn scripts | 56 | **63** runnable (`preview`, fixture tests, pin check, audit, classification, civil-shared import consumers) plus two `_comment:*` notes |
 
 Method: last vs-upstream extras from two-dot `git diff hmcts/master` at the SHAs above; this-tree Jest/coverage from `yarn test:coverage` / `coverage/coverage-summary.json`; pin census from `package.json`; working-tree line counts excluding `src/main/public/`.
 
@@ -199,7 +198,7 @@ People can find how the app works: a full human guide, standing conventions for 
 
 ### If you have thirty more seconds — what I am honest about
 
-Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still needs a tagged functional run on preview or AAT. TypeScript strict mode is still off; turning it on is a separate piece of work. The preview login allowlist is for the laptop stack only and must not land in production. This branch is one commit behind `hmcts/master` (`DTSCCI-5978`).
+Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still needs a tagged functional run on preview or AAT. TypeScript strict mode is still off; turning it on is a separate piece of work. The preview login allowlist is for the laptop stack only and must not land in production. Local `master` is rebased onto `hmcts/master` `5351e5b603` (0 behind).
 
 ### Lines you can quote
 
@@ -209,7 +208,7 @@ Redis 6 against platform Redis still wants an AAT smoke test. CodeceptJS 4 still
 - Coverage: 97.81% statements across the whole application tree, with a CI floor.
 - 89% of upstream package specifiers were floating ranges. This tree has none.
 - 692 GOV.UK fixture assertions. Upstream has none.
-- Application TypeScript and JavaScript plus 2.9% versus that upstream SHA. Same product.
+- Application TypeScript and JavaScript plus 1.6% versus that upstream SHA. Same product.
 
 ---
 
@@ -233,12 +232,12 @@ What you get if you look at this tree. Same citizen product; the journeys and Ex
 | Defend “look like GOV.UK” | Markup **is** Design System output. Service Standard 4 and 13 are easier to argue |
 | Care about accessibility | Focus, labels, keyboard (including tabs), and table structure come from GOV.UK Frontend (Web Content Accessibility Guidelines (WCAG) 2.2 AA). GOV.UK wins if axe disagrees |
 | Run unit tests | `yarn test` executes **9,050** tests in **1,047** suites. Upstream’s script runs **none** |
-| Compare test volume | **+203** unit files (**+24%**) and **+1,444** `it()` cases (**+23%**) vs upstream at `3bb804c4f9`, across forms, services, clients, modules, routes, and client JS |
+| Compare test volume | **+203** unit files (**+24%**) and **+1,478** `it()` cases (**+23%**) vs upstream at `5351e5b603`, across forms, services, clients, modules, routes, and client JS |
 | Change client JavaScript | All **13** `src/main/assets/js/` modules have a paired unit file (upstream had **1**) |
 | Care about coverage | **97.81%** statements / **87.59%** branches / **98.58%** functions / **97.75%** lines on the whole `src/main` tree |
 | Add an untested controller | It counts as zero. Continuous integration (CI) floor **97 / 86 / 97 / 97** can fail the build |
 | Trust `yarn test:coverage` | It measures every application file, not only files a test already imported |
-| Trust `yarn cichecks` | Builds, lints, covers, route integration, pin check, and audit. Accessibility is **not** a stub that always passed |
+| Trust `yarn cichecks` | Builds, lints, covers, route integration, civil-shared import consumers, functional-test classification, WireMock, pin check, and audit. Accessibility is **not** a stub that always passed |
 | Run accessibility locally | `yarn test:a11y` is the real Pa11y command (Jenkins still runs `tests:a11y:parallel`) |
 | Run Jest on Node 24 | `--no-sparkplug` on the Jest binary so workers do not segmentation-fault (SIGSEGV) |
 | Lint or compile Sass | ESLint **10** flat config; sass-loader **17** still resolves GOV.UK Sass |
@@ -263,4 +262,4 @@ What you get if you look at this tree. Same citizen product; the journeys and Ex
 | Need directory-level context | **34** `ai-docs/` pages: mirror, playbooks, script catalogue, service-assessment deviation checklist |
 | Judge a stack or UI proposal | Service Standard / Technology Code of Practice (TCoP) snapshot — say no to a citizen Single Page Application (SPA) or hand-rolled GOV.UK from the manuals |
 | Read the README Node line | Matches `engines` / `.nvmrc` (`>=24.18.0`), not an obsolete Node 14 line |
-| Look at application source size | `src/main` TypeScript/JavaScript **+2.9%** lines versus that upstream SHA. The extra code is tests, docs, preview fixtures, app Add another JS, and toolchain — not a rewrite |
+| Look at application source size | `src/main` TypeScript/JavaScript **+1.6%** lines versus that upstream SHA. The extra code is tests, docs, preview fixtures, app Add another JS, and toolchain — not a rewrite |

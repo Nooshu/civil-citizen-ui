@@ -70,6 +70,9 @@ Needs secrets / stack. Config: `codecept.conf.js`. Tests: `src/test/functionalTe
 | `yarn test:crossbrowser` / `test:crossbrowser-functional` | Sauce Labs |
 | `yarn test:mocked-functional` | `bin/run-mocked-functional-tests.sh` — e2eTest + chart WireMock + in-memory Redis + `@reduced-stack` (compat `@mocked-functional`) |
 | `yarn test:mocked-functional:browser` | CodeceptJS only (stack already up); greps `@reduced-stack` |
+| `yarn test:generate:functional-classification` | Regenerates `docs/functional-test-scenario-classification.csv` from Codecept declarations |
+| `yarn test:functional-classification` | Fails if that CSV is stale (`--check`); runs in `cichecks` |
+| `yarn test:civil-shared-import-consumers` | `bin/test-civil-shared-import-consumers.sh` — Camunda / CCD import wrappers still call `bin/shared/` |
 | `yarn test:smoke` | `bin/run-smoke-tests.sh` |
 
 Chromium for mocked functional: `yarn playwright install chromium` once. Logs: `${TMPDIR:-/tmp}/civil-citizen-ui-mocked-functional`.
@@ -99,9 +102,9 @@ GitHub workflows on `master` can auto-commit README refreshes.
 
 ## CI aggregate
 
-`yarn cichecks` = install + **deps:check** + **deps:audit** + build + lint + wiremock validate + wiremock contracts + coverage + routes. Accessibility is **not** included (use `yarn tests:a11y`; Jenkins runs `tests:a11y:parallel`). Windows: `yarn cichecks:win` (no wiremock steps).
+`yarn cichecks` = install + **deps:check** + **deps:audit** + build + lint + **test:civil-shared-import-consumers** + wiremock validate + wiremock contracts + **test:functional-classification** + coverage + routes. Accessibility is **not** included (use `yarn tests:a11y`; Jenkins runs `tests:a11y:parallel`). Windows: `yarn cichecks:win` (deps, build, lint, coverage, routes — no wiremock, civil-shared, or classification steps).
 
-GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. **Renovate PRs** additionally run `yarn test:coverage`. Config: `.github/renovate.json` (`rangeStrategy: pin`, `automerge-minor`).
+GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. **Renovate PRs** additionally run `yarn test:coverage`. Config: `.github/renovate.json` (`rangeStrategy: pin`, `automerge-minor`, `cnp-jenkins-library`).
 
 `yarn sonar-scan` — needs scanner credentials.
 
@@ -116,6 +119,8 @@ GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. *
 | `bin/check-dependency-pins.mjs` | Exact `package.json` pins + `yarn.lock` SHA checksums (`yarn deps:check`) |
 | `bin/check-yarn-audit.mjs` | `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean (`yarn deps:audit`) |
 | `bin/test-wiremock-contracts.sh` | Contract tests against chart mappings |
+| `bin/test-civil-shared-import-consumers.sh` | Asserts Camunda/CCD import scripts still consume `bin/shared/` (`yarn test:civil-shared-import-consumers`) |
+| `bin/generate-functional-test-classification.js` | Scenario inventory CSV (`yarn test:generate:functional-classification` / `--check`) |
 | `bin/run-mocked-functional-tests.sh` | Local reduced-stack CodeceptJS |
 | `bin/run-preview-playwright-tests.sh` | Playwright against preview |
 | `bin/run-smoke-tests.sh` | Smoke |

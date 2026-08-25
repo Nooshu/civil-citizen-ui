@@ -91,7 +91,7 @@ Suggested first reads inside `ai-docs/`:
 - **Pins:** a range (`^1.2.3`) lets a later `yarn install` on a clean machine pull a different patch or minor. That is how silent breaking changes, new network calls, and extra telemetry get into a citizen-facing service without a reviewed change. Exact pins make upgrades a deliberate diff.
 - **SHA checksums:** `yarn.lock` stores a SHA-512 (Secure Hash Algorithm) checksum (`checksum: 10/<hex>`) for every resolved npm tarball. `.yarnrc.yml` sets `checksumBehavior: throw`, so a swapped or truncated archive cannot install. `yarn deps:check` fails continuous integration (CI) if a direct specifier is a range or a non-optional lockfile entry lacks a checksum. GitHub Actions also sets `YARN_ENABLE_HARDENED_MODE=1` so install re-checks lockfile resolutions against the registry (lockfile poisoning).
 - **7-day cooldown:** newly published npm versions can still be unpublished, and malware in a hijacked maintainer account is often noticed within days, not minutes. Waiting a week is a simple, automated control (Yarn age gate + policy). It is not a substitute for `yarn deps:audit` (`yarn npm audit`). Security patches may skip the wait as above.
-- **Renovate:** `.github/renovate.json` sets `rangeStrategy: pin`, `minimumReleaseAge: 7 days`, and extends HMCTS `automerge-minor` (not `automerge-all`). Major updates and `govuk-frontend` do not automerge. Renovate PRs (`renovate/*` or `renovate[bot]`) run `yarn deps:check`, `yarn deps:audit`, and `yarn test:coverage` in `.github/workflows/ci.yml`. Do not re-add `automerge-all` or ranged bumps.
+- **Renovate:** `.github/renovate.json` sets `rangeStrategy: pin`, `minimumReleaseAge: 7 days`, and extends HMCTS `automerge-minor` (not `automerge-all`) plus `cnp-jenkins-library`. Major updates and `govuk-frontend` do not automerge. Renovate PRs (`renovate/*` or `renovate[bot]`) run `yarn deps:check`, `yarn deps:audit`, and `yarn test:coverage` in `.github/workflows/ci.yml`. Do not re-add `automerge-all` or ranged bumps.
 
 Reasons and CI wiring: [`docs/security-and-privacy.md`](docs/security-and-privacy.md). Commands: `yarn deps:check`, `yarn deps:audit`.
 
@@ -196,6 +196,8 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
   - `yarn deps:check` — exact pins + lockfile SHA checksums
   - `yarn deps:audit` — `yarn npm audit` vs `yarn-audit-known-issues`; production tree must be clean
   - `yarn test:functional` — CodeceptJS functional (needs env)
+  - `yarn test:functional-classification` — Codecept scenario inventory CSV is current (`cichecks`)
+  - `yarn test:civil-shared-import-consumers` — Camunda / CCD import scripts still call `bin/shared/` (`cichecks`)
   - `yarn tests:a11y` — Pa11y accessibility (Jenkins runs `tests:a11y:parallel`; not part of `yarn cichecks`)
   - Playwright security specs under `playwright/tests/`
 - All Jest entry points run through `node --no-sparkplug ./node_modules/jest/bin/jest.js`. Sparkplug plus the `vm` module Jest uses to execute test files triggers a V8 13.6 garbage-collector segfault in `ClearStaleLeftTrimmedPointerVisitor`, which kills a random worker mid-run ([nodejs/node#62393](https://github.com/nodejs/node/issues/62393), still present in Node 24.18.0). Jest forks workers with the parent's `execArgv`, so setting the flag on the entry point covers them. Keep the flag when editing test scripts, and do not move it into `NODE_OPTIONS` — Node rejects V8 flags there.

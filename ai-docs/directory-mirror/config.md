@@ -20,7 +20,7 @@ Human detail (key list, Redis TTL env names): [`docs/configuration.md`](../../do
 - Read with `config.get('path.to.key')`, not new `process.env` (LaunchDarkly SDK is an existing exception).
 - New setting: default YAML → env map → Helm values if deployed → update `docs/configuration.md` and this page.
 - `referrerPolicy` must remain set or Helmet throws.
-- Redis TTL values are **days** (`ttlConfig.ts` converts to seconds). Categories: `draftClaim`, `journeyCache`, `paymentSession`, `gaJourney`.
+- Redis TTL values are **days** (`ttlConfig.ts` converts to seconds). Categories and defaults in `default.yaml`: `draftClaim` **30**, `journeyCache` **180**, `paymentSession` **7**, `gaJourney` **180**. Helm `REDIS_DRAFT_CLAIM_EXPIRE_IN_DAYS` is also **30**.
 - `useCSRFProtection` is not the only CSRF switch — `app.ts` also skips CSRF when `NODE_ENV === 'test'`.
 
 ## Tests

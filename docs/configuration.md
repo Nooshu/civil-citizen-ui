@@ -63,7 +63,7 @@ Values are **days** in default.yaml:
 
 | Key | Default days | Meaning |
 | --- | --- | --- |
-| `draftClaim` | 180 | Draft claim issue data keyed by claim id |
+| `draftClaim` | 30 | Draft claim issue data keyed by claim id |
 | `journeyCache` | 180 | Progress during response / claimant response |
 | `paymentSession` | 7 | Payment session and confirmation URLs |
 | `gaJourney` | 180 | General application journey keys |
