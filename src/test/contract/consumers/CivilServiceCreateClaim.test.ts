@@ -1,4 +1,4 @@
-import { Matchers, Pact } from '@pact-foundation/pact';
+import { MatchersV2 as Matchers, PactV2 } from '@pact-foundation/pact';
 import { CivilServiceClient } from '../../../main/app/client/civilServiceClient';
 import { AppRequest } from '../../../main/common/models/AppRequest';
 import { CaseEvent } from '../../../main/common/models/events/caseEvent';
@@ -16,7 +16,7 @@ const request = {
   params: {},
 } as unknown as AppRequest;
 
-const createProvider = () => new Pact({
+const createProvider = () => new PactV2({
   consumer: 'civil_citizen_ui',
   provider: 'civil_service',
   host: '127.0.0.1',
@@ -28,7 +28,7 @@ const createProvider = () => new Pact({
 
 describe('Civil Service create-claim contract', () => {
   let client: CivilServiceClient;
-  let provider: Pact;
+  let provider: PactV2;
 
   beforeEach(async () => {
     provider = createProvider();

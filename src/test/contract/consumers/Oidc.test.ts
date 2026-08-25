@@ -1,11 +1,11 @@
-import { Pact, Matchers } from '@pact-foundation/pact';
+import { PactV2, MatchersV2 as Matchers } from '@pact-foundation/pact';
 import config from 'config';
 import { PACT_DIRECTORY_PATH, PACT_LOG_PATH } from '../utils';
 import { getOidcResponse, OidcResponse } from '../../../main/app/auth/user/oidc';
 
 jest.mock('config');
 
-const mockProvider = new Pact({
+const mockProvider = new PactV2({
   log: PACT_LOG_PATH,
   dir: PACT_DIRECTORY_PATH,
   logLevel: 'info',

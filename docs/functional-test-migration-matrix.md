@@ -50,9 +50,9 @@ At classification time the executable suite contained:
 | Measure | Count | Percentage of active |
 | --- | ---: | ---: |
 | Declared scenarios | 198 | — |
-| Skipped declarations | 23 | — |
-| Active scenarios classified | 175 | 100% |
-| Full-stack primary target | 166 | 94.9% |
+| Skipped declarations | 24 | — |
+| Active scenarios classified | 174 | 100% |
+| Full-stack primary target | 165 | 94.8% |
 | Reduced-stack browser primary target | 3 | 1.7% |
 | In-process integration primary target | 6 | 3.4% |
 
@@ -65,7 +65,7 @@ Primary target and execution frequency are separate decisions. A scenario may ge
 | Proposed execution decision | Scenarios | Purpose |
 | --- | ---: | --- |
 | Proposed thin full-stack | 8 | Representative cross-service categories used for release investigation and the trigger/gating policy delivered by DTSCCI-5974 |
-| Nightly/on-demand full-stack | 158 | Wider genuine state-transition regression retained outside ordinary PR feedback |
+| Nightly/on-demand full-stack | 157 | Wider genuine state-transition regression retained outside ordinary PR feedback |
 | Migrate off full-stack | 9 | Deterministic browser or CUI-only controller/session assertions delivered through DTSCCI-6133 batches |
 
 The proposed thin set covers the minimum distinct real-service risks without retaining every variant:
@@ -143,7 +143,7 @@ This first migration batch requires a quality assurance (QA) person. On the depl
 
 DTSCCI-6132 additionally requires QA-person approval of the complete classification. The QA person must:
 
-1. Reconcile the generated total with the executable suite and confirm all 175 active scenarios are represented.
+1. Reconcile the generated total with the executable suite and confirm all 174 active scenarios are represented.
 2. Sample every primary target category: in-process integration, reduced-stack browser and full-stack.
 3. Review each of the eight proposed thin full-stack scenarios and confirm they collectively cover the stated payment, CCD/Camunda, assignment, GA, document, hearing, WA/Query Management, NoC and scheduler/state risks.
 4. Challenge at least one `nightly/on-demand-full-stack` decision in each domain group and confirm mocks/contracts cannot provide equivalent confidence for its primary assertion.

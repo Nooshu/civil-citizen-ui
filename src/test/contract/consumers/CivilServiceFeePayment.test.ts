@@ -1,10 +1,10 @@
-import { Pact, Matchers } from '@pact-foundation/pact';
+import { PactV2, MatchersV2 as Matchers } from '@pact-foundation/pact';
 import { CivilServiceClient } from '../../../main/app/client/civilServiceClient';
 import { GaServiceClient } from '../../../main/app/client/gaServiceClient';
 import { AppRequest } from '../../../main/common/models/AppRequest';
 import { PACT_DIRECTORY_PATH, PACT_LOG_PATH } from '../utils';
 
-const createMockProvider = () => new Pact({
+const createMockProvider = () => new PactV2({
   log: PACT_LOG_PATH,
   dir: PACT_DIRECTORY_PATH,
   logLevel: 'info',
@@ -53,7 +53,7 @@ const createAppRequest = (): AppRequest =>
 describe('Civil Service fee payment contract', () => {
   let civilServiceClient: CivilServiceClient;
   let gaServiceClient: GaServiceClient;
-  let mockProvider: Pact;
+  let mockProvider: PactV2;
 
   beforeEach(async () => {
     mockProvider = createMockProvider();

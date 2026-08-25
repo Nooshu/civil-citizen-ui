@@ -1,11 +1,11 @@
-import { Pact } from '@pact-foundation/pact';
+import { PactV2 } from '@pact-foundation/pact';
 import { generateSync } from 'otplib';
 import { PACT_DIRECTORY_PATH, PACT_LOG_PATH } from '../utils';
 import { generateServiceToken } from 'client/serviceAuthProviderClient';
 
 jest.mock('otplib');
 
-const mockProvider = new Pact({
+const mockProvider = new PactV2({
   log: PACT_LOG_PATH,
   dir: PACT_DIRECTORY_PATH,
   logLevel: 'info',
