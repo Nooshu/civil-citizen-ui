@@ -226,7 +226,7 @@ Legacy scenario mapping:
 
 Running Preview pipeline :
 
-## Github Labels
+## GitHub Labels
 
 `enable_keep_helm` is necessary so the Jenkins pipeline doesn't delete the deployment at the end of it.
 
