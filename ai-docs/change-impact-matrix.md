@@ -105,7 +105,7 @@ Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `c
 
 ## Repeatable rows (Add another)
 
-Do not restore MoJ Frontend. Client clone is `src/main/assets/js/add-another.js` (`initAddAnother`) and needs `.cui-add-another__items`. Mediation uploads must **not** get that wrapper (server POST). Timeline / expenses / directions questionnaire use `initAppendRow` from the same init (`.row-container` / `.append-row`). Playbook: [playbooks/moj-frontend.md](playbooks/moj-frontend.md).
+Do not restore MoJ Frontend. Client clone is `src/main/assets/js/add-another.js` (`initAddAnother`) and needs `.cui-add-another__items`. Mediation uploads must **not** get that wrapper (server POST). Timeline / expenses / directions questionnaire use `initAppendRow` from the same init (`.row-container` / `.append-row`). Paired test: `src/test/unit/assets/js/add-another.test.ts` (clone / remove / mediation no-op). Playbook: [playbooks/moj-frontend.md](playbooks/moj-frontend.md).
 
 ## Infrastructure / charts
 

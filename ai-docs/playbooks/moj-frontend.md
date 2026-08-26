@@ -29,7 +29,7 @@ The old filename `moj-frontend-v10-upgrade.md` is a stub. CUI did **not** stay o
 - Case-progression action names: `reindex-add-another-actions.js`
 - Court-order max rows: `conditionally-hide-add-button.js`
 - Directions questionnaire (DQ) / timeline / expenses / employers: `initAppendRow` in `append-row.js` (`.row-container` / `.append-row`) — **second markup contract**, same `initAddAnother()` call
-- Tests: `src/test/unit/assets/js/add-another.test.ts`, `append-row.test.ts`
+- Tests: `src/test/unit/assets/js/add-another.test.ts` (clone, remove, mediation no-op), `append-row.test.ts`
 
 ## If Add another clone breaks
 

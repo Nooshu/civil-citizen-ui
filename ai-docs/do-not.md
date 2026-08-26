@@ -49,6 +49,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not treat a green Pa11y mock run as a full WCAG 2.2 AA audit.
 - Do not re-run full `yarn test:coverage` after a SIGSEGV-only failure that passed in isolation.
 - Do not blanket-pin `glob` 13 in `resolutions`. Nest `@jest/reporters/glob` at CommonJS `7.2.3` so Jest 29 `CoverageReporter` can call `glob.sync`.
+- Do not lower `coverageThreshold` in `jest.config.js` to paper over untested client JS. Extend `src/test/unit/assets/js/add-another.test.ts` (clone / remove / mediation no-op) instead.
 
 ## Git and identity
 

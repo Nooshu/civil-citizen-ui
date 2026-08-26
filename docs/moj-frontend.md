@@ -29,7 +29,7 @@ This page is the human handover. The agent playbook is [`../ai-docs/playbooks/mo
 | Init | `src/main/index.js` calls `initAddAnother()` after `initAll()`. That function also starts `initAppendRow` (no separate `append-row.js` import in the entry). |
 | CSS | `.cui-add-another*` in `src/main/assets/scss/main.scss` (not `@use` of MoJ Sass) |
 | Class rename | `moj-add-another*` → `cui-add-another*`; leftover `moj-button-action` wrappers → `cui-add-another__actions` |
-| Tests | `src/test/unit/assets/js/add-another.test.ts` and `append-row.test.ts`; `mojAll.test.ts` deleted |
+| Tests | `src/test/unit/assets/js/add-another.test.ts` (clone, remove, mediation no-op) and `append-row.test.ts`; `mojAll.test.ts` deleted |
 | UI Preview | Evidence, court orders, case-progression witness upload, mediation POST — verified in the browser |
 
 ### Journeys

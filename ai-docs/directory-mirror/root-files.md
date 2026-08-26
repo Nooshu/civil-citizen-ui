@@ -14,7 +14,7 @@
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
 | `tsconfig.json` | App compile; `strict: false`; path aliases; exclude tests/playwright |
 | `tsconfig.jest.json` / `tsconfig.jest.integration.json` | Jest TS 6 `rootDir: "."`, `isolatedModules` |
-| `jest.config.js` | Unit; ESM transformIgnore for uuid/jsdom; path mappers; `collectCoverageFrom` `src/main/**/*.{ts,js}` (exclude `public/`, `index.js`); `coverageThreshold` global floor |
+| `jest.config.js` | Unit; ESM transformIgnore for uuid/jsdom; path mappers; `collectCoverageFrom` `src/main/**/*.{ts,js}` (exclude `public/`, `index.js`); `coverageThreshold` global floor (do not lower it for client JS — extend `add-another.test.ts`) |
 | `jest.functionaltest.config.js` | Integration |
 | `jest.pact.config.js` | Pact |
 | `jest.routes.config.js` / `jest.a11y.config.js` / `jest.smoketest.config.js` | Additional Jest entrypoints |

@@ -189,7 +189,7 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
 - Useful commands:
   - `yarn test` — Jest unit tests
   - `yarn test:govuk-fixtures` — GOV.UK Frontend macro HTML vs release fixtures.json
-  - `yarn test:coverage` — Jest with coverage of all `src/main` TypeScript/JavaScript (not only imported files); `coverageThreshold` fails the run if the global floor drops. Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ECMAScript Modules, breaks `CoverageReporter`)
+  - `yarn test:coverage` — Jest with coverage of all `src/main` TypeScript/JavaScript (not only imported files); `coverageThreshold` fails the run if the global floor drops. Raise weak client-JS branches with tests (`src/test/unit/assets/js/add-another.test.ts` clone / remove / mediation no-op) — do not lower the floor. Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ECMAScript Modules, breaks `CoverageReporter`)
   - `yarn test:integration` / `yarn test:routes` — route integration tests
   - `yarn build` — webpack assets
   - `yarn lint` — ESLint 10 flat config (`eslint.config.mjs`) + stylelint; Windows: `yarn lint:win`

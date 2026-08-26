@@ -36,7 +36,7 @@ All Jest npm scripts already pass `node --no-sparkplug ./node_modules/jest/bin/j
 | Command | Config / roots | Use |
 | --- | --- | --- |
 | `yarn test` | `jest.config.js`, `src/test/unit`, maxWorkers 75%, silent, `LOG_LEVEL=OFF` | Default unit |
-| `yarn test:coverage` | same + coverage of all `src/main` TS/JS, **maxWorkers=8**, global `coverageThreshold`. Nest `@jest/reporters/glob` at CommonJS `7.2.3` (glob 13 is ESM and breaks threshold checks) | After dependency bumps; Sonar `coverage/lcov.info` |
+| `yarn test:coverage` | same + coverage of all `src/main` TS/JS, **maxWorkers=8**, global `coverageThreshold`. Raise client-JS branches in `add-another.test.ts`; do not lower the floor. Nest `@jest/reporters/glob` at CommonJS `7.2.3` (glob 13 is ESM and breaks threshold checks) | After dependency bumps; Sonar `coverage/lcov.info` |
 | `yarn test:govuk-fixtures` | `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` | After GOV.UK / Nunjucks env changes — must pass |
 | `yarn test:routes` / `yarn test:integration` | `jest.functionaltest.config.js`, `src/integration-test`, `--runInBand` | Middleware/route wiring |
 | `yarn test:pact` | `jest.pact.config.js` | Consumer contracts. `@pact-foundation/pact` 17 exports V4 as `Pact`; these tests use **`PactV2`** + **`MatchersV2`** (`setup` / `addInteraction` / `mockService`) |

@@ -80,7 +80,7 @@ Examples already in the tree:
 | --- | --- |
 | `postcode-lookup.js` | AJAX address lookup; Find address remains a normal `govukButton` submit if JS fails |
 | `append-row.js` | Clone `.row-container` / `.append-row` markup (`initAppendRow`, started from `initAddAnother`) |
-| `add-another.js` | Client clone for evidence / court orders / case-progression uploads (`cui-add-another*` + `.cui-add-another__items`); also starts `initAppendRow` |
+| `add-another.js` | Client clone for evidence / court orders / case-progression uploads (`cui-add-another*` + `.cui-add-another__items`); also starts `initAppendRow`. Jest: clone, remove, mediation no-op (`add-another.test.ts`) |
 | `reindex-add-another-actions.js` | Reindex `action[add\|remove][…]` names after a client clone |
 | `calculate-amount.js` / `calculate-total-amount.js` / `calculate-length-repayment.js` | Live totals / repayment length without a round-trip |
 | `disable-submit.js` | Prevent double POST |

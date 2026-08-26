@@ -45,6 +45,11 @@ module.exports = {
    * ~87.6%, functions ~98.6%, lines ~97.8% as of 25 August 2026). About one
    * percentage point of slack so machine noise does not fail CI, but a new
    * untested controller of a few hundred lines will.
+   *
+   * Raise weak client-JS branches with tests (add-another.js clone / remove /
+   * mediation no-op in src/test/unit/assets/js/add-another.test.ts). Do not
+   * lower this floor, and do not pin glob 13 in resolutions (see
+   * src/test/unit/jest.config.coverage.test.ts).
    */
   coverageThreshold: {
     global: {

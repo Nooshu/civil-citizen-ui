@@ -10,7 +10,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | --- | --- |
 | Sync `hmcts` before application changes; package-only origin push | Before changing code; Package-only updates |
 | Exact pins (all deps/resolutions), lockfile SHA (Secure Hash Algorithm) checksums, 7-day `npmMinimalAgeGate`, Renovate `rangeStrategy: pin` + `automerge-minor`, `yarn deps:check`, `yarn deps:audit`, full `yarn test:coverage` after dep bumps, segmentation violation (SIGSEGV) isolation | Dependencies |
-| Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ESM, breaks `CoverageReporter`) | Testing and coverage; [`docs/testing.md`](../docs/testing.md) |
+| Nest `@jest/reporters/glob` at CommonJS `7.2.3`; do not blanket-pin glob 13 (ESM, breaks `CoverageReporter`); do not lower `coverageThreshold` — raise `add-another.test.ts` clone / remove / mediation no-op | Testing and coverage; [`docs/testing.md`](../docs/testing.md) |
 | Service Standard, Technology Code of Practice (TCoP), His Majesty’s Courts and Tribunals Service (HMCTS) citizen stack, Design System, Web Content Accessibility Guidelines (WCAG) 2.2 AA | Service assessment (GOV.UK / HMCTS); [`docs/service-assessment.md`](../docs/service-assessment.md) |
 | Long coverage/install waits — background and poll | Long-running commands |
 | Express/TS under `src/main/`; no Nest/Prisma/Single Page Application (SPA); existing HTTP clients and draft-store | Server / application stack |

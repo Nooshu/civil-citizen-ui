@@ -7,6 +7,7 @@ Human overview: [`docs/testing.md`](../../docs/testing.md).
 Mirrors `src/main/` (`app/`, `assets/`, `common/`, `modules/`, `routes/`, `services/`) plus:
 
 - `govukFrontend/` — `yarn test:govuk-fixtures` (must stay green)
+- `assets/js/add-another.test.ts` — clone / remove / mediation no-op after MoJ removal (do not lower `coverageThreshold` instead)
 - `functionalTests/diagnostics/` — unit tests for functional diagnostic helpers
 
 Setup: `jest.setup.redis-mock.js`, `jest.setup.js`. Environment `node`.
