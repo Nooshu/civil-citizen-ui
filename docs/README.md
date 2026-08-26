@@ -31,7 +31,8 @@ The root [README.md](../README.md) covers getting started, GitHub preview labels
 | [Functional test migration matrix](functional-test-migration-matrix.md) | Reduced-stack vs full-stack ownership (`@reduced-stack`) |
 | [Functional test diagnostics](functional-test-diagnostics.md) | Jenkins failure summaries and Allure artefacts |
 | [PII logging PR check](pii-logging-check.md) | Personally identifiable information (PII) Semgrep rules for names, contact details, and financial values |
-| [Dependency update log 2026-08-21](dependency-update-log-2026-08-21.md) | Routine 7-day-cooldown pin bumps (patch/minor) and what remains gated or blocked |
+| [Dependency update log 2026-08-26](dependency-update-log-2026-08-26.md) | Routine 7-day-cooldown pin bumps (LaunchDarkly 9.13.1, dayjs, uuid, WebdriverIO 9.31.1) |
+| [Dependency update log 2026-08-21](dependency-update-log-2026-08-21.md) | Earlier cooldown pass and what remained gated or blocked |
 | [Dependency update log 2026-08-18](dependency-update-log-2026-08-18.md) | Earlier bulk dependency pass (completed and blocked majors) |
 | [MoJ Frontend](moj-frontend.md) | Package **removed**; Add another is app JS. What was done, why, standing rules. |
 | [MoJ Frontend v10 migration](moj-frontend-v10-migration.md) | **Stub** — CUI did not stay on MoJ v10; use [moj-frontend.md](moj-frontend.md) |

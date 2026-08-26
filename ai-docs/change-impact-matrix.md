@@ -101,7 +101,7 @@ Exact pins for **all** direct deps and resolutions. 7-day cooldown unless securi
 
 Renovate (`.github/renovate.json`) must keep `rangeStrategy: pin` and must not extend `automerge-all`. Changing that file without `deps:check` + coverage on `renovate/*` PRs re-opens ranged automerges.
 
-Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), Babel 8 + Jest 30 coupled. Do not re-add `@ministryofjustice/frontend` — [`docs/moj-frontend.md`](../docs/moj-frontend.md). See [`docs/dependency-update-log-2026-08-21.md`](../docs/dependency-update-log-2026-08-21.md).
+Known blocked majors (do not “just bump”): `config` v5 (ESM, huge blast), `connect-redis` v10 (ioredis), Babel 8 + Jest 30 coupled, TypeScript 7. Do not re-add `@ministryofjustice/frontend` — [`docs/moj-frontend.md`](../docs/moj-frontend.md). See [`docs/dependency-update-log-2026-08-26.md`](../docs/dependency-update-log-2026-08-26.md).
 
 ## Repeatable rows (Add another)
 

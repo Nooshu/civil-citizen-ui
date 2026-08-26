@@ -155,7 +155,7 @@ Method: last vs-upstream extras from two-dot `git diff hmcts/master` at the SHAs
 1. [docs/README.md](docs/README.md) — how the service works ([glossary](docs/glossary.md) for acronyms)
 2. [docs/service-assessment.md](docs/service-assessment.md) — Service Standard / TCoP / Design System mapped to this app
 3. [AGENTS.md](AGENTS.md) and [ai-docs/README.md](ai-docs/README.md) — how to change it safely (portable; not tied to a particular editor)
-4. [Dependency update log (21 August 2026)](docs/dependency-update-log-2026-08-21.md) — latest 7-day-cooldown pin bumps; earlier [18 August log](docs/dependency-update-log-2026-08-18.md)
+4. [Dependency update log (26 August 2026)](docs/dependency-update-log-2026-08-26.md) — latest 7-day-cooldown pin bumps; earlier [21 August](docs/dependency-update-log-2026-08-21.md) and [18 August](docs/dependency-update-log-2026-08-18.md)
 
 ---
 
