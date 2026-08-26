@@ -22,7 +22,7 @@ If this folder disagrees with `AGENTS.md`, **`AGENTS.md` wins**. Fix this page i
 | Human `docs/` + this `ai-docs/` tree; TSDoc (no `{Type}` braces) | Documentation and code comments; Keep `ai-docs/` in sync |
 | No agent co-author / author on git history | Git and commits |
 | No guessed ticket keys | Git and commits |
-| Preview HTTP 200 with empty/`£NaN`/`Invalid DateTime`/`Created []` — seed CCD/Redis or add a production fallback; do not fake copy in Nunjucks. Grow the catalogue by fixing 500s and empty interpolations, not by adding links toward a count | Runtime (UI Preview missing data); [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) |
+| Preview HTTP 200 with empty/`£NaN`/`Invalid DateTime`/`Created []`/`value="undefined"` — seed CCD/Redis or add a production fallback; do not fake copy in Nunjucks. Grow the catalogue by fixing 500s and empty interpolations, not by adding links toward a count | Runtime (UI Preview missing data); [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md) |
 
 Procedures (not standing rules): [playbooks/add-a-screen.md](playbooks/add-a-screen.md), [playbooks/ui-preview-missing-data.md](playbooks/ui-preview-missing-data.md), [playbooks/dependency-bump.md](playbooks/dependency-bump.md), [playbooks/govuk-frontend-upgrade.md](playbooks/govuk-frontend-upgrade.md), [playbooks/moj-frontend.md](playbooks/moj-frontend.md). [playbooks/moj-frontend-v10-upgrade.md](playbooks/moj-frontend-v10-upgrade.md) is a historical stub.
 

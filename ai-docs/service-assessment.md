@@ -1,6 +1,6 @@
 # Service assessment — agent checklist
 
-**Use this** whenever you recommend a stack change, a new UI pattern, a dependency, analytics, Artificial Intelligence (AI), or anything that would show up in a service assessment. Human explanation and full point-by-point mapping: [`docs/service-assessment.md`](../docs/service-assessment.md) (snapshot **18 August 2026**). Live pages win if they disagree; then update both files.
+**Use this** whenever you recommend a stack change, a new UI pattern, a dependency, analytics, Artificial Intelligence (AI), or anything that would show up in a service assessment. Human explanation and full point-by-point mapping: [`docs/service-assessment.md`](../docs/service-assessment.md) (official pages snapshotted **18 August 2026**; CUI mapping checked against this tree **26 August 2026**). Live pages win if they disagree; then update both files.
 
 CUI is a **central-government transactional citizen service**. Assessors judge the **Service Standard (SS)**. Some failures **cannot be iterated away** once real users are on the service: **accessibility**, **security/privacy**, and **technology lock-in**. Acronyms: [`docs/glossary.md`](../docs/glossary.md).
 

@@ -63,6 +63,8 @@ Opens **http://localhost:3001/ui-preview**.
 
 Stop with `yarn start:ui-preview:down`.
 
+**HTTP 200 is not a useful page.** Empty tables, `£NaN`, Luxon `Invalid DateTime`, `Created []`, leaked i18n keys (`PAGES.…undefined`), or `value="undefined"` in an amount input mean missing Core Case Data (CCD) / Redis fields or a missing production-safe fallback — not a broken Nunjucks file. Seed `compose/ui-preview-mappings/` **and** `uiPreviewRedisData.json` when the GET reads that store. Do not hard-code sample citizen copy in templates to fill preview. Grow the catalogue by fixing GETs that still **500** or look empty — not by adding links toward a count. Checklist: [AI playbook — UI Preview missing data](../ai-docs/playbooks/ui-preview-missing-data.md).
+
 Preview stubs are **not** the reduced-stack chart contracts. Do not copy preview mappings into `charts/civil-citizen-ui/wiremock/mappings`. See [reduced-stack WireMock contracts](reduced-stack-wiremock-contracts.md).
 
 ### Docker Compose (full frontend container)
@@ -112,4 +114,5 @@ Files land in `bin/shared/`. Preview pipelines can override the branch with the 
 - **Lockfile YN0028** — an install wanted to change `yarn.lock` while immutable installs were on. For intentional bumps use `YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install`.
 - **Jest worker SIGSEGV** — re-run the failed file alone. If it passes, treat it as the known V8 crash, not a product bug.
 - **Need a claim without IDAM** — use UI Preview. Start from `/ui-preview`: awaiting-defendant `1645882162449409`, full admit by instalments `1645882162449601`, part admit by instalments `1645882162449602`, case progression `1645882162449603`, general application `1645882162449604`, statement of means `1645882162449605`.
+- **Preview page is 200 but empty / `£NaN` / `Invalid DateTime` / `Created []` / `value="undefined"`** — missing CCD or Redis seed, or a missing production-safe fallback. Seed both stores; do not fake copy in Nunjucks. Checklist: [AI playbook — UI Preview missing data](../ai-docs/playbooks/ui-preview-missing-data.md).
 - **Claimant-response task list “something went wrong”** — Preview loads the claim from Redis first (`uiPreviewRedisData.json`). Admit fixtures must include `case_data.claimantResponse`. After changing that file or `src/main/common/models/claim.ts`, rebuild with `yarn preview` (the image copies `src/` at build time).

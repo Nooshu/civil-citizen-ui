@@ -9,7 +9,7 @@ Canonical: [`AGENTS.md`](../../AGENTS.md) — GOV.UK Frontend (macros + upgrade 
 5. `yarn test:govuk-fixtures` — **must pass** (macros vs package `fixtures.json`)
 6. `yarn test` (and integration if Nunjucks env/middleware changed)
 7. `yarn tests:a11y` if practical
-8. Confirm docs still link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest) (`AGENTS.md`, `docs/frontend.md`, `FRONTEND-RECOMMENDATIONS.md`, `docs/project-overview.md`); do **not** hard-code the version number in those pages — the exact pin lives in `package.json` only
+8. Confirm docs still link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest) (`AGENTS.md`, `docs/frontend.md`, `FRONTEND-RECOMMENDATIONS.md`, `docs/project-overview.md`); do **not** hard-code the version number in those standing pages — the exact pin lives in `package.json` only. Dated snapshots such as [`docs/README.md`](../../docs/README.md) may name the pin with a census date.
 9. If axe conflicts with official markup: disable the scanner rule, do not fork GOV.UK
 10. Note any Design System divergence introduced by the bump (assessors ask)
 

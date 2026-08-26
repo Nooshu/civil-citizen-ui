@@ -216,7 +216,7 @@ Use this as the baseline; new work should extend it, not undo it.
 4. `yarn test:govuk-fixtures` (**692** assertions / **37** components)
 5. Progressive enhancement kept (postcode `fetch`, row cloning, calculators) on macro DOM
 6. All **13** asset JS modules unit-tested; app modules are jQuery-free; Add another is app JS ([`docs/moj-frontend.md`](docs/moj-frontend.md))
-7. UI Preview catalogue for offline GOV.UK review without Identity and Access Management (IDAM)
+7. UI Preview catalogue for offline GOV.UK review without Identity and Access Management (IDAM) — **316** Ready GETs as of 26 August 2026; grow by fixing 500s and empty interpolations, not a count target
 8. Documented missing-data playbook so empty preview pages get seeds/fallbacks, not fake template copy
 9. Accessibility policy: GOV.UK over axe; real Pa11y command (not a stub in `cichecks`)
 10. Documented Government Digital Service (GDS) / Service Standard frontend checklist for assessment prep

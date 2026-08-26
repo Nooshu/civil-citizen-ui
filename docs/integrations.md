@@ -70,7 +70,7 @@ Postcode lookup: browser JS calls CUI `/postcode-lookup`, which calls Ordnance S
 
 ## LaunchDarkly
 
-See flag list in [Architecture](architecture.md). Software development kit (SDK) key from `LAUNCH_DARKLY_SDK`. User context includes `LAUNCH_DARKLY_ENV`. Missing SDK means flags are not initialised — callers must tolerate empty client.
+See flag list in [Architecture](architecture.md). Software development kit (SDK) `@launchdarkly/node-server-sdk` (exact pin in `package.json`; currently **9.13.1**). SDK key from `LAUNCH_DARKLY_SDK`. User context includes `LAUNCH_DARKLY_ENV`. Missing SDK means flags are not initialised — callers must tolerate empty client.
 
 ## Application Insights and Dynatrace
 

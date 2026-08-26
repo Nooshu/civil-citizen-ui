@@ -8,7 +8,7 @@
 | `.nvmrc` | `v24.18.0` |
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
-| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). Update when a change would alter that comparison. |
+| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). This-tree counts as of **26 August 2026**. Update when a change would alter that comparison. |
 | `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations: GOV.UK macros, progressive enhancement, `yarn test:govuk-fixtures`, Government Digital Service (GDS) assessment checklist, jQuery-free app JS (MoJ Frontend is not a dependency), a11y, preview data. Pair with `docs/frontend.md`. Track [latest GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest). |
 | `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`, `docs/moj-frontend.md`, `docs/functional-test-migration-matrix.md`) |
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |
@@ -32,7 +32,7 @@
 | `Dockerfile` / `Dockerfile.ui-preview` / `docker-compose.yml` / `.dockerignore` | Node 24 Alpine; dockerignore is allowlist-style (`*` then `!` exceptions) |
 | `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Pipelines |
 | `sonar-project.properties` | `sonar.sources=src/main`, tests `src/test/`, lcov `coverage/lcov.info` |
-| `yarn-audit-known-issues` | Accepted **toolchain** audit lines — do not delete to go green; do not allowlist production-tree findings |
+| `yarn-audit-known-issues` | Accepted **toolchain** audit lines (currently **10**, 26 August 2026) — do not delete to go green; do not allowlist production-tree findings |
 | `LICENSE` | |
 | `steps.d.ts` | CodeceptJS step typings |
 | `__mocks__/otplib.js` | Jest mapper for `otplib` |

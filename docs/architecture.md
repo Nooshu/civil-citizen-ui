@@ -104,7 +104,7 @@ In `e2eTest`, both are swapped for in-memory implementations (`modules/e2eConfig
 
 ## Feature flags
 
-LaunchDarkly is initialised in `src/main/app/auth/launchdarkly/launchDarklyClient.ts`. Flags currently referenced there include:
+LaunchDarkly is initialised in `src/main/app/auth/launchdarkly/launchDarklyClient.ts` (`@launchdarkly/node-server-sdk`; exact pin in `package.json`). Flags currently referenced there include:
 
 - `shutter-cui-service` — whole-service shutter page
 - `shutter-pcq`

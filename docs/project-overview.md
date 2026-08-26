@@ -39,12 +39,12 @@ Developers typically work on a fork (`origin`) and sync from the `hmcts` remote.
 | Templates | Nunjucks |
 | User interface (UI) kit | Latest [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) (exact pin in `package.json`). MoJ Frontend is **not** a dependency; Add another is app JS ([moj-frontend.md](moj-frontend.md)) |
 | Session / drafts | Redis (`ioredis` for drafts; `connect-redis` + official `redis` for session) |
-| Feature flags | LaunchDarkly (`@launchdarkly/node-server-sdk`) |
+| Feature flags | LaunchDarkly (`@launchdarkly/node-server-sdk`, exact pin in `package.json`; currently **9.13.1**) |
 | Languages | English and Welsh (internationalisation, i18n, via i18next) |
 | Local URL | `https://localhost:3001` in development (self-signed Transport Layer Security, TLS) |
 | Health | `/health` |
 
-TypeScript is configured with `"strict": false` and `"ignoreDeprecations": "6.0"` while `moduleResolution` / `baseUrl` remain transitional. Do not “modernise” those compiler options casually; they exist to keep the existing codebase compiling on TypeScript 6.
+TypeScript is configured with `"strict": false` and `"ignoreDeprecations": "6.0"` while `moduleResolution` / `baseUrl` remain transitional. Do not “modernise” those compiler options casually; they exist to keep the existing codebase compiling on TypeScript 6. Do not bump to TypeScript **7** while those flags are still required.
 
 ## What CUI is not responsible for
 

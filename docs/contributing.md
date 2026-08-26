@@ -43,10 +43,10 @@ These user interface (UI) rules exist so the service can meet Government Digital
 
 ## Dependencies
 
-- Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md).
-- Patch/minor preferred; 7-day publish cooldown for routine bumps (`npmMinimalAgeGate` in `.yarnrc.yml`).
+- Yarn 4; **all** `dependencies` / `devDependencies` / `resolutions` are exact versions (no `^` / `~` / ranges). See [security and privacy](security-and-privacy.md). Current pins, coverage, and catalogue size: [README — Current snapshot](README.md).
+- Patch/minor preferred; 7-day publish cooldown for routine bumps (`npmMinimalAgeGate` in `.yarnrc.yml`). Latest cooldown pass: [dependency-update-log-2026-08-26.md](dependency-update-log-2026-08-26.md).
 - After dependency pull requests (PRs): `yarn deps:check`, `yarn deps:audit`, then `yarn test:coverage`. On a segmentation violation (SIGSEGV), re-run the one suite. Renovate PRs run those same checks in GitHub Actions; majors and `govuk-frontend` do not automerge.
-- Do not invent a second HTTP client or database.
+- Do not bump TypeScript 7 while `ignoreDeprecations: "6.0"` is still required. Do not invent a second HTTP client or database.
 
 ## Git hygiene
 

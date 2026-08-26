@@ -102,12 +102,12 @@ yarn build
 yarn test:govuk-fixtures
 ```
 
-The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders official macros through this app’s Nunjucks environment and compares HTML to the package’s `fixtures.json`. **Do not merge if fixtures fail.** See `AGENTS.md` GOV.UK Frontend (upgrade checklist).
+The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders official macros through this app’s Nunjucks environment and compares HTML to the package’s `fixtures.json` — **692** assertions across **37** components. **Do not merge if fixtures fail.** The exact `govuk-frontend` pin lives in `package.json` only; as of 26 August 2026 it matches the [latest GitHub release](https://github.com/alphagov/govuk-frontend/releases/latest). See `AGENTS.md` GOV.UK Frontend (upgrade checklist).
 
 ## Accessibility
 
 - Keep skip link, labels, error summary, and focus behaviour from GOV.UK macros.
-- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks`. Scans mocked citizen GETs from `urls.ts`; ignore scanner codes that conflict with GOV.UK macros rather than dropping those pages. A green mock run is not a WCAG 2.2 AA audit.
+- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks`. Scans mocked citizen GETs from `urls.ts` (**360** HTML fixtures under `src/test/utils/mocks/a11y/`); ignore scanner codes that conflict with GOV.UK macros rather than dropping those pages. A green mock run is not a WCAG 2.2 AA audit.
 - Functional journeys should stay keyboard-usable; do not “fix” axe by breaking GOV.UK.
 
 ## Performance (UI)

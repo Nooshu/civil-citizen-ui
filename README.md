@@ -99,6 +99,8 @@ yarn preview
 
 Same as `yarn start:ui-preview`. When ready, open **http://localhost:3001/ui-preview**.
 
+**HTTP 200 is not a useful page.** Empty tables, `£NaN`, Luxon `Invalid DateTime`, `Created []`, or leaked keys (`PAGES.…undefined`) mean missing fixture data or a missing production-safe fallback — seed WireMock and Redis, or add a real fallback; do not fake copy in Nunjucks. Checklist: [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md).
+
 | Mode | Command | Auth | Backends |
 |------|---------|------|----------|
 | **UI Preview** | `yarn preview` | None (`e2eTest`) | WireMock + in-memory Redis fixtures |

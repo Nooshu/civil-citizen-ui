@@ -1,6 +1,6 @@
 # Directory structure
 
-This is a map of the repository as it exists on `master`. Paths are relative to the repo root. Acronyms: [glossary](glossary.md).
+This is a map of the repository as it exists on `master`. Paths are relative to the repo root. Acronyms: [glossary](glossary.md). Current pins, coverage, and catalogue size: [README — Current snapshot](README.md).
 
 ## Top level
 
@@ -20,6 +20,8 @@ This is a map of the repository as it exists on `master`. Paths are relative to 
 | `.github/workflows/` | GitHub Actions (CI lint/build, stale bots, README table refresh) |
 | `Jenkinsfile_CNP` / `Jenkinsfile_nightly` | Main Cloud Native Platform (CNP) and nightly pipelines |
 | `AGENTS.md` | Canonical standing conventions for any coding agent (`AGENT.md` is a symlink) |
+| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (dated this-tree counts) |
+| `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations (macros, fixtures, progressive enhancement) |
 | `catalog-info.yaml` | Backstage component |
 | `docker-compose.yml` / `Dockerfile` | Container build for Civil Citizen UI (CUI) |
 | `Dockerfile.ui-preview` | Image used by UI Preview |

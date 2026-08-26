@@ -1,6 +1,6 @@
 # Service assessment and government standards
 
-**Audience:** humans and coding agents. Official GOV.UK / His Majesty’s Courts and Tribunals Service (HMCTS) pages remain the **live** source of truth. This file is a **dated snapshot** (18 August 2026) of what those pages require, mapped onto Civil Citizen UI (CUI), so a future change can be judged against “would this make a service assessment harder?” Acronyms: [glossary](glossary.md).
+**Audience:** humans and coding agents. Official GOV.UK / His Majesty’s Courts and Tribunals Service (HMCTS) pages remain the **live** source of truth. This file is a **dated snapshot** (official pages last snapshotted **18 August 2026**) of what those pages require, mapped onto Civil Citizen UI (CUI), so a future change can be judged against “would this make a service assessment harder?” CUI evidence in this tree (macros, fixture suite, Pa11y mocks, Express stack, pins) was checked against the repo on **26 August 2026**. Acronyms: [glossary](glossary.md).
 
 If a live page and this snapshot disagree, **believe the live page**, then update this file and [`ai-docs/service-assessment.md`](../ai-docs/service-assessment.md) in the same change.
 
