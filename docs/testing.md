@@ -18,9 +18,9 @@ Acronyms: [glossary](glossary.md).
 | Playwright security | Playwright | specs in `playwright/tests/` | Running Civil Citizen UI (CUI) |
 | Smoke | `bin/run-smoke-tests.sh` | `yarn test:smoke` | Deployed env |
 
-`yarn test:a11y` is an alias of `yarn tests:a11y` (Pa11y against HTML fixtures). It is **not** part of `yarn cichecks`. Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y is the scanner His Majesty’s Courts and Tribunals Service (HMCTS) documents, but do not treat a green Pa11y run as a full audit. See [service-assessment.md](service-assessment.md).
+`yarn test:a11y` is an alias of `yarn tests:a11y` (Pa11y against HTML fixtures). It is **not** part of `yarn cichecks`. Jenkins Cloud Native Platform (CNP) runs `yarn tests:a11y:parallel`. The Service Standard bar is **Web Content Accessibility Guidelines (WCAG) 2.2 AA**; Pa11y 9’s default runner is HTML_CodeSniffer against WCAG 2.0 AA (`WCAG2AA`). A green mock run is **not** a full WCAG 2.2 AA audit. See [service-assessment.md](service-assessment.md).
 
-The harness in `src/test/a11y/a11y.mock-test.ts` serves HTML from `src/test/utils/mocks/a11y/` (filename from the URL). `src/test/a11y/ignored-urls.ts` skips routes that have no view, are unfinished, are external, or still fail. Core GET pages **`/dashboard`**, **`/make-claim`**, and **`/case/:id/response/your-details`** are scanned. Do not ignore a new citizen page without a reason, and do not un-ignore a URL without a matching mock.
+The harness in `src/test/a11y/a11y.mock-test.ts` serves HTML from `src/test/utils/mocks/a11y/` (filename from the URL). It scans **every** `urls.ts` citizen GET that has a matching mock — not only `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`. `src/test/a11y/ignored-urls.ts` skips routes with no view, external sites, hash fragments of an already-scanned page, developer-only surfaces, and pages that still have no fixture. If HTML_CodeSniffer or axe disagrees with official GOV.UK Frontend macros, ignore the **scanner code** in `src/test/a11y/pa11y-options.ts` — do not drop the URL or rewrite macros. A Jest guard (`src/test/unit/a11y/ignoredUrlsMocks.test.ts`) fails if a mocked citizen GET is ignored without an explicit exception (hash fragment or redirect stub). Do not un-ignore a URL without a matching mock.
 
 ## Unit tests (Jest)
 
@@ -113,6 +113,7 @@ yarn deps:check && yarn deps:audit   # after package.json / yarn.lock changes
 Also run when relevant:
 
 - `yarn test:govuk-fixtures` after GOV.UK or Nunjucks/macro changes
+- `yarn tests:a11y` after adding a citizen GET (capture a mock; do not ignore a page that already has one)
 - `yarn test:integration` after middleware/route wiring changes
 - `yarn wiremock:validate` and `yarn test:wiremock-contracts` after chart mappings change
 - `yarn test:functional-classification` after adding, removing, or renaming Codecept scenarios

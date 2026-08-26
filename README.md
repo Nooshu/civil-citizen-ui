@@ -247,7 +247,7 @@ The standard preview deployment, i.e. without the github label present, intends 
 $ yarn test:crossbrowser
 ```
 
-Make sure all the paths in your application are covered by accessibility tests (see [a11y.test.ts](src/test/a11y/a11y.test.ts)).
+Make sure citizen GET paths that have a view are covered by the Pa11y mock harness ([a11y-README.md](src/test/a11y/a11y-README.md)): capture HTML under `src/test/utils/mocks/a11y/` and keep the URL out of `ignored-urls.ts`. A green `yarn tests:a11y` run is not a full WCAG 2.2 AA audit.
 
 ## Generating CodeceptJS E2E Test Documentation
 

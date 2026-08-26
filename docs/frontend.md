@@ -107,7 +107,7 @@ The suite `src/test/unit/govukFrontend/govukFrontendFixtures.test.ts` renders of
 ## Accessibility
 
 - Keep skip link, labels, error summary, and focus behaviour from GOV.UK macros.
-- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks`.
+- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks`. Scans mocked citizen GETs from `urls.ts`; ignore scanner codes that conflict with GOV.UK macros rather than dropping those pages. A green mock run is not a WCAG 2.2 AA audit.
 - Functional journeys should stay keyboard-usable; do not “fix” axe by breaking GOV.UK.
 
 ## Performance (UI)

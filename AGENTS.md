@@ -198,7 +198,7 @@ Treat **frontend performance**, **backend/API efficiency**, and **accessible UI*
   - `yarn test:functional` — CodeceptJS functional (needs env)
   - `yarn test:functional-classification` — Codecept scenario inventory CSV is current (`cichecks`)
   - `yarn test:civil-shared-import-consumers` — Camunda / CCD import scripts still call `bin/shared/` (`cichecks`)
-  - `yarn tests:a11y` — Pa11y accessibility (Jenkins runs `tests:a11y:parallel`; not part of `yarn cichecks`)
+  - `yarn tests:a11y` — Pa11y against HTML mocks for every `urls.ts` citizen GET that has a fixture (`ignored-urls.ts` is no-view / external / hash / missing mock only). HTML_CodeSniffer / axe codes that conflict with official GOV.UK macros go in `src/test/a11y/pa11y-options.ts`, not the URL ignore list. A green mock run is **not** a full WCAG 2.2 AA audit. Jenkins: `tests:a11y:parallel`; not part of `yarn cichecks`
   - Playwright security specs under `playwright/tests/`
 - All Jest entry points run through `node --no-sparkplug ./node_modules/jest/bin/jest.js`. Sparkplug plus the `vm` module Jest uses to execute test files triggers a V8 13.6 garbage-collector segfault in `ClearStaleLeftTrimmedPointerVisitor`, which kills a random worker mid-run ([nodejs/node#62393](https://github.com/nodejs/node/issues/62393), still present in Node 24.18.0). Jest forks workers with the parent's `execArgv`, so setting the flag on the entry point covers them. Keep the flag when editing test scripts, and do not move it into `NODE_OPTIONS` — Node rejects V8 flags there.
 

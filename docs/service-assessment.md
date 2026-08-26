@@ -146,6 +146,8 @@ From beta onward, regular accessibility testing is expected; an **audit** is exp
 
 WCAG 2.2 AA (perceivable, operable, understandable, robust): alternatives for non-text; logical headings; not colour-only; contrast; reflow; keyboard; skip link; visible focus; no unexpected flashing; consistent components; associated form errors; assistive-tech-friendly status messages. Prefer GOV.UK macros because they encode much of this. See [Understanding WCAG 2.2](https://www.gov.uk/service-manual/helping-people-to-use-your-service/understanding-wcag).
 
+Pa11y against captured HTML (`yarn tests:a11y`) plus GOV.UK fixture HTML checks are **evidence**, not a substitute for a WCAG 2.2 AA audit, research with disabled people, or an accessibility statement. If a scanner disagrees with official GOV.UK Frontend macros, ignore the scanner rule — do not rewrite the Design System.
+
 ## What this repository cannot prove
 
 Assessors will still ask about user research, assisted digital, call-centre scripts, letters, published KPIs, spend control, and team composition. Those artefacts are **not** in this git tree. Agents must not claim the service “passes” because the code is tidy. They **can** say a proposed change **deviates from** or **supports** the parts of the standard that *are* implemented here.

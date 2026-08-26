@@ -2,11 +2,11 @@
 import {fail} from 'assert';
 
 import {PageUrls} from './constants';
+import {GOVUK_MACRO_HTMLCS_IGNORES} from './pa11y-options';
 
 const pa11y = require('pa11y');
 
 const envUrl = process.env.TEST_URL || 'http://localhost:3001';
-const options = ['WCAG2AA.Principle1.Guideline1_3.1_3_1.H42.2'];
 // Ignore pages that are passing in WAVE evaluation tool
 const ignoredPages = [''];
 const cuiCaseReference = '1645882162449409';
@@ -41,7 +41,7 @@ function testAccessibility(url: string): void {
         }
         const pageUrl = envUrl + url;
         const messages = await pa11y(pageUrl, {
-          ignore: options,
+          ignore: [...GOVUK_MACRO_HTMLCS_IGNORES],
         });
         expectNoErrors(messages.issues);
       }

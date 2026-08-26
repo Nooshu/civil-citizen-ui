@@ -1,7 +1,5 @@
 {% extends "claim-details-tpl.njk" %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "../../../macro/error-summary.njk" import errorSummary %}
 {% from "../../../macro/csrf.njk" import csrfProtection %}
 {% from "../../../macro/contact-us-for-help.njk" import contactUsForHelp with context %}
@@ -49,16 +47,11 @@
                   {{ section.title or t(pageTitle) }}
                 </span>
 
-                {% call govukFieldset({
-                  classes: 'cui-add-another__item',
-                  legend: {
-                  classes: 'cui-add-another__title',
-                  isPageHeading: false,
-                  text: section.heading or ''
-                }
-                }) %}
+                {# Div, not govukFieldset: an empty legend plus inner GOV.UK date fieldsets nested
+                   fieldsets. Add another is a server POST here and must no-op without `.cui-add-another__items`. #}
+                <div class="cui-add-another__item">
                   {{ claimSummaryContent({ contentSections: section.contentSections }, t) }}
-                {% endcall %}
+                </div>
                 {% endfor %}
                 <div class="govuk-button-group">
                   {{ govukButton({text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),
@@ -87,16 +80,9 @@
                 {{ section.title or t(pageTitle) }}
               </span>
 
-              {% call govukFieldset({
-                classes: 'cui-add-another__item',
-                legend: {
-                classes: 'cui-add-another__title',
-                isPageHeading: false,
-                text: section.heading or ''
-              }
-              }) %}
+              <div class="cui-add-another__item">
                 {{ claimSummaryContent({contentSections: section.contentSections }, t) }}
-              {% endcall %}
+              </div>
               {% endfor %}
               <div class="govuk-button-group">
                 {{ govukButton({ text: t('PAGES.UPLOAD_DOCUMENTS.ADD'),

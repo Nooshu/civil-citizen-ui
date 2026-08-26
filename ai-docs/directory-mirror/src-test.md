@@ -15,7 +15,7 @@ Setup: `jest.setup.redis-mock.js`, `jest.setup.js`. Environment `node`.
 
 ## `a11y/`
 
-Pa11y. Real command: `yarn tests:a11y` (alias `yarn test:a11y`). HTML fixtures under `src/test/utils/mocks/a11y/` (claim `1645882162449409`). `ignored-urls.ts` / `action-urls.ts` — do not ignore new pages without reason. Core GET pages `/dashboard`, `/make-claim`, and `/case/:id/response/your-details` are **not** ignored. Remaining ignores are no-view routes, external URLs, unfinished journeys, or pages that still fail. Not part of `yarn cichecks`; Jenkins runs `tests:a11y:parallel`.
+Pa11y. Real command: `yarn tests:a11y` (alias `yarn test:a11y`). HTML fixtures under `src/test/utils/mocks/a11y/` (claim `1645882162449409`). Scans **every** `urls.ts` citizen GET that has a matching mock. `ignored-urls.ts` is no-view / external / hash-fragment / missing-mock / developer-only only — do not ignore a mocked page because HTML_CodeSniffer or axe disagrees with GOV.UK macros (`pa11y-options.ts` instead). Guard: `src/test/unit/a11y/ignoredUrlsMocks.test.ts`. A green mock run is not a WCAG 2.2 AA audit. Not part of `yarn cichecks`; Jenkins runs `tests:a11y:parallel`.
 
 ## `contract/` — Pact
 

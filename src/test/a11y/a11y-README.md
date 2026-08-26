@@ -1,4 +1,6 @@
-# Accessibility (a11y) Test with Mock
+# Accessibility (a11y) tests with HTML mocks
+
+Pa11y (`yarn tests:a11y`) visits citizen GET paths from `src/main/routes/urls.ts` and checks captured HTML under `src/test/utils/mocks/a11y/`. That is **evidence**, not a full Web Content Accessibility Guidelines (WCAG) **2.2 AA** audit. Official GOV.UK Frontend macros are the UI source of truth: if HTML_CodeSniffer or axe disagrees with Design System output, ignore the **scanner code** in `pa11y-options.ts` — do not drop the page or rewrite macros.
 
 ### Contents:
 - [Ignoring a url](#ignoring-a-url)
@@ -7,17 +9,17 @@
 
 ## Ignoring a url
 
-### My url does not have a view
-
-Accessiblity tests visits all urls specified in:
+Accessibility tests visit all urls specified in:
 ```bash
 src/main/routes/urls.ts
 ```
-If your url does not have a view, there is no need for it to be visited.
-Make sure to add it to:
-```bash
-src/test/a11y/ignored-urls.ts
-```
+except those listed in `src/test/a11y/ignored-urls.ts`.
+
+Add a URL to the ignore list only when it has **no citizen GET view**, is **external**, is a **hash fragment** of a page already scanned, is **developer-only** (UI Preview catalogue, testing support), still has **no matching mock**, or the mock is an Express **redirect stub** (not a page).
+
+If the page has a mock, **un-ignore it**. Do not ignore it because a scanner flags official GOV.UK table captions or headings.
+
+A Jest guard (`src/test/unit/a11y/ignoredUrlsMocks.test.ts`) fails if a mocked citizen GET is ignored without being listed in `A11Y_IGNORED_URLS_WITH_MOCKS`.
 
 ## Creating a new mock
 
@@ -81,10 +83,8 @@ Files do not show immediately upon finish. You might have to wait a few seconds 
 
 ## Running the a11y test
 
-### Go to package.json
-
-Run the tests:a11y command.
+Run `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins Cloud Native Platform (CNP) uses `yarn tests:a11y:parallel`. This suite is **not** part of `yarn cichecks`.
 
 If your mock does not load, or your mock only shows a redirect, rather than a view, errors will show.
 
-Check each error, and either update the mock, or ignore the url as appropriate.
+Check each error. If it is inherent to official GOV.UK Frontend markup, add the HTML_CodeSniffer / axe **code** to `GOVUK_MACRO_HTMLCS_IGNORES` in `pa11y-options.ts`. Otherwise update the mock or, only if there is still no GET view, ignore the url.

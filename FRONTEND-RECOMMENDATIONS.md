@@ -145,7 +145,7 @@ Renovate / Dependabot GOV.UK bumps are incomplete until those checks pass.
 
 - Preserve skip link, labels, error summaries, focus order, and keyboard behaviour from GOV.UK macros (including tabs).
 - Do not “fix” axe by breaking GOV.UK structure.
-- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks` — a green aggregate run must not pretend accessibility ran.
+- Pa11y: `yarn tests:a11y` (alias `yarn test:a11y`). Jenkins runs `tests:a11y:parallel`. Not part of `yarn cichecks` — a green aggregate run must not pretend accessibility ran. The mock harness scans every `urls.ts` citizen GET that has a fixture; GOV.UK macros win if HTML_CodeSniffer or axe disagrees. A green mock run is not a full WCAG 2.2 AA audit.
 - Functional journeys should stay keyboard-usable.
 
 ---

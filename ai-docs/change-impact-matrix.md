@@ -18,6 +18,7 @@ Must usually touch all of:
 | i18n | `src/main/modules/i18n/locales/en.json` **and** `cy.json` |
 | Unit test | `src/test/unit/routes/features/<journey>/` and/or `src/test/unit/services/features/<journey>/` |
 | Optional functional | `src/test/functionalTests/` with an existing tag |
+| Accessibility mock | HTML snapshot under `src/test/utils/mocks/a11y/` (see `src/test/a11y/a11y-README.md`). Do not add the URL to `ignored-urls.ts` if the mock exists |
 
 OIDC: if the page must work logged-out (eligibility, first-contact, static legal, payment return, UI preview), extend the allowlist in `src/main/modules/oidc/index.ts`. CSRF skip is **not** the same list (csrf module).
 

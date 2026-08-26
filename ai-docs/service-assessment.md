@@ -17,7 +17,7 @@ Flag as a **deviation** (and prefer not to do it unless the user explicitly acce
 | Re-add `@ministryofjustice/frontend` or `jquery` for Add another | Second design-system package; v10 Sass cannot share GOV.UK `@import`; CUI never used MoJ as a kit. [`docs/moj-frontend.md`](../docs/moj-frontend.md) |
 | Fork `node_modules/govuk-frontend` or vendor CSS/JS | Same; upgrades and fixture tests become impossible |
 | Build GOV.UK component markup in client JS | Progressive enhancement / Frontend JS docs; assistive tech |
-| Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2** |
+| Drop Pa11y / skip-link / error summary / visible focus | Service Standard 5; **Web Content Accessibility Guidelines (WCAG) 2.2 AA** (not optional). HMCTS frontend page still says 2.1 — **prefer 2.2**. A green `yarn tests:a11y` mock run is evidence, not a full audit |
 | Rewrite GOV.UK output to satisfy axe | Design System is the tested pattern; document the axe rule instead |
 | NestJS, Prisma, second HTTP client, new database | Lock-in and duplication (Service Standard (SS) 8/11, TCoP 8/9); CUI already has Express, civil-service clients, Redis drafts |
 | Generative Artificial Intelligence (AI) as the journey or an unexplained decision engine | SS 2 (do not design around AI), SS 6 (need someone who understands it), SS 11 (inclusion and reliability of decisions), SS 14 (monitor bias) |

@@ -4,7 +4,7 @@
 
 | File | Rule |
 | --- | --- |
-| `urls.ts` | **Only** place for path strings used by the app. Export constants. New screens add a constant here first. |
+| `urls.ts` | **Only** place for path strings used by the app. Export constants. New screens add a constant here first. Citizen GETs need a Pa11y HTML mock (or a documented ignore: no view / external / missing mock). |
 | `routes.ts` | Imports every controller and **calls** `someController(app)` (or equivalent). A controller that is never invoked here is dead. |
 | `homeController.ts`, `unauthorisedController.ts`, `info.ts`, `tabs.ts` | Home, unauthorised, info, tab helpers |
 | `calculateMonthlyIncomeExpense/` | JSON endpoint for income/expense totals (used by `assets/js/calculate-*.js`) |
@@ -74,3 +74,4 @@ Integration: `src/integration-test/routes/<journey>/`.
 4. OIDC allowlist if public
 5. Unit test
 6. i18n + view (see views page)
+7. Pa11y HTML mock (or a documented ignore in `ignored-urls.ts`)

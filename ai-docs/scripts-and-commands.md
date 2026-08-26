@@ -50,7 +50,7 @@ Setup files: `jest.setup.redis-mock.js` (ioredis-mock + LaunchDarkly mock), `jes
 | Command | Reality |
 | --- | --- |
 | `yarn test:a11y` | Alias of `yarn tests:a11y` |
-| `yarn tests:a11y` | Pa11y/Mocha `src/test/a11y/a11y.mock-test.ts` |
+| `yarn tests:a11y` | Pa11y/Mocha `src/test/a11y/a11y.mock-test.ts` — every `urls.ts` citizen GET with a mock; GOV.UK-over-scanner ignores in `pa11y-options.ts`. Not a WCAG 2.2 AA audit |
 | `yarn tests:a11y:parallel` | `src/test/a11y/run-parallel-a11y-tests.sh` (Jenkins CNP) |
 
 ## CodeceptJS functional

@@ -45,6 +45,8 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not put V8 flags in `NODE_OPTIONS` (Node rejects them).
 - Do not treat a SIGSEGV that then passes on a solo re-run as a product bug.
 - Do not use `yarn cichecks` as proof that accessibility ran — Pa11y is `yarn tests:a11y` (Jenkins: `yarn tests:a11y:parallel`).
+- Do not ignore a citizen URL that has an a11y HTML mock because HTML_CodeSniffer or axe disagrees with GOV.UK macros — ignore the scanner code in `src/test/a11y/pa11y-options.ts`.
+- Do not treat a green Pa11y mock run as a full WCAG 2.2 AA audit.
 - Do not re-run full `yarn test:coverage` after a SIGSEGV-only failure that passed in isolation.
 - Do not blanket-pin `glob` 13 in `resolutions`. Nest `@jest/reporters/glob` at CommonJS `7.2.3` so Jest 29 `CoverageReporter` can call `glob.sync`.
 

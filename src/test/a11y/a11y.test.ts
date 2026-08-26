@@ -5,6 +5,7 @@ import nock from 'nock';
 import {app} from '../../main/app';
 import {fail} from 'assert';
 import {IGNORED_URLS} from './ignored-urls';
+import {GOVUK_MACRO_HTMLCS_IGNORES} from './pa11y-options';
 import {mockCivilClaim} from '../utils/mockDraftStore';
 import CivilClaimResponseMock from '../utils/mocks/civilClaimResponseMock.json';
 import {CIVIL_SERVICE_CALCULATE_DEADLINE} from '../../main/app/client/civilServiceUrls';
@@ -48,11 +49,11 @@ function ensurePageCallWillSucceed(url: string): Promise<void> {
 async function runPally(url: string, actions: string[]): Promise<Pa11yResult> {
   const PAGE_URL = url.replace(':id', '1645882162449409');
   return await pa11y(PAGE_URL, {
-    // Ignore GovUK template elements that are outside the team's control from a11y tests
     hideElements: '#logo, .logo, .copyright, link[rel=mask-icon]',
     actions,
     standard:'WCAG2AA',
     includeWarnings: true,
+    ignore: [...GOVUK_MACRO_HTMLCS_IGNORES],
     chromeLaunchConfig: {
       args: ['--no-sandbox'],
     },

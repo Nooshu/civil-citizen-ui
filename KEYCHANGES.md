@@ -54,7 +54,7 @@ That is cheaper than it sounds. GOV.UK HTML, CSS, and JavaScript live in the pac
 
 The fixture suite (`src/test/unit/govukFrontend/`) renders every official component through this app’s Nunjucks environment and compares HTML to the package `fixtures.json` — **692** assertions across **37** components. Upstream has none. Copy-pasted classes cannot be checked that way. Service Standard points 4 and 13 (“look like GOV.UK”) are easier to defend when the HTML is the Design System’s.
 
-Pa11y 9 scans `/dashboard`, `/make-claim`, and `/case/:id/response/your-details`. A green mock run is still not a full WCAG audit.
+Pa11y 9 scans every citizen GET in `urls.ts` that has a matching HTML mock (hundreds of fixtures), not three core pages. Routes without a view, external links, hash fragments, and pages still missing a mock stay in `ignored-urls.ts`. HTML_CodeSniffer codes that conflict with official GOV.UK tables and headings are ignored in Pa11y options — we do not drop those pages or rewrite macros. A green mock run is still not a full Web Content Accessibility Guidelines (WCAG) 2.2 AA audit.
 
 ---
 
@@ -238,7 +238,7 @@ What you get if you look at this tree. Same citizen product; the journeys and Ex
 | Add an untested controller | It counts as zero. Continuous integration (CI) floor **97 / 86 / 97 / 97** can fail the build |
 | Trust `yarn test:coverage` | It measures every application file, not only files a test already imported |
 | Trust `yarn cichecks` | Builds, lints, covers, route integration, civil-shared import consumers, functional-test classification, WireMock, pin check, and audit. Accessibility is **not** a stub that always passed |
-| Run accessibility locally | `yarn test:a11y` is the real Pa11y command (Jenkins still runs `tests:a11y:parallel`) |
+| Run accessibility locally | `yarn test:a11y` scans every mocked citizen GET (Jenkins still runs `tests:a11y:parallel`). A green mock run is not a WCAG 2.2 AA audit |
 | Run Jest on Node 24 | `--no-sparkplug` on the Jest binary so workers do not segmentation-fault (SIGSEGV) |
 | Lint or compile Sass | ESLint **10** flat config; sass-loader **17** still resolves GOV.UK Sass |
 | Type-check Playwright specs | Separate `playwright/tsconfig.json` — no clash with Jest globals |

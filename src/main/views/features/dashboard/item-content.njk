@@ -298,7 +298,7 @@
            }
         }) }}
          {{ govukButton({
-                          id: 'uploadFileButton',
+                          id: content.data.category + '-' + content.data.index + '-upload-button',
                           name: 'action',
                           value: content.data.category+'['+content.data.index+'][uploadButton]',
                           attributes: {
