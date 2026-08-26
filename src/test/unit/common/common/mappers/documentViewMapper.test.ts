@@ -41,6 +41,20 @@ describe('Test of Document View Mapper', () => {
     expect(expected).toEqual(result);
   });
 
+  it('should return an empty documents table when the mediation agreement file is missing', () => {
+    const result = mapperMediationAgreementToDocumentView(
+      'PAGES.VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT.DOCUMENT_TABLE_TITLE',
+      undefined,
+      undefined,
+      '1645882162449409',
+      'en',
+    );
+    expect(result).toEqual(new DocumentsViewComponent(
+      'PAGES.VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT.DOCUMENT_TABLE_TITLE',
+      [],
+    ));
+  });
+
   it('should map defendant response to Document View', () => {
     //Given
     const claim = new Claim();

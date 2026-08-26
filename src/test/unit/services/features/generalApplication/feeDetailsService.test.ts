@@ -116,12 +116,13 @@ describe('GA fee details', () => {
     expect(saveDraftClaim).not.toBeCalled();
   });
 
-  it('should reject empty application types before getting fee details from civil-service', async () => {
+  it('should skip the fee request when application types are missing', async () => {
     const getGeneralApplicationFeeMock = jest.spyOn(CivilServiceClient.prototype, 'getGeneralApplicationFee');
     claim.generalApplication.applicationTypes = [];
 
-    await expect(gaApplicationFeeDetails(claim, {} as AppRequest)).rejects.toThrow('Invalid general application type selected');
+    const gaFeeData = await gaApplicationFeeDetails(claim, {} as AppRequest);
 
+    expect(gaFeeData).toBeUndefined();
     expect(getGeneralApplicationFeeMock).not.toBeCalled();
     expect(saveDraftClaim).not.toBeCalled();
   });

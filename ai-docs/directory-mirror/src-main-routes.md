@@ -21,13 +21,13 @@ Human journey map: [`docs/citizen-journeys.md`](../../docs/citizen-journeys.md).
 | `/dashboard` | `features/dashboard` |
 | `/case/:id/response` | `features/response` |
 | `/case/:id/claimant-response` | `features/claimantResponse` |
-| `/case/:id/general-application` | `features/generalApplication` (applicant). Submit confirmation uses `?appFee=` in pounds when present; otherwise `claim.generalApplication.applicationFee.calculatedAmountInPence`. `?id=` is the GA case id, not the claim id. |
+| `/case/:id/general-application` | `features/generalApplication` (applicant). Submit confirmation uses `?appFee=` in pounds when present; otherwise `claim.generalApplication.applicationFee.calculatedAmountInPence`. `?id=` is the GA case id, not the claim id. GET handlers use `applicationTypeIndexFromQuery` so a missing `applicationTypes` array does not 500. |
 | `/case/:id/response/general-application/:appId` | General application (GA) respondent |
 | `/case/:id/case-progression` | `features/caseProgression` |
 | `/case/:id/mediation` | `features/mediation` |
 | `/case/:id/directions-questionnaire` | `features/directionsQuestionnaire` |
 | `/oauth2/callback` | OIDC |
-| `/ui-preview` | `features/uiPreview` — e2eTest |
+| `/ui-preview` | `features/uiPreview` — e2eTest. Catalogue GETs seed WireMock/Redis (or a production-safe fallback); grow by fixing 500s and empty interpolations, not by adding links toward a count. |
 
 ## Controller style
 
@@ -51,6 +51,7 @@ Express middleware. Path-prefix guards are attached in `app.ts` (e.g. `claimantI
 | `claimantIntentGuard` | Claimant response |
 | `statementOfMeansGuard` | Statement of means (SoM) nested routes |
 | `allResponseTasksCompletedGuard` / CYA guards | Submit / CYA |
+| `partAdmitHowMuchHaveYouPaidGuard` | Part-admit how-much / why-disagree. Optional-chain `alreadyPaid`; missing answer redirects to the task list (do not 500). |
 | `claimFeePaymentGuard` | Fee payment |
 | `pcqGuard` / `pcqGuardClaim` | PCQ |
 | `uploadRateLimitGuard` | Redis-backed rate limit. `sendRedisCommand` uses ioredis `.call`, or the command name as a method on `ioredis-mock`. |

@@ -1,7 +1,8 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% macro transactionDetails(t,hintAmount, property, transactionSource, labels, form, other, removeButton) %}
-  {% set amountValue =  '' + transactionSource.amount %}
+  {# `'' + undefined` becomes the string "undefined" in the GOV.UK amount input. #}
+  {% set amountValue = transactionSource.amount | default('') %}
   {% if other %}
 <div class="govuk-form-group civil-amountRow  multiple-row">
   {{ govukInput({

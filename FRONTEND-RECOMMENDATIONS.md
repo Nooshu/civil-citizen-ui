@@ -170,8 +170,9 @@ Catalogue and preview GETs must be **useful** to a citizen, not only HTTP 200.
 | Luxon `Invalid DateTime` | Missing/invalid date; formatters must return `''` |
 | `Created []` | Date missing, invalid, or passed through `t()` |
 | `PAGES.…undefined` | Broken i18n key / missing page title block |
+| `value="undefined"` | Nunjucks `'' + missing` on a GOV.UK input — use `default('')`, do not fake an amount |
 
-Seed WireMock (`compose/ui-preview-mappings/`) **and** Redis (`uiPreviewRedisData.json`) when the journey reads both. Prefer production-safe fallbacks over preview-only Nunjucks hacks. Checklist: [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md). Look at pages with `yarn preview` → **http://localhost:3001/ui-preview**.
+Seed WireMock (`compose/ui-preview-mappings/`) **and** Redis (`uiPreviewRedisData.json`) when the journey reads both. Prefer production-safe fallbacks over preview-only Nunjucks hacks. Grow the catalogue by fixing GETs that still 500 or look empty — not by adding links toward a count. Checklist: [`ai-docs/playbooks/ui-preview-missing-data.md`](ai-docs/playbooks/ui-preview-missing-data.md). Look at pages with `yarn preview` → **http://localhost:3001/ui-preview**.
 
 ---
 

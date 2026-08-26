@@ -206,8 +206,8 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
     pages: [
       page('Response task list (SoM claim)', urls.RESPONSE_TASK_LIST_URL, som),
       page('Already paid', urls.CITIZEN_ALREADY_PAID_URL, som),
-      page('How much do you owe', urls.CITIZEN_OWED_AMOUNT_URL, som),
-      page('How much have you paid', urls.CITIZEN_AMOUNT_YOU_PAID_URL, som),
+      page('How much do you owe', urls.CITIZEN_OWED_AMOUNT_URL, som, 'Seeded £400 of £1,000. WireMock CCD has specDefenceAdmittedRequired: No.'),
+      page('How much have you paid', urls.CITIZEN_AMOUNT_YOU_PAID_URL, som, 'alreadyPaid is no — empty form is honest (not a fake paid amount).'),
       page('Why do you disagree (part admit)', urls.CITIZEN_WHY_DO_YOU_DISAGREE_URL, som),
       page('Part admit payment option', urls.CITIZEN_PARTIAL_ADMISSION_PAYMENT_OPTION_URL, som),
       page('Part admit payment date', urls.CITIZEN_PA_PAYMENT_DATE_URL, som),
@@ -269,6 +269,7 @@ export const getUiPreviewPageCatalog = (): PreviewPageGroup[] => [
       page('Upload confirmation', urls.MEDIATION_UPLOAD_DOCUMENTS_CONFIRMATION, def),
       page('Cancel document upload', urls.MEDIATION_UPLOAD_DOCUMENTS_CANCEL, def),
       page('View mediation documents', urls.VIEW_MEDIATION_DOCUMENTS, def),
+      page('View mediation settlement agreement', urls.VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT, def, 'Seeded mediationAgreement document on WireMock; mapper returns an empty table when CCD omits the file.'),
     ],
   },
   {

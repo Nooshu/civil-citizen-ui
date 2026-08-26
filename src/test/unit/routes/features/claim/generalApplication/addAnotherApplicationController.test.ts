@@ -74,12 +74,10 @@ describe('General Application - add another application', () => {
         });
     });
 
-    // `index` must be non-zero so the controller skips the unguarded
-    // `claim.generalApplication.applicationTypes` read and reaches the `?.` fallbacks.
     it('should render when the claim has no general application', async () => {
       mockDataFromStore.mockResolvedValue(new Claim());
       await request(app)
-        .get(`${GA_ADD_ANOTHER_APPLICATION_URL}?index=1`)
+        .get(GA_ADD_ANOTHER_APPLICATION_URL)
         .expect((res) => {
           expect(res.status).toBe(200);
         });

@@ -49,7 +49,7 @@ Keys in `src/main/modules/i18n/locales/en.json` **and** `cy.json`. Use `t('…')
 - Integration test if middleware/session is involved
 - Functional CodeceptJS only if the journey is user-visible in preview/AAT (HMCTS acceptance environment) and neighbours already cover it
 - Pa11y: capture HTML under `src/test/utils/mocks/a11y/` and **do not** add the URL to `ignored-urls.ts` if that mock exists. Scanner-vs-GOV.UK conflicts go in `pa11y-options.ts`
-- If the screen is on `/ui-preview`, seed WireMock + Redis so the GET is useful (not empty/`£NaN`) — [playbooks/ui-preview-missing-data.md](ui-preview-missing-data.md)
+- If the screen is on `/ui-preview`, seed WireMock + Redis (or add a production-safe fallback) so the GET is useful — not empty/`£NaN`, and not fake copy in Nunjucks. Add a catalogue `page()` only when that GET was 500 or looked empty — [playbooks/ui-preview-missing-data.md](ui-preview-missing-data.md)
 
 ## 8. Verify
 

@@ -1,7 +1,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% macro claimAmount(claimAmountModel, index, form, t) %}
-  {% set amountValue = '' + claimAmountModel.amount %}
+  {% set amountValue = claimAmountModel.amount | default('') %}
   {% set rowNumber = index + 1 %}
   <div class="row-container govuk-form-group govuk-!-margin-bottom-6">
     <div class="multiple-row civil-amount-breakdown-row">

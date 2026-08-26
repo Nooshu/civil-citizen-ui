@@ -37,7 +37,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 
 | Change | Also |
 | --- | --- |
-| New catalogue GET | Walk template interpolations; seed CCD/Redis; add `page()` in `pageCatalog.ts`; confirm HTML not only status 200 |
+| New catalogue GET | Walk interpolations; seed CCD/Redis **or** add a production-safe fallback; add `page()` only when the GET is useful (500s and `£NaN` / `Invalid DateTime` / `Created []` first — not a push for 400 links). Confirm HTML not only status 200 |
 | WireMock mapping JSON only | `docker compose -f compose/ui-preview.yml restart wiremock` (bind-mounted) |
 | `uiPreviewRedisData.json` / TypeScript / Nunjucks | Rebuild `citizen-ui` |
 | Query management list | `queries.caseMessages` on `GET /cases/1645882162449603`; `createdBy` `someID` |

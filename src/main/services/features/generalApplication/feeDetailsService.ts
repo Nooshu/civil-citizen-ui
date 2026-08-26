@@ -34,6 +34,9 @@ const feeRequestBody = (gaDetails: GeneralApplication, hearingDate: Date): GAFee
 };
 
 export const gaApplicationFeeDetails = async (claim: Claim, req: AppRequest): Promise<ClaimFeeData> => {
+  if (!claim.generalApplication?.applicationTypes?.length) {
+    return undefined;
+  }
   claim = await updateHearingDateForGAApplicationFee(claim, req);
   const feeRequestDetails = feeRequestBody(claim.generalApplication, claim?.caseProgressionHearing?.hearingDate);
   const gaFeeData = await civilServiceClient.getGeneralApplicationFee(feeRequestDetails, req);
@@ -46,7 +49,10 @@ export const gaApplicationFeeDetails = async (claim: Claim, req: AppRequest): Pr
 };
 
 export const updateHearingDateForGAApplicationFee = async (claim: Claim, req: AppRequest) => {
-  assertValidApplicationTypes(claim.generalApplication?.applicationTypes);
+  if (!claim.generalApplication?.applicationTypes?.length) {
+    return claim;
+  }
+  assertValidApplicationTypes(claim.generalApplication.applicationTypes);
   const selectedApplications = claim.generalApplication.applicationTypes.map(applicationType => applicationType.option);
   const isAllowedToUpdateClaim = !claim?.caseProgressionHearing?.hearingDate && !claim.generalApplication?.applicationFee && selectedApplications.includes(ApplicationTypeOption.ADJOURN_HEARING);
   if (isAllowedToUpdateClaim) {

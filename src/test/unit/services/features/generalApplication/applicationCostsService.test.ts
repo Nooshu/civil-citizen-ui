@@ -31,4 +31,9 @@ describe('Application costs service', () => {
     expect(content[0].data.variables.applicationFee).toEqual(14);
     expect(content[1].data.text).toEqual('PAGES.GENERAL_APPLICATION.APPLICATION_COSTS.FEE_NEED_TO_BE_PAID');
   });
+
+  it('should return no paragraphs when application types or fee pence are missing', () => {
+    expect(getApplicationCostsContent(undefined, undefined, 'en')).toEqual([]);
+    expect(getApplicationCostsContent([], {calculatedAmountInPence: 10800, code: 'FEE0442', version: 1}, 'en')).toEqual([]);
+  });
 });

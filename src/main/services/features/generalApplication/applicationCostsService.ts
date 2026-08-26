@@ -11,9 +11,13 @@ interface ContentParagraph {
 
 export const getApplicationCostsContent = (applicationTypes: ApplicationType[], gaFeeData: ClaimFeeData, lang: string) => {
   const pageSectionBuilder = new PageSectionBuilder();
-  const gaFee = convertToPoundsFilter(gaFeeData?.calculatedAmountInPence.toString());
+  const lastType = applicationTypes?.[applicationTypes.length - 1];
+  if (!lastType?.option || gaFeeData?.calculatedAmountInPence == null) {
+    return pageSectionBuilder.build();
+  }
+  const gaFee = convertToPoundsFilter(gaFeeData.calculatedAmountInPence.toString());
   const selectedApplicationTypeContent = getSelectedApplicationTypeContent(lang, gaFee);
-  const applicationTypeOption = applicationTypes[applicationTypes.length - 1].option;
+  const applicationTypeOption = lastType.option;
   if (applicationTypeOption in selectedApplicationTypeContent) {
     const content = selectedApplicationTypeContent[applicationTypeOption];
     content.forEach(contentParagraph => pageSectionBuilder.addParagraph(contentParagraph.text, contentParagraph.variables));

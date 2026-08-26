@@ -20,7 +20,10 @@ payingForApplicationController.get(PAYING_FOR_APPLICATION_URL, (async (req: AppR
     const cancelUrl = await getCancelUrl(claimId, claim);
     const headerTitle = getDynamicHeaderForMultipleApplications(claim);
     const gaFeeData = await gaApplicationFeeDetails(claim, req);
-    const applicationFee = convertToPoundsFilter(gaFeeData?.calculatedAmountInPence);
+    const pence = gaFeeData?.calculatedAmountInPence;
+    const applicationFee = pence != null && Number.isFinite(Number(pence))
+      ? convertToPoundsFilter(pence)
+      : undefined;
     const nextPageUrl = constructUrlWithIndex(constructResponseUrlWithIdParams(claimId, GA_CHECK_ANSWERS_URL), index);
     const backLinkUrl = BACK_URL;
     res.render(viewPath, { applicationFee, cancelUrl, backLinkUrl, headerTitle, nextPageUrl});

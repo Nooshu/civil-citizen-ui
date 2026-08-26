@@ -337,6 +337,21 @@ export const getByIndex = <T>(array: T[] | undefined, index: number | undefined)
 export const getLast = <T>(array: T[] | undefined): T | undefined =>
   (array?.length) ? array[array.length - 1] : undefined;
 
+/**
+ * Query `index`, or the last application type. Missing types yield 0 so GET
+ * handlers do not throw when a live case has not reached that step yet.
+ *
+ * @param claim - Claim that may include a general-application draft
+ * @param queryIndex - Optional `index` query value
+ */
+export const applicationTypeIndexFromQuery = (claim: Claim, queryIndex: number | undefined): number => {
+  if (queryIndex) {
+    return queryIndex;
+  }
+  const typeCount = claim.generalApplication?.applicationTypes?.length;
+  return typeCount ? typeCount - 1 : 0;
+};
+
 export const updateByIndexOrAppend = <T>(array: T[], newElem: T, index: number | undefined): void => {
   if (index >= 0 && index < array.length) {
     array[index] = newElem;
@@ -684,11 +699,11 @@ export const getRequestingReasonNextUrl = (req: AppRequest | Request, claim: Cla
 
 export const getClaimApplicationCostNextUrl = (req: AppRequest | Request, claim: Claim): string => {
   const options = [ApplicationTypeOption.VARY_PAYMENT_TERMS_OF_JUDGMENT];
-  const isOrderJudgeNotAllowed = options.some(value => claim.generalApplication?.applicationTypes.some(obj => obj.option === value));
+  const isOrderJudgeNotAllowed = options.some(value => claim.generalApplication?.applicationTypes?.some(obj => obj.option === value));
   if (isOrderJudgeNotAllowed) {
     return getRequestingReasonNextUrl(req, claim);
   } else {
-    const index  = queryParamNumber(req, 'index') || claim.generalApplication.applicationTypes.length - 1;
+    const index = applicationTypeIndexFromQuery(claim, queryParamNumber(req, 'index'));
     const claimId = getRouteParam(req, 'id');
     return constructUrlWithIndex(constructResponseUrlWithIdParams(claimId, ORDER_JUDGE_URL), index);
   }

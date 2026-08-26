@@ -6,7 +6,7 @@ export function documentIdExtractor(documentBinaryUrl: string){
   if (documentBinaryUrl){
     const regex = /\/([\w-]+)\/binary$/;
     const match = regex.exec(documentBinaryUrl);
-    return match[1];
+    return match?.[1];
   }
   return documentBinaryUrl;
 }

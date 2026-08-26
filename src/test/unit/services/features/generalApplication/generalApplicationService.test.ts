@@ -4,6 +4,7 @@ import {
   deleteGAFromClaimsByUserId,
   getApplicationIndex,
   getApplicationStatus,
+  applicationTypeIndexFromQuery,
   getByIndex,
   getByIndexOrLast,
   getCancelUrl,
@@ -522,6 +523,30 @@ describe('General Application service', () => {
         //Then
         expect(getDynamicHeaderForMultipleApplications(claim)).toEqual(expectedHeader);
       });
+  });
+
+  describe('applicationTypeIndexFromQuery', () => {
+    it('should use the query index when it is a positive number', () => {
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication(new ApplicationType(ApplicationTypeOption.STRIKE_OUT));
+      expect(applicationTypeIndexFromQuery(claim, 2)).toBe(2);
+    });
+
+    it('should use the last type index when the query is missing', () => {
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication(new ApplicationType(ApplicationTypeOption.STRIKE_OUT));
+      claim.generalApplication.applicationTypes.push(new ApplicationType(ApplicationTypeOption.STAY_THE_CLAIM));
+      expect(applicationTypeIndexFromQuery(claim, undefined)).toBe(1);
+    });
+
+    it('should return 0 when application types are missing or empty', () => {
+      expect(applicationTypeIndexFromQuery(new Claim(), undefined)).toBe(0);
+      const claim = new Claim();
+      claim.generalApplication = new GeneralApplication();
+      expect(applicationTypeIndexFromQuery(claim, undefined)).toBe(0);
+      claim.generalApplication.applicationTypes = undefined;
+      expect(applicationTypeIndexFromQuery(claim, undefined)).toBe(0);
+    });
   });
 
   describe('Get by index or last', () => {

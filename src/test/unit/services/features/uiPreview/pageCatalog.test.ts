@@ -23,6 +23,7 @@ import {
   QM_QUERY_DETAILS_URL,
   QM_VIEW_QUERY_URL,
   UPLOAD_YOUR_DOCUMENTS_URL,
+  VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT,
 } from 'routes/urls';
 
 describe('UI Preview page catalog', () => {
@@ -66,6 +67,7 @@ describe('UI Preview page catalog', () => {
     expect(allPages.find((page) => page.path === viewQueries)?.status).toBe('ready');
     expect(allPages.find((page) => page.path === queryDetails)?.status).toBe('ready');
     expect(allPages.every((page) => page.status === 'ready')).toBe(true);
+    expect(allPages.find((page) => page.path === VIEW_MEDIATION_SETTLEMENT_AGREEMENT_DOCUMENT.replace(':id', UI_PREVIEW_FIXTURE_CLAIM_ID))?.status).toBe('ready');
   });
 
   it('should have WireMock mappings for each extra fixture claim', () => {

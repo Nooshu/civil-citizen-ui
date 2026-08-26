@@ -45,6 +45,7 @@ Fixture user is **`someID`**. Query-management `createdBy` must be `someID` (opt
 | Luxon **Invalid DateTime** | Missing `paymentDate` / `applicant1ResponseDate` / similar; or formatter used to stringify invalid DateTime |
 | **£NaN** (settle admitted) | Full admission used part-admit amount helper |
 | **£NaN** (GA / COSC confirmation) | Catalogue GET has no `?appFee=`; draft `applicationFee.calculatedAmountInPence` not read (`10800` → £108) |
+| `value="undefined"` in a GOV.UK amount input | Nunjucks `'' + missingNumber` stringifies `undefined`. Use `value \| default('')` (keeps `0`). Do not seed a fake amount in the template. |
 | `PAGES.…undefined` overflowing Contact us | Caption interpolated a missing application type; layout `pageTitle` used `claimId` as `undefined` |
 | **APPLICATION_TYPE_CCD.undefined** | WireMock stored enum key; UI expects CCD label |
 | **Your payment plan** length is a dash | Empty `suggestedPaymentIntention.repaymentPlan` (`{}`). Need `paymentAmount`, `repaymentFrequency`, `firstRepaymentDate`. Client script must run on `document.readyState === 'complete'`, not only `window` `load` |
@@ -54,6 +55,9 @@ Fixture user is **`someID`**. Query-management `createdBy` must be `someID` (opt
 | Case-progression **Upload documents** 500 after Continue | Empty Redis `claimantDocuments: {}` wrapped as a form; `.length` on undefined arrays. Production-safe: optional-chain those arrays. Seed `claimantUploadDocuments.witness[0].selected` on `1645882162449603`. Not an Add another bug — [`moj-frontend.md`](moj-frontend.md). |
 | Mediation **Upload documents** 500 after Continue | Same `.length` pattern plus upload rate-limit store init (`ioredis-mock` has no `.call`). Optional-chain; `config/e2eTest.yaml` turns the limiter off; `sendRedisCommand` falls back to command-named methods. Seed `mediationUploadDocuments` / `YOUR_STATEMENT` on `1645882162449409`. Mediation Add another is a **POST**, not client clone. |
 | **Why do you disagree** / interest total fails | Missing `POST /fees/claim/calculate-interest` in `ui-preview-shared-apis.json` |
+| Part-admit **how much do you owe** / **how much have you paid** / **why do you disagree** 500 | `PartAdmitHowMuchHaveYouPaidGuard` read `partialAdmission.alreadyPaid.option` without optional chaining. Production-safe: redirect to the task list when the answer is missing. Seed `specDefenceAdmittedRequired: No` and `respondToAdmittedClaimOwingAmountPounds` on WireMock `1645882162449605` (Redis already has `alreadyPaid: no` and £400 owed). |
+| GA **application costs** / **paying for application** / **add another** / hearing contact 500 | `claim.generalApplication.applicationTypes.length` when the CUI draft was overwritten by CCD. Production-safe: `applicationTypeIndexFromQuery`; skip the fee API when types are missing (do not interpolate `£NaN`). Redis `1645882162449604` still seeds `STRIKE_OUT`. |
+| Mediation **view settlement agreement** 500 | `claim.mediationAgreement.document` missing. Production-safe: mapper returns an empty documents table. Seed `mediationAgreement` on WireMock `1645882162449409`. |
 
 Fixture claim ids: [`AGENTS.md`](../../AGENTS.md) Runtime. Catalogue: `src/main/services/features/uiPreview/pageCatalog.ts`. Human story: [`KEYCHANGES.md`](../../KEYCHANGES.md) “Preview screens that used to look broken”.
 

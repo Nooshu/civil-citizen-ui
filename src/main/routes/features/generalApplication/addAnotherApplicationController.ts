@@ -9,6 +9,7 @@ import {getClaimById} from 'modules/utilityService';
 import {
   getByIndexOrLast,
   getCancelUrl, removeAllOtherApplications,
+  applicationTypeIndexFromQuery,
 } from 'services/features/generalApplication/generalApplicationService';
 import {
   ApplicationTypeOptionSelection,
@@ -29,7 +30,7 @@ const viewPath = 'features/generalApplication/add-another-application';
 const renderView = async (req: AppRequest, res: Response, form?: GenericForm<GenericYesNo>): Promise<void> => {
   const claimId = getRouteParam(req, 'id');
   const claim = await getClaimById(claimId, req, true);
-  const applicationIndex = queryParamNumber(req, 'index') || claim.generalApplication.applicationTypes.length - 1;
+  const applicationIndex = applicationTypeIndexFromQuery(claim, queryParamNumber(req, 'index'));
   const backLinkUrl = BACK_URL;
   const cancelUrl = await getCancelUrl(claimId, claim);
   const applicationTypeOption = getByIndexOrLast(claim.generalApplication?.applicationTypes, applicationIndex)?.option;
@@ -37,7 +38,7 @@ const renderView = async (req: AppRequest, res: Response, form?: GenericForm<Gen
   let value;
   if (!form) {
     if (claim.generalApplication?.addType) {
-      value = (claim.generalApplication?.applicationTypes.length > 1) ? YesNo.YES : YesNo.NO;
+      value = (claim.generalApplication?.applicationTypes?.length > 1) ? YesNo.YES : YesNo.NO;
     } else {
       value = '';
     }
@@ -68,10 +69,10 @@ addAnotherApplicationController.post(GA_ADD_ANOTHER_APPLICATION_URL, async (req:
         await saveDraftClaim(redisKey, claim);
         res.redirect(constructResponseUrlWithIdParams(claimId, APPLICATION_TYPE_URL) + '?linkFrom=' + LinKFromValues.addAnotherApp);
       } else {
-        let index = queryParamNumber(req, 'index') || claim.generalApplication.applicationTypes.length - 1;
+        let index = applicationTypeIndexFromQuery(claim, queryParamNumber(req, 'index'));
         if (req.query['changeScreen'] === 'true'){
           await removeAllOtherApplications(redisKey, claim);
-          index = claim.generalApplication.applicationTypes.length - 1;
+          index = applicationTypeIndexFromQuery(claim, undefined);
         } else {
           await saveDraftClaim(redisKey, claim);
         }

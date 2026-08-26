@@ -16,7 +16,21 @@ import {
   isMediationNonAttendanceDocs,
 } from 'services/features/document/mediation/mediationDocumentService';
 
+/**
+ * Builds the mediation settlement-agreement documents table.
+ *
+ * @param documentTitle - i18n key for the table caption
+ * @param mediationAgreement - CCD agreement; omitted on cases with no document
+ * @param mediationSettlementAgreedAt - Upload / agreed date
+ * @param claimId - Case id for the document link
+ * @param lang - Locale for the formatted date
+ * @returns Empty documents when CCD has no file — do not throw
+ */
 export const mapperMediationAgreementToDocumentView = (documentTitle: string, mediationAgreement: MediationAgreement, mediationSettlementAgreedAt: Date, claimId: string, lang: string) => {
+  const binaryUrl = mediationAgreement?.document?.document_binary_url;
+  if (!binaryUrl) {
+    return new DocumentsViewComponent(documentTitle, []);
+  }
 
   return new DocumentsViewComponent(documentTitle, Array.of(
     new DocumentInformation(
@@ -24,7 +38,7 @@ export const mapperMediationAgreementToDocumentView = (documentTitle: string, me
       formatDateToFullDate(mediationSettlementAgreedAt, lang),
       new DocumentLinkInformation(
         CASE_DOCUMENT_VIEW_URL.replace(':id', claimId).replace(':documentId',
-          documentIdExtractor(mediationAgreement.document.document_binary_url)),
+          documentIdExtractor(binaryUrl)),
         mediationAgreement.document.document_filename))));
 };
 

@@ -12,7 +12,9 @@
 {% block nestedContent %}
           {{ headingWithCaption(t, headerTitle, 'PAGES.GENERAL_APPLICATION.PAYMENT_FOR_APPLICATION.TITLE') }}
           <h1 class="govuk-heading-s govuk-!-margin-bottom-0" id="application-fee-heading">{{ t('PAGES.GENERAL_APPLICATION.PAYMENT_FOR_APPLICATION.APPLICATION_FEE') }}</h1>
+          {% if applicationFee or applicationFee === 0 %}
           <p class="govuk-body">£{{ applicationFee }}</p>
+          {% endif %}
           <p class="govuk-body" id="application-fee-desc">{{ t('PAGES.GENERAL_APPLICATION.PAYMENT_FOR_APPLICATION.YOU_WILL_BE_ASKED') }}</p>
 
           <form method="post" novalidate aria-labelledby="application-fee-heading" aria-describedby="application-fee-desc">
