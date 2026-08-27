@@ -8,7 +8,7 @@
 | `.nvmrc` | `v24.18.0` |
 | `AGENTS.md` / `AGENT.md` | Canonical standing conventions for any coding agent; `AGENT.md` is a symlink |
 | `README.md` | Getting started + **generated** functional tables (do not hand-edit tables) + link to `docs/` |
-| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). This-tree counts as of **26 August 2026**. Update when a change would alter that comparison. |
+| `KEYCHANGES.md` | Fork vs upstream `hmcts/master` (tooling, tests, security, documentation). This-tree counts as of **27 August 2026** (rebased onto `98971d7fcc`). Update when a change would alter that comparison. |
 | `FRONTEND-RECOMMENDATIONS.md` | Frontend recommendations: GOV.UK macros, progressive enhancement, `yarn test:govuk-fixtures`, Government Digital Service (GDS) assessment checklist, jQuery-free app JS (MoJ Frontend is not a dependency), a11y, preview data. Pair with `docs/frontend.md`. Track [latest GOV.UK Frontend release](https://github.com/alphagov/govuk-frontend/releases/latest). |
 | `docs/` | Human documentation (includes `docs/service-assessment.md`, `docs/glossary.md`, `docs/moj-frontend.md`, `docs/functional-test-migration-matrix.md`) |
 | `ai-docs/` | This AI mirror (includes `ai-docs/service-assessment.md` deviation checklist) |

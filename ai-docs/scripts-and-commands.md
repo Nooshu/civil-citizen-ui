@@ -104,7 +104,7 @@ GitHub workflows on `master` can auto-commit README refreshes.
 
 `yarn cichecks` = install + **deps:check** + **deps:audit** + build + lint + **test:civil-shared-import-consumers** + wiremock validate + wiremock contracts + **test:functional-classification** + coverage + routes. Accessibility is **not** included (use `yarn tests:a11y`; Jenkins runs `tests:a11y:parallel`). Windows: `yarn cichecks:win` (deps, build, lint, coverage, routes — no wiremock, civil-shared, or classification steps).
 
-GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. **Renovate PRs** additionally run `yarn test:coverage`. Config: `.github/renovate.json` (`rangeStrategy: pin`, `automerge-minor`, `cnp-jenkins-library`).
+GitHub `.github/workflows/ci.yml` always runs deps:check + deps:audit + build. **Renovate PRs** additionally run `yarn test:coverage`. Config: `.github/renovate.json` (`rangeStrategy: pin`, `automerge-minor`; Jenkins Library preset removed).
 
 `yarn sonar-scan` — needs scanner credentials.
 

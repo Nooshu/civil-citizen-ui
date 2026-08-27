@@ -120,6 +120,7 @@ LaunchDarkly is initialised in `src/main/app/auth/launchdarkly/launchDarklyClien
 - `judgment-buffer`
 - `hmcts-access-migration`
 - `cui-case-events-enabled`
+- `cui-user-case-roles-session-cache-enabled` — kill-switch for the session-scoped GET `/cases/:id/userCaseRoles` cache (on when LaunchDarkly is unavailable; also gated by `caches.userCaseRoles.enabled`)
 
 In `e2eTest`, a LaunchDarkly `TestData` source is used so flags can be toggled without a real software development kit (SDK) environment (`TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`).
 
@@ -136,5 +137,6 @@ See [`AGENTS.md`](../AGENTS.md) — Performance and accessibility. In practice:
 
 - Avoid N+1 civil-service calls in a single request (one extra backend call per item in a loop).
 - Reuse draft-store helpers; do not read/write Redis repeatedly for the same key in one handler.
+- `getUserCaseRoles` uses a per-request promise cache **and** a short-TTL session cache (default 60s; 15s for empty roles). Do not cache errors. Evict after assign-claim; logout destroys the session.
 - Do not ship extra client JS or rebuild GOV.UK HTML in the browser.
 - Call out Redis key/TTL changes in pull request (PR) summaries.

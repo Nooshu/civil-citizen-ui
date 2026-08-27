@@ -38,7 +38,7 @@ The human `docs/` tree explains architecture and journeys. This tree is a **dire
 
 ## Authority and freshness
 
-- Runtime versions, Node range, GOV.UK Frontend exact pin (`package.json`), and Yarn version: `package.json`, `.nvmrc`, `AGENTS.md` are source of truth. Docs should link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest) rather than hard-coding a version number. If this folder disagrees, believe those files and update this folder. Human snapshot of current pins, coverage, and catalogue size: [`docs/README.md`](../docs/README.md) (26 August 2026).
+- Runtime versions, Node range, GOV.UK Frontend exact pin (`package.json`), and Yarn version: `package.json`, `.nvmrc`, `AGENTS.md` are source of truth. Docs should link the [latest release](https://github.com/alphagov/govuk-frontend/releases/latest) rather than hard-coding a version number. If this folder disagrees, believe those files and update this folder. Human snapshot of current pins, coverage, and catalogue size: [`docs/README.md`](../docs/README.md) (27 August 2026).
 - Do not invent ticket keys (`DTSCCI-####`, `CIV-####`) in new text, commits, or branch names.
 - Do not commit unless the user asked.
 - **Mandatory:** whenever you change the project, update the matching pages in this folder in the **same change** (or confirm in the summary that nothing here is affected). Do not finish with a stale `ai-docs/` tree. Standing instruction: [`AGENTS.md` — Keep `ai-docs/` in sync](../AGENTS.md#keep-ai-docs-in-sync-mandatory).

@@ -22,7 +22,7 @@ Domain + CCD-shaped types. Important roots:
 | `ccdResponse/`, `ccdGeneralApplication/` | CCD JSON shapes for translators |
 | `generalApplication/`, `claimantResponse/`, `caseProgression/`, `directionsQuestionnaire/`, `mediation/`, `queryManagement/`, `judgmentOnline/`, `dashboard/`, `document/`, `eligibility/`, `firstContact/`, `feePayment/` | Journey models |
 | `events/`, `gaEvents/` | CCD event names — use these constants when submitting |
-| `AppRequest.ts` | Express `Request` with `session.user` |
+| `AppRequest.ts` | Express `Request` with `session.user`. `session.userCaseRolesCache` is the short-TTL `/userCaseRoles` map (`ucr:userId:caseId`) |
 | `taskList/`, `summaryList/`, `summaryText/` | CYA / task list view models |
 | `legacyDraftClaim/` | Old CMC draft shape — do not extend for new work |
 

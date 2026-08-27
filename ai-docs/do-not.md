@@ -8,6 +8,7 @@ Do not do these unless the user explicitly overrides in the same conversation.
 - Do not add generative AI as the user journey or an unexplained decision engine (Service Standard points 2, 6, 11, 14).
 - Do not invent a second HTTP client stack. Use `src/main/app/client/`.
 - Do not invent a new database. Redis draft store + session only (`src/main/modules/draft-store/`, `getRedisStoreForSession()`).
+- Do not cache civil-service `/userCaseRoles` **errors** in session, and do not put the access token in that cache key (`ucr:${userId}:${caseId}` only). Evict after assign-claim.
 - Do not add npm as the package manager or delete `yarn.lock`.
 - Do not add `^`, `~`, or other version ranges to `package.json` dependencies, devDependencies, or resolutions.
 - Do not extend HMCTS Renovate `automerge-all` or let Renovate write version ranges (`rangeStrategy` must stay `pin`; majors and `govuk-frontend` must not automerge).

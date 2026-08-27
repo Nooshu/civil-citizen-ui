@@ -11,7 +11,7 @@ Config: `services.civilService.url` (env `CIVIL_SERVICE_URL`)
 Used for (non-exhaustive):
 
 - Creating and submitting litigant-in-person (LiP) claims (`CREATE_LIP_CLAIM` and other events)
-- Fetching a case by id and user case roles
+- Fetching a case by id and user case roles (`getUserCaseRoles` — per-request promise cache plus a short-TTL session cache; see [Configuration](configuration.md))
 - Fee calculation (`/fees/claim/{amount}`, `/fees/hearing/{amount}`, total-amount)
 - Dashboard scenario creation
 - Claimant/defendant events during response and case progression

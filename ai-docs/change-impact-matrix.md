@@ -48,7 +48,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 | --- | --- |
 | New draft key or TTL category | `ttlConfig.ts`, `config/default.yaml` (+ env map), `docs/configuration.md`, this matrix, PR summary (perf/ops) |
 | Read/write helpers | Prefer `draftStoreService.ts` / `redisWriteHelper.ts`; avoid extra get/set of the same key in one request |
-| Session cookie / store | `app.ts` + `modules/utilityService` `getRedisStoreForSession` — not ioredis drafts |
+| Session / Redis | `app.ts` + `modules/utilityService` `getRedisStoreForSession` — not ioredis drafts. `/userCaseRoles` session cache: `client/cache/userCaseRolesSessionCache.ts`; evict in `assignClaimController` after a successful assign |
 | e2eTest fixtures | `modules/e2eConfiguration/` and `redisData.json` / `gaRedisData.json` / `uiPreviewRedisData.json` |
 
 ## GOV.UK Frontend or Nunjucks env
@@ -80,7 +80,7 @@ Do not “fix” preview by editing chart mappings; use `compose/ui-preview-mapp
 
 ## Feature flags
 
-`src/main/app/auth/launchdarkly/launchDarklyClient.ts`. e2eTest uses TestData + `TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`. YAML `featureToggles.*` is separate (e.g. settlement agreement). Prefer LaunchDarkly for case-scoped behaviour.
+`src/main/app/auth/launchdarkly/launchDarklyClient.ts`. e2eTest uses TestData + `TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`. YAML `featureToggles.*` is separate (e.g. settlement agreement). Prefer LaunchDarkly for case-scoped behaviour. User-case-roles session cache: config `caches.userCaseRoles` **and** flag `cui-user-case-roles-session-cache-enabled`.
 
 ## Config / Helm / env
 

@@ -6,12 +6,13 @@ Do **not** add axios/got/fetch wrappers elsewhere. Extend these clients.
 
 | File | Backend | Config |
 | --- | --- | --- |
-| `civilServiceClient.ts` + `civilServiceUrls.ts` | civil-service (claims, fees, dashboard scenarios, events) | `services.civilService.url` / `CIVIL_SERVICE_URL` |
+| `civilServiceClient.ts` + `civilServiceUrls.ts` | civil-service (claims, fees, dashboard scenarios, events) | `services.civilService.url` / `CIVIL_SERVICE_URL`. `getUserCaseRoles` is request-cached and session-cached (`client/cache/userCaseRolesSessionCache.ts`) |
 | `civilServiceRequest.ts` (under `common/`) | Shared request helper: user token + service-to-service (S2S) | |
 | `gaServiceClient.ts` + `gaServiceUrls.ts` | General applications | `services.generalApplication.url` (often same host as civil-service in deploy) |
 | `dmStoreClient.ts` | Document Management | `services.dmStore.baseUrl`; local microservice name may be `xui_webapp` (Expert UI) |
 | `serviceAuthProviderClient.ts` | S2S tokens | `services.serviceAuthProvider` |
 | `legacyDraftStoreClient.ts` | Legacy Civil Money Claims (CMC) draft-store API | Still configured; do not use for new journeys |
+| `client/cache/userCaseRolesSessionCache.ts` | Session-scoped GET `/cases/:id/userCaseRoles` cache. Key `ucr:${userId}:${caseId}` (no access token). Positive TTL 60s, negative 15s. Never cache errors. Evict after assign-claim; logout clears the session. Kill-switch: LaunchDarkly `cui-user-case-roles-session-cache-enabled` + `caches.userCaseRoles.enabled`. Tests: `src/test/unit/app/client/cache/userCaseRolesSessionCache.test.ts` |
 | `pcq/` | Protected Characteristics Questionnaire (PCQ) id + Hash-based Message Authentication Code (HMAC) + redirect | `shutter-pcq` LaunchDarkly flag |
 
 Error types: `client/common/error/` (`callbackError`, `eventSubmissionError`).
@@ -26,7 +27,7 @@ Update client + unit tests (`src/test/unit/app/client/`) + translators + Pact co
 
 | Path | Role |
 | --- | --- |
-| `auth/launchdarkly/launchDarklyClient.ts` | Software development kit (SDK) init + flag helpers (`isGaForLipsEnabled`, shutter, dashboard, Civil Automated Referral to Mediation (CARM), Multi and Intermediate Track (MINTI), query management (QM), Welsh, Notice of Change (NoC), national roll-out (NRO), judgment buffer, His Majesty’s Courts and Tribunals Service (HMCTS) Access, case events, …). Exact pin: `@launchdarkly/node-server-sdk` in `package.json`. |
+| `auth/launchdarkly/launchDarklyClient.ts` | Software development kit (SDK) init + flag helpers (`isGaForLipsEnabled`, shutter, dashboard, Civil Automated Referral to Mediation (CARM), Multi and Intermediate Track (MINTI), query management (QM), Welsh, Notice of Change (NoC), national roll-out (NRO), judgment buffer, His Majesty’s Courts and Tribunals Service (HMCTS) Access, case events, user-case-roles session cache, …). Exact pin: `@launchdarkly/node-server-sdk` in `package.json`. |
 | `auth/user/oidc` | Token exchange / user details used by `modules/oidc` |
 
 e2eTest: LaunchDarkly `TestData`; toggle via testing-support URL `TEST_SUPPORT_TOGGLE_FLAG_ENDPOINT`.
@@ -39,4 +40,4 @@ Missing SDK key: callers must tolerate an uninitialised client — do not assume
 
 ## Performance
 
-Avoid N+1 civil-service calls in one request. Reuse claim already loaded by `getClaimById` / draft store rather than refetching per section builder.
+Avoid N+1 civil-service calls in one request. Reuse claim already loaded by `getClaimById` / draft store rather than refetching per section builder. `getUserCaseRoles` must keep the session cache (do not cache thrown errors; evict after assign-claim).

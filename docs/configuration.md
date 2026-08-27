@@ -87,6 +87,18 @@ Helpers live in `src/main/modules/draft-store/ttlConfig.ts`. Changing TTL design
 
 `featureToggles.settlementAgreementEnabled` (env `SETTLEMENT_AGREEMENT_ENABLED`) sits alongside LaunchDarkly flags. Prefer LaunchDarkly for case-scoped behaviour.
 
+### Session cache for user case roles
+
+`caches.userCaseRoles` (defaults on):
+
+| Key | Default | Env |
+| --- | --- | --- |
+| `enabled` | `true` | `USER_CASE_ROLES_CACHE_ENABLED` |
+| `ttlSeconds` | `60` | `USER_CASE_ROLES_CACHE_TTL_SECONDS` |
+| `negativeTtlSeconds` | `15` | `USER_CASE_ROLES_CACHE_NEGATIVE_TTL_SECONDS` |
+
+Runtime kill-switch: LaunchDarkly `cui-user-case-roles-session-cache-enabled`. Implementation: `src/main/app/client/cache/userCaseRolesSessionCache.ts`. Helm does not currently inject these env vars — `default.yaml` applies unless the platform sets them.
+
 ## Test config highlights
 
 `config/test.yaml` supplies:

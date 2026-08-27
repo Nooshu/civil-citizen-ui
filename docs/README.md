@@ -6,9 +6,9 @@ Unfamiliar acronyms are expanded on first use in each page (for example Single P
 
 The root [README.md](../README.md) covers getting started, GitHub preview labels, and auto-generated functional-test tables, and links here from its Documentation section. The documents in this folder explain how the repository is organised, how a request flows through the app, which services it talks to, and how to develop, test, and deploy it.
 
-## Current snapshot (26 August 2026)
+## Current snapshot (27 August 2026)
 
-Figures below are this tree. Exact pins live only in `package.json`. Fork-vs-upstream story: [KEYCHANGES.md](../KEYCHANGES.md). Latest cooldown pass: [dependency-update-log-2026-08-26.md](dependency-update-log-2026-08-26.md).
+Figures below are this tree. Exact pins live only in `package.json`. Fork-vs-upstream story: [KEYCHANGES.md](../KEYCHANGES.md). Latest cooldown pass: [dependency-update-log-2026-08-26.md](dependency-update-log-2026-08-26.md). Rebased onto `hmcts/master` `98971d7fcc` (**0 behind**).
 
 | Item | Value |
 | --- | --- |
@@ -16,11 +16,12 @@ Figures below are this tree. Exact pins live only in `package.json`. Fork-vs-ups
 | TypeScript | `6.0.3` (`strict: false`; TypeScript 7 not taken) |
 | GOV.UK Frontend | `6.4.0` (matches the [latest GitHub release](https://github.com/alphagov/govuk-frontend/releases/latest)) |
 | LaunchDarkly | `9.13.1` |
-| `yarn test:coverage` | **9,096** tests / **1,050** suites; **97.88% / 87.66% / 98.65% / 97.81%** (floor **97 / 86 / 97 / 97**) |
+| `yarn test:coverage` | **9,096** tests / **1,050** suites; **97.88% / 87.66% / 98.65% / 97.81%** (floor **97 / 86 / 97 / 97**) — 26 August 2026 run |
 | GOV.UK fixture HTML | **692** assertions / **37** components |
 | Pa11y HTML mocks | **360** |
 | UI Preview Ready GETs | **316** (grow by fixing 500s / empty interpolations, not a count target) |
 | Exact pins | **0** ranges in `dependencies` / `devDependencies` |
+| `/userCaseRoles` session cache | On by default (60s / 15s empty); kill-switch `cui-user-case-roles-session-cache-enabled` |
 
 ## Read in this order
 
